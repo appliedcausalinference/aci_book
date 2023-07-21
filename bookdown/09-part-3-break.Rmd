@@ -1,0 +1,3 @@
+# Part 3: Advanced Topics in Causality {-}
+
+The final two chapters discuss advanced topics in causal inference. These are areas of ongoing research including special cases in algorithmic bias and model fairness, as well as cutting-edge research in reinforcement learning.
