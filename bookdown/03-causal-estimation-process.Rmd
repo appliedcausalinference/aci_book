@@ -33,7 +33,7 @@ knitr::include_graphics('img/PotentialOutcomeEstimationHow.png')
 
 In the previous section, we examined the logical flowchart that illustrates transitioning from a target causal estimand to an estimate. Now, we will delve into the practical aspect of this process, providing a high-level overview of the steps involved in practice.
 
-This section aims to bridge the gap between theory and application, offering insights into how the causal inference process unfolds in real-world scenarios. 
+This section aims to bridge the gap between theory and application, offering insights into how the causal inference process unfolds in real-world scenarios.
 
 
 Notably, unlike the machine learning process, the causal inference process involves distinct steps, as Dow et al. underscored in their work [@dowhypaper] and given by Fig. \@ref(fig:inferencingprocess).
@@ -43,7 +43,7 @@ Notably, unlike the machine learning process, the causal inference process invol
 knitr::include_graphics('img/InferencingProcess.png')
 ```
 
-1. To initiate the causal modeling process, one of the methodologies employed is constructing a causal graph with appropriate structural assumptions. Causal graphs depict the causal structure by utilizing nodes to represent variables and edges to represent the causal relationships between them. 
+1. To initiate the causal modeling process, one of the methodologies employed is constructing a causal graph with appropriate structural assumptions. Causal graphs depict the causal structure by utilizing nodes to represent variables and edges to represent the causal relationships between them.
 
 2. After establishing the causal assumptions within a causal model, the subsequent stage of causal analysis is identification. During this stage, the objective is to examine the causal model, encompassing the relationships between variables and the observed variables, to ascertain if there is sufficient information to address a particular causal inference question. Different techniques are utilized with the aim of converting the causal estimands into statistical estimands.
 
@@ -53,7 +53,7 @@ knitr::include_graphics('img/InferencingProcess.png')
 
 ## Causal Modeling
 
-The initial phase of any causal inference effort entails constructing causal models, graphical models in our case, which encode domain understanding and assumptions. A well-designed causal model should capture most of the relationships between the outcome and variables and inter-relationships between the variables. 
+The initial phase of any causal inference effort entails constructing causal models, graphical models in our case, which encode domain understanding and assumptions. A well-designed causal model should capture most of the relationships between the outcome and variables and inter-relationships between the variables.
 
 Causal graphs are a common way of representing the relationships between variables when modeling the joint distribution.
 
@@ -126,9 +126,9 @@ The concept of a blocked path is intimately tied to the flow of causal influence
 
 #### d-Separation
 
-The concept of d-separation is tied to the concept of a blocked path in the graph. A path from a node(set) $X$ to a node(set) $Y$ is considered blocked given a set $Z$, if nodes block any node in $X$ and $Y$ in $Z$. 
+The concept of d-separation is tied to the concept of a blocked path in the graph. A path from a node(set) $X$ to a node(set) $Y$ is considered blocked given a set $Z$, if nodes block any node in $X$ and $Y$ in $Z$.
 
-The concept of d-separation implies an important theorem that $X$ and $Y$ are conditionally independent given $Z$. On the contrary, if there exists at least one unblocked path from $X$ to $Y$ given $Z$, then $X$ and $Y$ are not d-separated by $Z$, suggesting that $X$ and $Y$ are not conditionally independent given $Z$. Mathematically, 
+The concept of d-separation implies an important theorem that $X$ and $Y$ are conditionally independent given $Z$. On the contrary, if there exists at least one unblocked path from $X$ to $Y$ given $Z$, then $X$ and $Y$ are not d-separated by $Z$, suggesting that $X$ and $Y$ are not conditionally independent given $Z$. Mathematically,
 
 
 
@@ -273,7 +273,7 @@ $$ P(y,x|do(T)) = P(x)P(y|t,x)$$
 If we marginalize the variable ($X$), we get:
 $$ P(y|do(T)) = \sum_x P(y|t,x)P(x)$$
 
-Thus, from the causal estimand $P(y|do(T))$, and identification, we have an equation with only observational or statistical quantities $\sum_x P(y|t,x)P(x)$. This is called the __adjustment formula__. 
+Thus, from the causal estimand $P(y|do(T))$, and identification, we have an equation with only observational or statistical quantities $\sum_x P(y|t,x)P(x)$. This is called the __adjustment formula__.
 
 >As highlighted in the overall process illustrated in Fig. \@ref(fig:identificationmath), the identification process involves a transformation from causal estimand $P(y|do(T))$ to statistical estimand ($\mathbb{E}_{X} P(y|t,X)$ or $P(y|t)$) contingent upon the existence or absence of confounding variables.
 
@@ -650,9 +650,9 @@ __Inverse Propensity Weighting (IPW) Estimator__
 Given the data $(X_1,T_1,Y_1),\cdots,(X_n,T_n,Y_n)$ the machine learning algorithm is first used to learn the estimator $\hat{p}(T=t|X)$. The ATE can be estimated using:
 $$\hat{\tau(x)} = \frac{1}{n_1}\sum_{i\ s.t. t_i=1} \frac{y_i}{\hat{p}(T=1|x_i)}- \frac{1}{n_0}\sum_{i\ s.t. t_i=0} \frac{y_i}{\hat{p}(T=0|x_i)}$$
 
-### Propensity Score Matching 
+### Propensity Score Matching
 
-The Propensity Score Matching (PSM) algorithm is a methodology that emulates a Randomized Controlled Trial (RCT) in its approach to contrasting outcomes between treated and untreated cohorts within the sample that Propensity Score has matched. 
+The Propensity Score Matching (PSM) algorithm is a methodology that emulates a Randomized Controlled Trial (RCT) in its approach to contrasting outcomes between treated and untreated cohorts within the sample that Propensity Score has matched.
 
 However, the implementation of PSM necessitates careful consideration of certain caveats:
 
@@ -964,7 +964,7 @@ identified_estimand = model.identify_effect()
 The causal graph showing the relationships between the outcome, treatment, and observed confounders is shown in Fig.\@ref(fig:causallalonde)
 
 ```{r causallalonde, fig.cap='Causal Graph for Identification', out.width="50%", echo=FALSE, fig.align='center'}
-knitr::include_graphics('img/CausalModel-lalonde.png')
+knitr::include_graphics('img/CausalModel-Lalonde.png')
 ```
 
 
@@ -997,7 +997,7 @@ Estimand expression:
 --------(E[re78|age,nodegr,married,educ,hisp,black])
 d[treat]
 Estimand assumption 1, Unconfoundedness: If U→{treat} and U→re78 then
-P(re78|treat,age,nodegr,married,educ,hisp,black,U) = 
+P(re78|treat,age,nodegr,married,educ,hisp,black,U) =
 P(re78|treat,age,nodegr,married,educ,hisp,black)
 
 ## Realized estimand
@@ -1028,8 +1028,8 @@ The __doWhy__ library provides interesting interpreting techniques to understand
 causal_estimate_ipw.interpret(
   method_name="confounder_distribution_interpreter",
   var_type='discrete',
-  var_name='married', 
-  fig_size = (10, 7), 
+  var_name='married',
+  fig_size = (10, 7),
   font_size = 12
 )
 ```
@@ -1061,10 +1061,10 @@ We choose the causal estimate from inverse causal weighting to perform the refut
 
 ```python
 res_subset = model.refute_estimate(
-  identified_estimand, 
+  identified_estimand,
   causal_estimate_ipw,
-  method_name="data_subset_refuter", 
-  show_progress_bar=True, 
+  method_name="data_subset_refuter",
+  show_progress_bar=True,
   subset_fraction=0.9
 )
 
@@ -1085,10 +1085,10 @@ Replacing treatment with a random (placebo) variable as shown:
 ```python
 import numpy as np
 res_placebo = model.refute_estimate(
-  identified_estimand, 
+  identified_estimand,
   causal_estimate_ipw,
-  method_name="placebo_treatment_refuter", 
-  show_progress_bar=True, 
+  method_name="placebo_treatment_refuter",
+  show_progress_bar=True,
   placebo_type="permute"
 )
 ```
