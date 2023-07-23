@@ -29,6 +29,7 @@ jobs:
 
       - name: Render Book HTML for GH Pages
         run: |
+          cd bookdown
           Rscript -e 'setwd("bookdown")'
           Rscript -e 'bookdown::render_book()'
 
