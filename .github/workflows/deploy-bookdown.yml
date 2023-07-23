@@ -9,7 +9,7 @@ jobs:
   build:
     runs-on: ubuntu-latest
     container:
-      image: r-base:4.2.2
+      image: rocker/tidyverse:latest
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -25,7 +25,7 @@ jobs:
       #     restore-keys: ${{ runner.os }}-r-
 
       - name: Install dependencies
-        run: Rscript -e 'install.packages(c("bookdown", "tidyverse", "ggdag", "gridExtra", "DiagrammeR", "languageserver"))'
+        run: Rscript -e 'install.packages(c("bookdown", "tidyverse", "gridExtra"))'
 
       - name: Render Book HTML for GH Pages
         run: |
