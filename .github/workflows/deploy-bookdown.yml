@@ -70,4 +70,5 @@ jobs:
           git config user.email github-actions@github.com
           git add .
           git commit -m "Update from "${{ env.branch_name }}" branch"
-          git push
+          git push https://${{ secrets.GITHUB_TOKEN }}@github.com/appliedcausalinference/appliedcausalinference.github.io.git
+
