@@ -44,7 +44,7 @@ jobs:
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: appliedcausalinference.github.io
-          token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Copy bookdown _book
         run: cp -r bookdown/_book/* appliedcausalinference.github.io/
