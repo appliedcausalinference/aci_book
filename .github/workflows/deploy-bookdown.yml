@@ -61,7 +61,7 @@ jobs:
 
       - name: Get branch name
         id: branch
-        run: echo "::set-output name=branch_name::${GITHUB_REF#refs/heads/}"
+        run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
 
       - name: Commit and push changes
         run: |
@@ -69,5 +69,5 @@ jobs:
           git config user.name github-actions
           git config user.email github-actions@github.com
           git add .
-          git commit -m "Update from ${{ steps.branch.outputs.branch_name }} branch"
+          git commit -m "Update from "${{ env.branch_name }}" branch"
           git push
