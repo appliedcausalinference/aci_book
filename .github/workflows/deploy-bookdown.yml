@@ -49,7 +49,7 @@ jobs:
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: appliedcausalinference.github.io
-          token: ${{ secrets.GITHUB_TOKEN }}
+          token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
 
       - uses: actions/download-artifact@v3
         with:
@@ -66,9 +66,9 @@ jobs:
       - name: Commit and push changes
         run: |
           cd appliedcausalinference.github.io
-          git config user.name klgraham
+          git config user.name "Ken Graham"
           git config user.email klgraham.github@proton.me
           git add .
           git commit -m "Update from "${{ env.branch_name }}" branch"
-          git push https://${{ secrets.GH_PAGES_DEPLOY_TOKEN }}@github.com/appliedcausalinference/appliedcausalinference.github.io.git
+          git push
 
