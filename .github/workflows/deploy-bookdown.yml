@@ -32,6 +32,11 @@ jobs:
           cd bookdown
           Rscript -e 'bookdown::render_book()'
 
+      - uses: actions/upload-artifact@v3
+        with:
+          name: book
+          path: bookdown/_book
+
       # - name: Render PDF
       #   run: Rscript -e 'bookdown::render_book(output=bookdown::pdf_book())'
 
@@ -39,15 +44,20 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Copy _book to GH pages repo
+      - name: Check site repo
         uses: actions/checkout@v3
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: appliedcausalinference.github.io
           token: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Copy bookdown _book
-        run: cp -r bookdown/_book/* appliedcausalinference.github.io/
+      - uses: actions/download-artifact@v3
+        with:
+          name: book
+          path: book
+
+      - name: Copy book artifact
+        run: cp -r book/* appliedcausalinference.github.io/
 
       - name: Get branch name
         id: branch
