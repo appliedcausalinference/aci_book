@@ -25,7 +25,7 @@ jobs:
       #     restore-keys: ${{ runner.os }}-r-
 
       - name: Install dependencies
-        run: Rscript -e 'install.packages(c("bookdown", "tidyverse", "gridExtra"))'
+        run: Rscript -e 'install.packages(c("bookdown", "gridExtra"))'
 
       - name: Render Book HTML for GH Pages
         run: |
