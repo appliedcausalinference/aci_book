@@ -49,7 +49,8 @@ jobs:
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: appliedcausalinference.github.io
-          # token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+          persist-credentials: false
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v3
         with:
@@ -71,4 +72,4 @@ jobs:
           email: ${{ github.actor }}@users.noreply.github.com
           name: ${{ github.actor }}
           commit_message: "Update from aci_book ${{ env.branch_name }} branch"
-          # access_token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+          access_token: ${{ github.token }}
