@@ -63,12 +63,12 @@ jobs:
         id: branch
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
 
-      - name: Git Commit/Push Changes
-        uses: actions-x/commit@v6
+      - name: Git Commit Push Action
+        uses: GuillaumeFalourd/git-commit-push@v1.3
         with:
-          repository: appliedcausalinference/appliedcausalinference.github.io
-          branch: main
-          message: "Update from aci_book ${{ env.branch_name }} branch"
-          # token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
-
-
+          remote_repository: https://github.com/appliedcausalinference/appliedcausalinference.github.io
+          target_branch: main
+          email: ${{ github.actor }}@users.noreply.github.com
+          name: ${{ github.actor }}
+          commit_message: "Update from aci_book ${{ env.branch_name }} branch"
+          # access_token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
