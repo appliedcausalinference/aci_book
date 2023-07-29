@@ -57,19 +57,21 @@ jobs:
           name: book
           path: book
 
-      - name: Copy book artifact
-        run: cp -r book/* appliedcausalinference.github.io/
-
       - name: Get branch name
         id: branch
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
 
+      - name: Copy book artifact
+        run: |
+          cp -r book/* appliedcausalinference.github.io/
+          cd appliedcausalinference.github.io
+
       - name: Git Commit Push Action
         uses: GuillaumeFalourd/git-commit-push@v1.3
         with:
-          remote_repository: https://github.com/appliedcausalinference/appliedcausalinference.github.io
-          target_branch: main
-          email: ${{ github.actor }}@users.noreply.github.com
-          name: ${{ github.actor }}
+          # remote_repository: appliedcausalinference/appliedcausalinference.github.io
+          # target_branch: main
+          # email: klgraham.github@proton.me
+          # name: klgraham
           commit_message: "Update from aci_book ${{ env.branch_name }} branch"
           access_token: ${{ github.token }}
