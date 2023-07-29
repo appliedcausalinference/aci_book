@@ -47,7 +47,7 @@ jobs:
       - name: Checkout site repo
         uses: actions/checkout@v3
         with:
-          repository: appliedcausalinference/appliedcausalinference.github.io
+          repository: https://github.com/appliedcausalinference/appliedcausalinference.github.io
           path: appliedcausalinference.github.io
           # token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
 
