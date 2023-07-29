@@ -44,12 +44,12 @@ jobs:
     needs: build
     runs-on: ubuntu-latest
     steps:
-      - name: Check site repo
+      - name: Checkout site repo
         uses: actions/checkout@v3
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: appliedcausalinference.github.io
-          token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+          # token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
 
       - uses: actions/download-artifact@v3
         with:
@@ -63,12 +63,10 @@ jobs:
         id: branch
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
 
-      - name: Commit and push changes
-        run: |
-          cd appliedcausalinference.github.io
-          git config user.name "Ken Graham"
-          git config user.email klgraham.github@proton.me
-          git add .
-          git commit -m "Update from "${{ env.branch_name }}" branch"
-          git push
+      - name: Git Commit/Push Changes
+        uses: actions-x/commit@v6
+        with:
+          message: "Update from aci_book ${{ env.branch_name }} branch"
+          # token: ${{ secrets.GH_PAGES_DEPLOY_TOKEN }}
+
 
