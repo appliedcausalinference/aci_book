@@ -70,10 +70,10 @@ jobs:
       - name: Git Commit Push Action
         uses: GuillaumeFalourd/git-commit-push@v1.3
         with:
+          access_token: ${{ secrets.DEPLOY_TOKEN }}
           remote_repository: https://github.com/appliedcausalinference/appliedcausalinference.github.io
           target_branch: main
           commit_message: "Update from aci_book ${{ env.branch_name }} branch"
-          access_token: ${{ secrets.DEPLOY_TOKEN }}
 
       # - name: Commit and push changes
       #   env:
