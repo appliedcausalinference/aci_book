@@ -49,8 +49,8 @@ jobs:
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: temp_repo
-          # persist-credentials: false
-          # fetch-depth: 0
+          persist-credentials: false
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v3
         with:
