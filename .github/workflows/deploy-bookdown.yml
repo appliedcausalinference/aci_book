@@ -49,8 +49,9 @@ jobs:
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: temp_repo
-          persist-credentials: false
-          fetch-depth: 0
+          token: ${{ secrets.DEPLOY_TOKEN }}
+          # persist-credentials: false
+          # fetch-depth: 0
 
       - uses: actions/download-artifact@v3
         with:
@@ -70,7 +71,7 @@ jobs:
       - name: Git Commit Push Action
         uses: GuillaumeFalourd/git-commit-push@v1.3
         with:
-          access_token: ${{ secrets.DEPLOY_TOKEN }}
+          # access_token: ${{ secrets.DEPLOY_TOKEN }}
           remote_repository: https://github.com/appliedcausalinference/appliedcausalinference.github.io
           target_branch: main
           commit_message: "Update from aci_book ${{ env.branch_name }} branch"
