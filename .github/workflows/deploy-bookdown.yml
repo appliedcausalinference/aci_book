@@ -49,8 +49,8 @@ jobs:
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
           path: temp_repo
-          # persist-credentials: false
-          # fetch-depth: 0
+          persist-credentials: false
+          fetch-depth: 0
 
       - uses: actions/download-artifact@v3
         with:
@@ -78,8 +78,8 @@ jobs:
       - name: Commit and push changes
         run: |
           cd temp_repo
-          git config --local user.email "klgraham.github@proton.me"
-          git config --local user.name "Ken Graham"
+          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+          git config --local user.name "${{ github.actor }}"
           git add .
           git commit -m "Update from aci_book ${{ env.branch_name }} branch"
           git push origin main
