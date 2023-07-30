@@ -62,24 +62,22 @@ jobs:
       - name: Copy book artifact
         run: cp -r book/* temp_repo/
 
-      # - name: cd into site repo
-      #   run: cd appliedcausalinference.github.io
+      - name: cd into site repo
+        run: cd temp_repo
 
-      # - name: Git Commit Push Action
-      #   uses: GuillaumeFalourd/git-commit-push@v1.3
-      #   with:
-      #     # email: klgraham.github@proton.me
-      #     # name: klgraham
-      #     commit_message: "Update from aci_book ${{ env.branch_name }} branch"
-      #     access_token: ${{ github.token }}
+      - name: Git Commit Push Action
+        uses: GuillaumeFalourd/git-commit-push@v1.3
+        with:
+          commit_message: "Update from aci_book ${{ env.branch_name }} branch"
+          access_token: ${{ secrets.DEPLOY_TOKEN }}
 
-      - name: Commit and push changes
-        env:
-          GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
-        run: |
-          cd temp_repo
-          git config --local user.email "${{ github.actor }}@users.noreply.github.com"
-          git config --local user.name "${{ github.actor }}"
-          git add .
-          git commit -m "Update from aci_book ${{ env.branch_name }} branch"
-          git push origin main
+      # - name: Commit and push changes
+      #   env:
+      #     GITHUB_TOKEN: ${{ secrets.DEPLOY_TOKEN }}
+      #   run: |
+      #     cd temp_repo
+      #     git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+      #     git config --local user.name "${{ github.actor }}"
+      #     git add .
+      #     git commit -m "Update from aci_book ${{ env.branch_name }} branch"
+      #     git push origin main
