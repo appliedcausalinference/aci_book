@@ -48,9 +48,9 @@ jobs:
         uses: actions/checkout@v3
         with:
           repository: appliedcausalinference/appliedcausalinference.github.io
-          path: appliedcausalinference.github.io
-          persist-credentials: false
-          fetch-depth: 0
+          path: temp_repo
+          # persist-credentials: false
+          # fetch-depth: 0
 
       - uses: actions/download-artifact@v3
         with:
@@ -62,16 +62,24 @@ jobs:
         run: echo "branch_name=${GITHUB_REF#refs/heads/}" >> "$GITHUB_ENV"
 
       - name: Copy book artifact
-        run: |
-          cp -r book/* appliedcausalinference.github.io/
-          cd appliedcausalinference.github.io
+        run: cp -r book/* temp_repo/
 
-      - name: Git Commit Push Action
-        uses: GuillaumeFalourd/git-commit-push@v1.3
-        with:
-          # remote_repository: appliedcausalinference/appliedcausalinference.github.io
-          # target_branch: main
-          # email: klgraham.github@proton.me
-          # name: klgraham
-          commit_message: "Update from aci_book ${{ env.branch_name }} branch"
-          access_token: ${{ github.token }}
+      # - name: cd into site repo
+      #   run: cd appliedcausalinference.github.io
+
+      # - name: Git Commit Push Action
+      #   uses: GuillaumeFalourd/git-commit-push@v1.3
+      #   with:
+      #     # email: klgraham.github@proton.me
+      #     # name: klgraham
+      #     commit_message: "Update from aci_book ${{ env.branch_name }} branch"
+      #     access_token: ${{ github.token }}
+
+      - name: Commit and push changes
+      run: |
+        cd temp_repo
+        git config --local user.email "${{ github.actor }}@users.noreply.github.com"
+        git config --local user.name "${{ github.actor }}"
+        git add .
+        git commit -m "Update from aci_book ${{ env.branch_name }} branch"
+        git push origin main
