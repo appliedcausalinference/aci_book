@@ -12,3 +12,7 @@ bookdown/_main.fls
 bookdown/_main.out
 bookdown/_main.toc
 bookdown/_book
+
+# quarto
+quarto/_book
+quarto/quarto.Rproj
