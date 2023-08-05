@@ -1,0 +1,7 @@
+# Part 2: Causality in ML Domains {-}
+
+Until now, we have mostly talked about how to ask and answer causal questions, along with the tools necessary to do this efficiently within the modern data science stack.
+
+The chapters that follow focus on applications of causal inference within various sub-domains of machine learning. These applications primarily include efforts to improve standard machine learning workflows (e.g. image classification), as well as special cases of causal inference within these domains (e.g. using text in causal inference). 
+
+The chapters in this section do not build upon each other unless denoted with a cross-reference, and they focus on the current state of causal methods within each of these domains. 

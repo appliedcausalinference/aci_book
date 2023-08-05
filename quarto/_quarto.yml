@@ -1,0 +1,38 @@
+project:
+  type: book
+
+book:
+  title: "Applied Causal Inference"
+  author: "Uday Kamath, Kenneth Graham, Mitchell Naylor"
+  date: today
+  cover-image: img/Book_Cover.png
+  description: |
+    This is a book which covers applications of causality, ranging from
+    a practical overview of causal inference to cutting-edge applications of causality
+    in machine learning domains.
+  chapters:
+    - index.qmd
+    - 01-intro-to-causality.qmd
+    - 02-potential-outcomes-framework.qmd
+    - 03-causal-estimation-process.qmd
+    - 04-causal-discovery.qmd
+    - 05-part-2-break.qmd
+    - 06-nlp.qmd
+    - 07-computer-vision.qmd
+    - 08-time-dependent-causal-inference.qmd
+    - 09-part-3-break.qmd
+    - 10-fairness.qmd
+    - 11-reinforcement-learning.qmd
+    - 12-references.qmd
+
+bibliography: [book.bib, packages.bib]
+link-citations: true
+github-repo: causalmachinelearning/CausalMLBook
+
+format:
+  html:
+    theme: cosmo
+  pdf:
+    documentclass: scrreprt
+  epub:
+    cover-image: img/Book_Cover.png
