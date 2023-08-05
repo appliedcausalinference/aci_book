@@ -4,15 +4,6 @@
 .RData
 .Ruserdata
 
-# bookdown
-bookdown/_main.aux
-bookdown/_main.bbl
-bookdown/_main.fdb_latexmk
-bookdown/_main.fls
-bookdown/_main.out
-bookdown/_main.toc
-bookdown/_book
-
 # quarto
 quarto/_book
 quarto/quarto.Rproj
