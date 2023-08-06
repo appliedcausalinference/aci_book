@@ -1,0 +1,1443 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.">
+
+<title>Applied Causal Inference - 2&nbsp; Causal Inference: Theory and Basic Concepts</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./03-causal-estimation-process.html" rel="next">
+<link href="./01-intro-to-causality.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./02-potential-outcomes-framework.html"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Applied Causal Inference</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro-to-causality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-potential-outcomes-framework.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-causal-estimation-process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-causal-discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-part-2-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 2: Causality in ML Domains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-nlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-computer-vision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-time-dependent-causal-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-part-3-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 3: Advanced Topics in Causality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-fairness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Fairness</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-reinforcement-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reinforcement Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#a-motivating-example" id="toc-a-motivating-example" class="nav-link active" data-scroll-target="#a-motivating-example"><span class="header-section-number">2.1</span> A Motivating Example</a>
+  <ul class="collapse">
+  <li><a href="#question-1-is-there-an-association" id="toc-question-1-is-there-an-association" class="nav-link" data-scroll-target="#question-1-is-there-an-association"><span class="header-section-number">2.1.1</span> Question 1: Is there an Association?</a></li>
+  <li><a href="#question-2-is-there-causation" id="toc-question-2-is-there-causation" class="nav-link" data-scroll-target="#question-2-is-there-causation"><span class="header-section-number">2.1.2</span> Question 2: Is there Causation?</a></li>
+  <li><a href="#an-approach" id="toc-an-approach" class="nav-link" data-scroll-target="#an-approach"><span class="header-section-number">2.1.3</span> An Approach</a></li>
+  </ul></li>
+  <li><a href="#potential-outcome-framework" id="toc-potential-outcome-framework" class="nav-link" data-scroll-target="#potential-outcome-framework"><span class="header-section-number">2.2</span> Potential Outcome Framework</a>
+  <ul class="collapse">
+  <li><a href="#sec-basicTerminology" id="toc-sec-basicTerminology" class="nav-link" data-scroll-target="#sec-basicTerminology"><span class="header-section-number">2.2.1</span> Basic Terminology</a></li>
+  <li><a href="#counterfactuals" id="toc-counterfactuals" class="nav-link" data-scroll-target="#counterfactuals"><span class="header-section-number">2.2.2</span> Counterfactuals</a></li>
+  <li><a href="#confounders" id="toc-confounders" class="nav-link" data-scroll-target="#confounders"><span class="header-section-number">2.2.3</span> Confounders</a></li>
+  <li><a href="#indivdual-treatement-effect" id="toc-indivdual-treatement-effect" class="nav-link" data-scroll-target="#indivdual-treatement-effect"><span class="header-section-number">2.2.4</span> Indivdual Treatement Effect</a></li>
+  <li><a href="#randomized-control-trialstests-rct" id="toc-randomized-control-trialstests-rct" class="nav-link" data-scroll-target="#randomized-control-trialstests-rct"><span class="header-section-number">2.2.5</span> Randomized Control Trials/Tests (RCT)</a></li>
+  </ul></li>
+  <li><a href="#the-fundamental-problem-of-causal-inference" id="toc-the-fundamental-problem-of-causal-inference" class="nav-link" data-scroll-target="#the-fundamental-problem-of-causal-inference"><span class="header-section-number">2.3</span> The Fundamental Problem of Causal Inference</a></li>
+  <li><a href="#overcoming-the-fundamental-problem-of-causal-inference" id="toc-overcoming-the-fundamental-problem-of-causal-inference" class="nav-link" data-scroll-target="#overcoming-the-fundamental-problem-of-causal-inference"><span class="header-section-number">2.4</span> Overcoming the Fundamental Problem of Causal Inference</a></li>
+  <li><a href="#sec-populationMeasures" id="toc-sec-populationMeasures" class="nav-link" data-scroll-target="#sec-populationMeasures"><span class="header-section-number">2.5</span> Population Level Treatment Effects</a>
+  <ul class="collapse">
+  <li><a href="#assumptions-in-causal-effect-computation" id="toc-assumptions-in-causal-effect-computation" class="nav-link" data-scroll-target="#assumptions-in-causal-effect-computation"><span class="header-section-number">2.5.1</span> Assumptions in Causal Effect Computation</a></li>
+  </ul></li>
+  <li><a href="#causality-inference-logical-flow" id="toc-causality-inference-logical-flow" class="nav-link" data-scroll-target="#causality-inference-logical-flow"><span class="header-section-number">2.6</span> Causality Inference: Logical Flow</a></li>
+  <li><a href="#case-study" id="toc-case-study" class="nav-link" data-scroll-target="#case-study"><span class="header-section-number">2.7</span> Case Study</a>
+  <ul class="collapse">
+  <li><a href="#tools-and-libraries" id="toc-tools-and-libraries" class="nav-link" data-scroll-target="#tools-and-libraries"><span class="header-section-number">2.7.1</span> Tools and libraries</a></li>
+  <li><a href="#basic-regression-analysis" id="toc-basic-regression-analysis" class="nav-link" data-scroll-target="#basic-regression-analysis"><span class="header-section-number">2.7.2</span> Basic Regression Analysis</a></li>
+  <li><a href="#regression-analysis-per-grade" id="toc-regression-analysis-per-grade" class="nav-link" data-scroll-target="#regression-analysis-per-grade"><span class="header-section-number">2.7.3</span> Regression Analysis Per Grade</a></li>
+  <li><a href="#regression-analysis-with-treatment-and-pre-test-scores" id="toc-regression-analysis-with-treatment-and-pre-test-scores" class="nav-link" data-scroll-target="#regression-analysis-with-treatment-and-pre-test-scores"><span class="header-section-number">2.7.4</span> Regression Analysis with Treatment and Pre-Test Scores</a></li>
+  <li><a href="#interactions-of-treatment-effect-with-pre-treatment-inputs" id="toc-interactions-of-treatment-effect-with-pre-treatment-inputs" class="nav-link" data-scroll-target="#interactions-of-treatment-effect-with-pre-treatment-inputs"><span class="header-section-number">2.7.5</span> Interactions of Treatment Effect with Pre-Treatment Inputs</a></li>
+  <li><a href="#effect-of-supplementfor-each-grade-with-pre-test." id="toc-effect-of-supplementfor-each-grade-with-pre-test." class="nav-link" data-scroll-target="#effect-of-supplementfor-each-grade-with-pre-test."><span class="header-section-number">2.7.6</span> Effect of supplement,for each grade with pre-test.</a></li>
+  </ul></li>
+  <li><a href="#hands-on-excercises" id="toc-hands-on-excercises" class="nav-link" data-scroll-target="#hands-on-excercises"><span class="header-section-number">2.8</span> Hands-on Excercises</a>
+  <ul class="collapse">
+  <li><a href="#queston-randomized-experiments-in-a-perfect-world" id="toc-queston-randomized-experiments-in-a-perfect-world" class="nav-link" data-scroll-target="#queston-randomized-experiments-in-a-perfect-world"><span class="header-section-number">2.8.1</span> Queston: Randomized Experiments in a Perfect World</a></li>
+  <li><a href="#queston-simulating-randomized-experiments-in-the-real-world" id="toc-queston-simulating-randomized-experiments-in-the-real-world" class="nav-link" data-scroll-target="#queston-simulating-randomized-experiments-in-the-real-world"><span class="header-section-number">2.8.2</span> Queston: Simulating Randomized Experiments in the Real-World</a></li>
+  <li><a href="#question-real-world-causal-design-quesitons" id="toc-question-real-world-causal-design-quesitons" class="nav-link" data-scroll-target="#question-real-world-causal-design-quesitons"><span class="header-section-number">2.8.3</span> Question: Real-world Causal Design Quesitons</a></li>
+  <li><a href="#questionunderstanding-effects-of-treatment-using-causal-analysis" id="toc-questionunderstanding-effects-of-treatment-using-causal-analysis" class="nav-link" data-scroll-target="#questionunderstanding-effects-of-treatment-using-causal-analysis"><span class="header-section-number">2.8.4</span> Question:Understanding Effects of Treatment Using Causal Analysis</a></li>
+  <li><a href="#question-causal-modeling-and-assumptons" id="toc-question-causal-modeling-and-assumptons" class="nav-link" data-scroll-target="#question-causal-modeling-and-assumptons"><span class="header-section-number">2.8.5</span> Question Causal Modeling and Assumptons</a></li>
+  <li><a href="#question-understanding-the-causal-effect-with-different-treatment-effects" id="toc-question-understanding-the-causal-effect-with-different-treatment-effects" class="nav-link" data-scroll-target="#question-understanding-the-causal-effect-with-different-treatment-effects"><span class="header-section-number">2.8.6</span> Question: Understanding the Causal Effect with Different Treatment Effects</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>This chapter offers a comprehensive overview of the fundamental concepts and theoretical foundations involved in explaining causal effects through the potential outcome framework. It provides insights into various challenges encountered in causal inference and presents a logical framework to address these challenges effectively. In this chapter, we present a comprehensive case study that utilizes a widely recognized causal study conducted with an educational television program. This case study serves as a practical example, aiming to offer readers a firsthand understanding of the concepts discussed in the chapter. The chapter concludes with solutions to numerous challenges from the Gelman and Hill book, intending to enable readers to develop the acumen required to contemplate, model, and apply the theory discussed in the chapter.</p>
+<section id="a-motivating-example" class="level2" data-number="2.1">
+<h2 data-number="2.1" class="anchored" data-anchor-id="a-motivating-example"><span class="header-section-number">2.1</span> A Motivating Example</h2>
+<p>Let’s consider a scenario where researchers are conducting a study to evaluate the effectiveness of an education program designed to improve students’ math skills. The main question they want to answer is whether the education program itself is responsible for the observed changes in math performance. To understand this, let us explore the concepts of association and causality and how they relate to evaluating program effects.</p>
+<p>Imagine a group of students participating in the study. Some students are selected to receive the education program, while others do not receive the education program. The researchers want to determine if the education program directly impacts students’ math skills.</p>
+<section id="question-1-is-there-an-association" class="level3" data-number="2.1.1">
+<h3 data-number="2.1.1" class="anchored" data-anchor-id="question-1-is-there-an-association"><span class="header-section-number">2.1.1</span> Question 1: Is there an Association?</h3>
+<p>The first step is to determine if there is an association between participating in the education program and improvements in math skills. Researchers compare the math performance of the students who received the program with those who did not. If the students who received the program consistently demonstrated higher average math scores than those who did not, it suggests an association between program participation and improved math skills.</p>
+</section>
+<section id="question-2-is-there-causation" class="level3" data-number="2.1.2">
+<h3 data-number="2.1.2" class="anchored" data-anchor-id="question-2-is-there-causation"><span class="header-section-number">2.1.2</span> Question 2: Is there Causation?</h3>
+<p>Establishing causality is the next step in understanding the true impact of the education program. While an association indicates a relationship between program participation and math performance, it does not prove causation. To determine causality, researchers need to consider other factors that may influence math skills and design the study to isolate the program’s effects. These factors, sometimes related to students’ prior knowledge or external support, could potentially influence the relationship between the program and math performance.</p>
+</section>
+<section id="an-approach" class="level3" data-number="2.1.3">
+<h3 data-number="2.1.3" class="anchored" data-anchor-id="an-approach"><span class="header-section-number">2.1.3</span> An Approach</h3>
+<p>Researchers can employ a randomized approach to address the issues and better assess the causal impact of the education program. They randomly assign students to different groups (a key assumption), ensuring they have similar characteristics. Doing so reduces the likelihood of other factors affecting the observed relationship between the program and math skills.</p>
+<p>Through random assignment, any differences in math performance between the two groups can be more confidently attributed to the education program itself. Randomization helps mitigate the influence of other factors, leveling the playing field and allowing researchers to draw more accurate conclusions about the program’s effects. While randomization does not guarantee the complete elimination of these other factors, it helps in reducing their potential impact.</p>
+<p>By comparing the average math performance of the students who received the program with those who did not, researchers can assess the program’s potential impact. Suppose the group of students who received the program consistently demonstrates higher average math scores than those who did not. In that case, it provides evidence that the education program may have a causal effect on improving math performance.</p>
+</section>
+</section>
+<section id="potential-outcome-framework" class="level2" data-number="2.2">
+<h2 data-number="2.2" class="anchored" data-anchor-id="potential-outcome-framework"><span class="header-section-number">2.2</span> Potential Outcome Framework</h2>
+<p>This section will discuss the potential outcome framework, which represents a fundamental building block for causal inference. Although Splawa-Neyman originally introduced the potential outcome concept, it was D. Rubin’s groundbreaking research on estimating causal effects in both randomized and non-randomized studies that established it as the <em>lingua franca</em> of causality-based frameworks <span class="citation" data-cites="rubin1974estimating splawa1990application">(<a href="#ref-rubin1974estimating" role="doc-biblioref">Rubin 1974</a>; <a href="#ref-splawa1990application" role="doc-biblioref">Splawa-Neyman, Dabrowska, and Speed 1990</a>)</span>.</p>
+<section id="sec-basicTerminology" class="level3" data-number="2.2.1">
+<h3 data-number="2.2.1" class="anchored" data-anchor-id="sec-basicTerminology"><span class="header-section-number">2.2.1</span> Basic Terminology</h3>
+<p>In order to clearly illustrate the concepts discussed, this section provides concise definitions for each term utilized within the potential outcome framework. The framework serves as a means to connect the various elements, including treatment (referred to as policy, intervention, etc.), unit (encompassing individual, sample, etc.), and outcome (effect, function, response, etc.).</p>
+<ul>
+<li><p><strong>Variables</strong>: Variables/attributes/features are the things associated with describing the state of the universe in the given dataset. In the above scenario, the available variables in the data include the students’ group assignment (education program or no education program), math performance scores, and other potential variables such as demographics, prior academic achievement, and any additional relevant characteristics that may be collected as part of the study.</p></li>
+<li><p><strong>Unit</strong>: Unit/Sample/Individual is the thing that one subjects to the treatment and on which the effect or the outcome is observed. It is defined as the atomic research object in the treatment effect study. For example, individual student participating in the study is the unit/sample.</p></li>
+<li><p><strong>Treatment</strong>: Treatment/Policy/Intervention is the action or activity the unit is subjected to. We will denote this by <span class="math inline">\(T\)</span>, where <span class="math inline">\(T \in \{1,2,..N_T\}\)</span> denotes <span class="math inline">\(N_T+1\)</span> treatments possible. In most of the examples in the literature, <span class="math inline">\(T\)</span> is considered to be binary <span class="math inline">\((T=1)\)</span>. The treatment in the example represents the education program itself, which is given to a specific group of students.</p></li>
+<li><p><strong>Treated group and Control group</strong>: The group of units or samples exposed to any treatment is considered a treated group. When treatment values are binary, the group exposed to the treatment is the treatment group, and the other group not exposed is called the control group. In the example, The treated group consists of students who receive the education program and the control group consists of students who do not receive the education program.</p></li>
+<li><p><strong>Potential outcome</strong>: When the unit is exposed to a treatment, the outcome is called the potential outcome. When an individual <span class="math inline">\(i\)</span> is exposed to treatment <span class="math inline">\(T=t\)</span>, then the potential outcome is given by <span class="math inline">\(Y(T=t)\)</span>.Each student has two potential outcomes: <span class="math inline">\(Y(T=1)\)</span> and <span class="math inline">\(Y(T=0)\)</span>. <span class="math inline">\(Y(T=1)\)</span> represents the math score a student would achieve if they receive the education program, while <span class="math inline">\(Y(T=0)\)</span> represents the math score they would achieve if they do not receive the program.</p></li>
+</ul>
+</section>
+<section id="counterfactuals" class="level3" data-number="2.2.2">
+<h3 data-number="2.2.2" class="anchored" data-anchor-id="counterfactuals"><span class="header-section-number">2.2.2</span> Counterfactuals</h3>
+<p>Counterfactuals represent the unobserved outcomes that would have occurred for each individual had they been assigned to a different treatment condition. In the context of evaluating the education program for students, counterfactuals help us imagine how a student would perform in math if they had been in a different group (given the program or not given the program).</p>
+<p>For example, let us consider a student assigned to the treatment group and receiving the education program. The counterfactual for the student would be his/her math performance if the student had been assigned to the control group and not received the program. It allows us to compare how the student performed with how he/she would have performed under a different condition.</p>
+<p>By comparing the observed outcome (student’s actual math performance after receiving the program) with the counterfactual outcome (the math performance student would have had without the program), researchers can estimate the causal effect of the education program on the student’s math skills. This comparison helps determine whether the program positively impacted her math performance or if any observed improvement was merely coincidental.</p>
+<p>Counterfactuals are important because they help us understand the specific contribution of the treatment (education program) by contrasting it with what would have happened if it had not been provided. They provide a basis for estimating the causal effect and enable researchers to conclude the effectiveness of the program.</p>
+</section>
+<section id="confounders" class="level3" data-number="2.2.3">
+<h3 data-number="2.2.3" class="anchored" data-anchor-id="confounders"><span class="header-section-number">2.2.3</span> Confounders</h3>
+<p>A confounding variable, also referred to as a confounding factor, confound, lurking variable, or confounder, is a variable that is positively or negatively associated with both the dependent variable (covariate) and an independent variable (outcome). Typically, the concept of a confounder is discussed in the context of a treatment study, wherein an external variable may influence the relationship between the treatment and the outcome of interest.</p>
+<p>Examples of confounders in the students treated with the program scenario could be prior math skills or the socioeconomic background of the students. Confounding factors, such as prior math skills and socioeconomic background, can influence the relationship between the education program and students’ math skills. Prior math skills may falsely make the program appear more effective if the treated group has higher initial math skills. Socioeconomic background can also independently impact math skills. To mitigate bias, it is essential to consider and control these confounders.</p>
+</section>
+<section id="indivdual-treatement-effect" class="level3" data-number="2.2.4">
+<h3 data-number="2.2.4" class="anchored" data-anchor-id="indivdual-treatement-effect"><span class="header-section-number">2.2.4</span> Indivdual Treatement Effect</h3>
+<p>Individual Treatment Effects (ITE) or Individual Causal Effect (ICE) refer to the specific causal effects of a treatment or intervention on each individual within a population. ITE captures the difference in outcomes that can be attributed to the treatment for a particular unit, comparing their actual outcome with the counterfactual outcome that would have occurred if they had received a different treatment or no treatment at all.</p>
+<p>Observable or actual outcomes are different from the potential outcomes. For example, when a unit <span class="math inline">\(i\)</span> is exposed to a treatment <span class="math inline">\(T\)</span> with binary values (0 and 1), the causal effect can be written formally in terms of both the potential outcomes using a single equation, given by:</p>
+<p><span class="math display">\[ITE = Y_i(T=1) - Y_i(T=0)\]</span></p>
+</section>
+<section id="randomized-control-trialstests-rct" class="level3" data-number="2.2.5">
+<h3 data-number="2.2.5" class="anchored" data-anchor-id="randomized-control-trialstests-rct"><span class="header-section-number">2.2.5</span> Randomized Control Trials/Tests (RCT)</h3>
+<p>Randomized control trials (RCTs) are experimental studies used in causal inference to evaluate the effectiveness of an intervention or treatment. They are designed to test the causal relationship between a treatment and an outcome by randomly assigning participants to treatment and control groups.</p>
+<p>The process of conducting an RCT involves several steps. First, a sample of participants/units is recruited and randomly assigned to either the treatment or control groups. The treatment group receives the intervention or treatment being tested, while the control group receives either no treatment or a placebo. The outcome of interest is measured in both groups after a predetermined period of time.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>By randomly assigning participants to the treatment and control groups, RCTs ensure that any differences between the two groups are due to chance and not to pre-existing differences in the characteristics of the participants. The process is crucial because it allows for the identification of causal effects, that is, the difference in the outcome between the treatment and control groups that is due to the treatment itself.</p>
+</div>
+</div>
+<p>RCTs are considered the gold standard in causal inference, as they minimize the influence of confounding variables and allow for estimating causal effects.</p>
+<p>In the student program example, randomly assigning a group of students to two groups: one group receives the education program, and the other group does not receive any additional intervention is the RCT process. This random assignment helps create two comparable groups in terms of their characteristics, reducing the likelihood of bias due to confounding factors.</p>
+</section>
+</section>
+<section id="the-fundamental-problem-of-causal-inference" class="level2" data-number="2.3">
+<h2 data-number="2.3" class="anchored" data-anchor-id="the-fundamental-problem-of-causal-inference"><span class="header-section-number">2.3</span> The Fundamental Problem of Causal Inference</h2>
+<p>In the given scenario, counterfactuals pose an inherent challenge of observing multiple outcomes for the same individual. In the context of causal inference, the problem lies in the fact that we can only observe one outcome for each student, either with the educational program or without it.</p>
+<p>This limitation creates a significant hurdle in establishing a causal relationship because we cannot directly observe what would have happened to a student had they been assigned to the alternative group.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The counterfactual is unobserved since only one outcome can be observed per unit for a treatment. Thus it is impossible to calculate the causal effect at the unit or individual level, as only one quantity is observed. This is widely regarded as the fundamental problem of causal inference <span class="citation" data-cites="rubin1974estimating">(<a href="#ref-rubin1974estimating" role="doc-biblioref">Rubin 1974</a>)</span>.</p>
+<p>As the counterfactuals remain unknown, the estimation of the individual treatment effect solely based on the available data, without the aid of additional tools or information, is not possible.</p>
+</div>
+</div>
+</section>
+<section id="overcoming-the-fundamental-problem-of-causal-inference" class="level2" data-number="2.4">
+<h2 data-number="2.4" class="anchored" data-anchor-id="overcoming-the-fundamental-problem-of-causal-inference"><span class="header-section-number">2.4</span> Overcoming the Fundamental Problem of Causal Inference</h2>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-causalexample" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/CausalIllustrativeExample.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.1: An Illustrative Example</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In the context of causal inference, consider an example involving a cancer patient as shown in <a href="#fig-causalexample">Figure&nbsp;<span>2.1</span></a>. The patient’s diagnosis determines the treatment plan, and both variables affect the outcome of survival time. The diagnosis is represented by the variable <span class="math inline">\(X\)</span>, which could be health records, medical images, etc. The Treatment <span class="math inline">\(T\)</span>, which is binary in this example (e.g., surgery or chemotherapy), but could be continuous in other cases, affects the survival time, which is a continuous variable represented by the outcome <span class="math inline">\(Y\)</span>. It is assumed that the treatment is determined once based on the diagnosis and does not change. The treated outcome <span class="math inline">\(Y_i(1)\)</span> represents the outcome for surgery, while the control outcome <span class="math inline">\(Y_i(0)\)</span> represents the outcome for non-surgery (chemotherapy).</p>
+<p>Causal effect question: <strong>What is the causal effect of surgery versus chemotherapy on the survival time of cancer patients?</strong></p>
+<p>Let us consider an example to demonstrate the situation with observational data. Let us consider four samples, each going through binary treatment <span class="math inline">\(T=0/1\)</span> and resulting in outcome <span class="math inline">\(Y=0/1\)</span>.When the unit <span class="math inline">\(1\)</span> undergoes the treatment <span class="math inline">\(T=0\)</span>, it results in outcome <span class="math inline">\(Y(T=0)=0\)</span>, but we do not know the effect of <span class="math inline">\(T=1\)</span> and hence <span class="math inline">\(Y(T=1)=?\)</span>. Similarly, there is only one observation for each subsequent unit, and the other is unknown, resulting in missing data for one of the outcomes in every case. Thus, the causal effect can be categorized as a missing data interpretation in statistical learning.</p>
+<table class="table">
+<colgroup>
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+<col style="width: 16%">
+</colgroup>
+<thead>
+<tr class="header">
+<th style="text-align: center;">Unit(i)</th>
+<th style="text-align: center;">Treatment <span class="math inline">\(T\)</span></th>
+<th style="text-align: center;">Outcome <span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y(T=0)\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y(T=1)\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y(T=1)-Y(T=0)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">?</td>
+<td style="text-align: center;">?</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">?</td>
+<td style="text-align: center;">?</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">?</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">?</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">?</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">?</td>
+</tr>
+</tbody>
+</table>
+<p>Thus, measuring the causal effect for each unit is impossible because of the missing data problem.</p>
+<blockquote class="blockquote">
+<p><strong>Question</strong>: Is it possible to calculate the effect by taking the average of the Y(T=0) column and subtracting it from the average of the Y(T=1) column, disregarding the missing data (represented by the question marks)?</p>
+</blockquote>
+<blockquote class="blockquote">
+<p>Population measures such as the Average Treatment Effect (ATE) are used to address this challenge by taking the average of the outcomes column from the observational data.</p>
+</blockquote>
+<p>ATE provides an estimate of the average causal effect of a treatment on the entire population, allowing us to assess the overall impact of the treatment intervention in the absence of counterfactuals and thus solving the fundamental problem of causal inference. In the next section, we will discuss some of the population measures that help us estimate the treatment effects.</p>
+</section>
+<section id="sec-populationMeasures" class="level2" data-number="2.5">
+<h2 data-number="2.5" class="anchored" data-anchor-id="sec-populationMeasures"><span class="header-section-number">2.5</span> Population Level Treatment Effects</h2>
+<p>In general, the <strong>treatment effect</strong> is a measure at the population level, treated group or subgroup level, or individual level that helps us quantify the relationship between the treatment <span class="math inline">\(T\)</span> and the outcome <span class="math inline">\(Y\)</span> based on the inputs <span class="math inline">\(X\)</span>. Assume that a study is conducted with units that are randomly assigned to treatment and control, and the units represent a random sample from the target population. The employment of random sampling and random treatment allocation enables the estimation of the treatment’s average causal effect on the population.</p>
+<p>Some of the most well-known treatment effects using observations are:</p>
+<ul>
+<li><strong>Average Treatment Effect (ATE)</strong> is the treatment effect measured at the population level as a difference between the treated and the control group and is given by:</li>
+</ul>
+<p><span class="math display">\[ATE = \mathbb{E}[Y(T=1) -Y(T=0)]\]</span> Using the linearity of expectations <span class="math display">\[ATE = \mathbb{E}[Y(T=1)] -\mathbb{E}[Y(T=0)]\]</span> This expression can be written as the equivalent conditional expectations of <span class="math inline">\(Y\)</span> given Treatment <span class="math inline">\(T=0/1\)</span> as: <span class="math display">\[ATE = \mathbb{E}[Y|T=1] -\mathbb{E}[Y|T=0]\]</span> Thus, from the causal effect calculation, we can remove all the unknowns and measure the average by treating the missing data with a value 0, as given below:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th style="text-align: center;">Unit(i)</th>
+<th style="text-align: center;">Treatment<span class="math inline">\(T\)</span></th>
+<th style="text-align: center;">Outcome <span class="math inline">\(Y\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y(T=0)\)</span></th>
+<th style="text-align: center;"><span class="math inline">\(Y(T=1)\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">2</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+<tr class="odd">
+<td style="text-align: center;">3</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+<td style="text-align: center;">0</td>
+</tr>
+<tr class="even">
+<td style="text-align: center;">4</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+<td style="text-align: center;">1</td>
+</tr>
+</tbody>
+</table>
+<p>Thus, <span class="math inline">\(ATE = \mathbb{E}[Y|T=1] -\mathbb{E}[Y|T=0] = 0\)</span></p>
+<p>ATE calculation done here assumes <span class="math inline">\(\mathbb{E}[Y(T=1)] -\mathbb{E}[Y(T=0)]=\mathbb{E}[Y|T=1] -\mathbb{E}[Y|T=0]\)</span>. This assumption may not be true in all cases, resulting in the <strong>associational difference</strong> rather than <strong>causal difference</strong>, especially when some covariates or variables are confounding or the groups are not comparable. The next section will discuss the assumptions that help make the ATE the same as the associational difference.</p>
+<ul>
+<li>Average Treatment effect on the Treated group (ATT): The average treatment effect on the treated group can be defined as the expected difference between the outcomes <span class="math inline">\(Y(T=1),Y(T=0)\)</span> conditioned on the treated group <span class="math inline">\(T=1\)</span> and is given as:</li>
+</ul>
+<p><span class="math display">\[ATT = \mathbb{E}[Y(T=1)|T=1] -\mathbb{E}[Y(T=0)|T=1]\]</span></p>
+<p>ATT focuses on the treated group and provides insights into the treatment’s impact, specifically on those who underwent the intervention. ATT helps assess the effectiveness of the treatment for individuals who chose to or were selected to receive it.</p>
+<ul>
+<li>Conditional Average Treatment Effect (CATE): At the subgroup level, the average treatment effect conditioned on a specific subgroup, i.e.&nbsp;conditioned on a specific set of input covariates <span class="math inline">\(X\)</span>, result in conditional average treatment effect (CATE) and is given by:</li>
+</ul>
+<p><span class="math display">\[CATE = \mathbb{E}[Y(T=1)|X] -\mathbb{E}[Y(T=0)|X]\]</span></p>
+<p>CATE is used when the treatment effect is expected to vary across different subgroups or individual characteristics within the population.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>To summarize, ATE summarizes the treatment effect that applies to the entire target population. ATT is used when the interest lies in estimating the average causal effect of a treatment on those who received the treatment. CATE aims to understand the heterogeneous treatment effects and identify factors that moderate the impact of the treatment.</p>
+</div>
+</div>
+<p>The choice of measure depends on the research question, the target population, and the level of heterogeneity in treatment effects of interest.</p>
+<section id="assumptions-in-causal-effect-computation" class="level3" data-number="2.5.1">
+<h3 data-number="2.5.1" class="anchored" data-anchor-id="assumptions-in-causal-effect-computation"><span class="header-section-number">2.5.1</span> Assumptions in Causal Effect Computation</h3>
+<p>In this section, we will describe in detail some of the assumptions made to compute the causal effect and the implications of these assumptions.</p>
+<section id="sec-ignorability" class="level4" data-number="2.5.1.1">
+<h4 data-number="2.5.1.1" class="anchored" data-anchor-id="sec-ignorability"><span class="header-section-number">2.5.1.1</span> Ignorability</h4>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>This assumption states that the potential outcome for the treated <span class="math inline">\(Y(T=1)\)</span> and the control <span class="math inline">\(Y(T=0)\)</span> are independent of the treatment, i.e.&nbsp;<span class="math inline">\((Y(T=1), Y(T=0) \perp T )\)</span>.</p>
+</div>
+</div>
+<p>Because of the ignorability assumption, we get the following equivalence in the calculation of the causal effect <span class="math inline">\(\mathbb{E}[Y(T=1)]- \mathbb{E}[Y(T=0)] = \mathbb{E}[Y(T=1)|T=1]- \mathbb{E}[Y(T=0)|T=0]\)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The Ignorability assumption enables us to compute the ATE by ignoring the unknowns because <span class="math inline">\(\mathbb{E}[Y(T=1)|T=1]- \mathbb{E}[Y(T=0)|T=0] = \mathbb{E}[Y|T=1]- \mathbb{E}[Y|T=0]\)</span></p>
+</div>
+</div>
+<p>This assumption is also referred to as the exchangeability assumption. Ignorability and exchangeability are the same concepts, but they give different perspectives why the ATE is equal to the associational difference. Assume the treatment group (<span class="math inline">\(T=1\)</span>) and the control group (<span class="math inline">\(T=0\)</span>) both had the associated expectations <span class="math inline">\(\mathbb{E}[Y|T=1]=y_1\)</span> and <span class="math inline">\(\mathbb{E}[Y|T=0]=y_0\)</span> respectively. The exchangeability assumption states that the expectations remain unchanged if we swap the sub-groups, i.e., the treatment and the control group, the expectations of the groups remain the same, i.e., <span class="math inline">\(\mathbb{E}[Y|T=1]=y_1\)</span> and <span class="math inline">\(\mathbb{E}[Y|T=0]=y_0\)</span> stays as before.</p>
+<p><span class="math display">\[ \mathbb{E}[Y(T=1)|T=1] \equiv \mathbb{E}[Y(T=1)|T=0] = \mathbb{E}[Y(T=1)]\]</span> <span class="math display">\[ \mathbb{E}[Y(T=0)|T=1] \equiv \mathbb{E}[Y(T=0)|T=0] = \mathbb{E}[Y(T=0)]\]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Ignorability/exchangeability gives the identifiability to the causal effect. A causal quantity is identifiable if it can be computed from the statistical quantity.</p>
+</div>
+</div>
+<p>The equation below where the causal quantities, <span class="math inline">\(\mathbb{E}[Y(T=1)]\)</span> and <span class="math inline">\(\mathbb{E}[Y(T=0)]\)</span> are computed from the statistical quantities <span class="math inline">\(\mathbb{E}[Y|T=1]\)</span> <span class="math inline">\(\mathbb{E}[Y|T=0]\)</span>, makes it identifiable.</p>
+<p><span class="math display">\[ \mathbb{E}[Y(T=1)]- \mathbb{E}[Y(T=0)] = \mathbb{E}[Y|T=1]- \mathbb{E}[Y|T=0]\]</span></p>
+</section>
+<section id="conditional-exchangeability-and-unconfoundedness" class="level4" data-number="2.5.1.2">
+<h4 data-number="2.5.1.2" class="anchored" data-anchor-id="conditional-exchangeability-and-unconfoundedness"><span class="header-section-number">2.5.1.2</span> Conditional Exchangeability and Unconfoundedness</h4>
+<p>In analyzing causal effects, the exchangeability assumption is typically based on the assumption of unconfoundedness, where treatment assignment is independent of potential confounding factors. However, in practice, confounding factors are commonly present in the data, necessitating the estimation of average treatment effects while accounting for confounding.</p>
+<p></p>
+<p>Conditional exchangeability is defined where the potential outcome is independent of the treatment conditioned on the inputs, i.e. <span class="math inline">\((Y(T=0), Y(T=1) \perp\!\!\!\!\perp T) | X)\)</span></p>
+<p><span class="math display">\[\mathbb{E}[Y(T=1)- Y(T=0)|X] = \mathbb{E}[Y(T=1)|X] -\mathbb{E}[Y(T=0)|X]\]</span> (Linearity of expectations)</p>
+<p><span class="math display">\[\mathbb{E}[Y(T=1)- Y(T=0)|X] = \mathbb{E}[Y(T=1)|T=1, X] -\mathbb{E}[Y(T=0)|T=0,X]\]</span> (conditional exchangeability)</p>
+<p>Thus the causal estimates can be defined in terms of two statistical measures.</p>
+<p><span class="math display">\[\mathbb{E}[Y(T=1)- Y(T=0)|X] = \mathbb{E}[Y|T=1, X] -\mathbb{E}[Y|T=0,X]\]</span> Conditional Exchangeability is observed in the data when we condition on <span class="math inline">\(X\)</span>. Conditioning on <span class="math inline">\(X\)</span> breaks the non-causal association between <span class="math inline">\(T\)</span> and <span class="math inline">\(Y\)</span>, effectively “blocking” the non-causal pathway at <span class="math inline">\(X\)</span>.</p>
+<p>Conditional exchangeability is a crucial assumption for conducting causal inference. With this assumption, we are able to identify the causal effect within specific levels of <span class="math inline">\(X\)</span>, similar to how we did with the assumption of (unconditional) exchangeability.</p>
+<p>To obtain the marginal effect that was previously obtained under the assumption of (unconditional) exchangeability, we can achieve this by marginalizing out variable X.</p>
+<p><span class="math display">\[\mathbb{E}[Y(T=1)- Y(T=0)] = \mathbb{E}_X\mathbb{E}[Y(T=1)- Y(T=0)|X] \]</span></p>
+<p><span class="math display">\[\mathbb{E}[Y(T=1)- Y(T=0)] = \mathbb{E}_X[\mathbb{E}[Y|T=1, X] -\mathbb{E}[Y|T=0,X]] \]</span></p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Mapping the causal quantity <span class="math display">\[\mathbb{E}[Y(T=1)- Y(T=0)]\]</span> to the statistical quanitity <span class="math inline">\(\mathbb{E}_X[\mathbb{E}[Y|T=1, X] -\mathbb{E}[Y|T=0,X]]\)</span>, that can be derived directly from the observational data is called the adjustment formula.</p>
+</div>
+</div>
+<p>The shift from exchangeability to conditional exchangeability in causal inference was motivated by the belief that it is a more realistic assumption. However, in practice, it can be challenging to determine with certainty if conditional exchangeability holds. There may exist unobserved confounding variables that are not included in the variables represented by <span class="math inline">\(X\)</span>, thereby violating the assumption of conditional exchangeability. This is where randomized control trials (RCTs) come into play as they help address this issue by effectively randomizing the assignment of treatments, reducing the likelihood of unobserved confounding.</p>
+</section>
+<section id="positivityoverlap" class="level4" data-number="2.5.1.3">
+<h4 data-number="2.5.1.3" class="anchored" data-anchor-id="positivityoverlap"><span class="header-section-number">2.5.1.3</span> Positivity/Overlap</h4>
+<p>In a binary case, i.e., treatment with discrete value <span class="math inline">\(T=0\ or\ 1\)</span>, if a subgroup has everyone in the treatment group (<span class="math inline">\(T=1\)</span>) or the control group(<span class="math inline">\(T=0\)</span>), computing the average treatment effect will not be possible. Thus, some individuals or samples must be assigned to each group with a positive probability of making the computations possible. This is called the positivity assumption (overlap or common support).</p>
+<p>For all values of input covariates (<span class="math inline">\(X=x\)</span>) present in the group of interest <span class="math inline">\(P(X=x) &gt;0\)</span>, then <span class="math display">\[ 0 &lt; P(T=1|X=x) &lt; 1\]</span> and <span class="math display">\[ 0 &lt; P(T=0|X=x) &lt; 1\]</span> Positivity is an important assumption, as it removes the zero probability cases in the computation of the treatment effect.</p>
+<p>From the adjustment formula:</p>
+<p><span class="math display">\[\mathbb{E}[Y(T=1)- Y(T=0)] = \mathbb{E}_X[\mathbb{E}[Y|T=1, X] -\mathbb{E}[Y|T=0,X]] \]</span> Assuming both <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are discrete, we can rewrite the adjustment formula as <span class="math display">\[
+\begin{aligned}
+ATE &amp;= \mathbb{E}[Y(T=1)- Y(T=0)]\\
+&amp;= \sum_xP(X=x)(\sum_yyP(Y=y|T=1,X=x) - \sum_yyP(Y=y|T=0,X=x)
+\end{aligned}
+\]</span> based on the Bayes Rule, we can rewrite the above as: <span class="math display">\[
+\begin{aligned}
+&amp;ATE = \mathbb{E}[Y(T=1)- Y(T=0)] \\
+&amp;= \sum_xP(X=x) \biggl(\sum_yy\frac{P(Y=y|T=1,X=x)}{P(T=1|X=x)P(X=x)} - \sum_yy\frac{P(Y=y|T=0,X=x)}{P(T=0|X=x)P(X=x)}\bigg)
+\end{aligned}
+\]</span> Without the positivity assumption, the denominator would <span class="math inline">\(0\)</span> and result in not being able to compute the causal effect.</p>
+<p>When we encounter a positivity violation, it implies that within a particular subgroup of the data, all individuals consistently receive either the treatment or the control. In such cases, estimating the causal effect of treatment versus control within that subgroup becomes unfeasible because we only observe either the treatment or the control. The alternative condition is never observed within that specific subgroup, making it impossible to estimate the causal effect in that particular context.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Put simply, our objective is to ensure that the distribution of covariates in the treatment group overlaps with the distribution of covariates in the control group. Hence positivity assumption is known as the overlap or common support.</p>
+</div>
+</div>
+</section>
+<section id="no-interference" class="level4" data-number="2.5.1.4">
+<h4 data-number="2.5.1.4" class="anchored" data-anchor-id="no-interference"><span class="header-section-number">2.5.1.4</span> No Interference</h4>
+<p>The no interference assumption ensures that treatment applied to one unit has no implications or effect on other units. This assumption is equivalent to <span class="math display">\[ Y_i(T_1,\cdots, T_{i-1},T_i,T_{i+1},\cdots, T_n)= Y_iT_i\]</span> In our example of cancer and treatment, the chemotherapy treatment given to one individual patient does not impact the outcome of any other patient but him.</p>
+</section>
+<section id="consistency" class="level4" data-number="2.5.1.5">
+<h4 data-number="2.5.1.5" class="anchored" data-anchor-id="consistency"><span class="header-section-number">2.5.1.5</span> Consistency</h4>
+<p>The consistency assumption states that: When a unit is subjected to a particular treatment (<span class="math inline">\(T=t\)</span>), the potential outcome does not change, i.e., <span class="math inline">\(T=t \implies Y=Y(t)\)</span>. It also implies no different treatment versions with the same value, which can cause different outcomes.</p>
+<p>If a particular person is given a chemotherapy treatment (<span class="math inline">\(T=1\)</span>), the outcome is that they recover (<span class="math inline">\(Y=1\)</span>). However, there cannot be another setting where there is a way chemotherapy can be administered (<span class="math inline">\(T=1\)</span>) to the same patient with all other conditions remaining the same, the outcomes are changed, i.e., they do not recover (<span class="math inline">\(Y=0\)</span>).</p>
+</section>
+<section id="sec-sutva" class="level4" data-number="2.5.1.6">
+<h4 data-number="2.5.1.6" class="anchored" data-anchor-id="sec-sutva"><span class="header-section-number">2.5.1.6</span> Stable Unit-Treatment Value Assumption (SUTVA)</h4>
+<p>In the existing literature, one often encounters the “stable unit-treatment value assumption” (SUTVA). It is imperative to postulate that the allocation of treatment to a particular individual (unit) within an experiment does not influence the result for another individual. This fundamental concept is commonly known as the “stable unit treatment value assumption” (SUTVA). Consequently, SUTVA combines the consistency and the absence of interference and is further based on deterministic potential outcomes.</p>
+<p>Failure to uphold SUTVA would require defining a distinct potential outcome for the <span class="math inline">\(i\)</span>-th unit, not only for every treatment administered to that unit, but for every possible combination of treatment allocations provided to all other units in the experiment.</p>
+</section>
+</section>
+</section>
+<section id="causality-inference-logical-flow" class="level2" data-number="2.6">
+<h2 data-number="2.6" class="anchored" data-anchor-id="causality-inference-logical-flow"><span class="header-section-number">2.6</span> Causality Inference: Logical Flow</h2>
+<p>A causal estimand represents the specific causal effect or quantity of interest that we want to estimate in a study. A <strong>causal estimand</strong> is any estimand that includes potential outcomes in its definition. It defines the causal relationship we seek to understand, such as the average treatment effect (ATE), the average treatment effect on the treated (ATT), or the conditional average treatment effect (CATE).</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>However, these causal estimands are often defined in terms of potential outcomes, which are not directly observable from the available data.</p>
+</div>
+</div>
+<p>Therefore, the statistical estimand comes into play. A <strong>statistical estimand</strong> is a quantity derived from the available observational data and does not have a potential outcome.</p>
+<p><strong>Identification</strong>, as discussed in the last section, helps us move from a causal estimand <span class="math inline">\(\mathbb{E}[Y(T=1)- Y(T=0)]\)</span> to a statistical estimand <span class="math inline">\(\mathbb{E}_X[\mathbb{E}[Y|T=1,X] -\mathbb{E}[Y|T=0,X]]\)</span>.</p>
+<p>Once we have the statistical estimand, we can employ machine learning algorithms such as regression to compute the estimate from the statistical estimand. A machine learning estimator (e.g., Linear Regression) can be used to estimate <span class="math inline">\(\mathbb{E}[Y|T=1,X]\)</span> and <span class="math inline">\(\mathbb{E}[Y|T=0,X]\)</span> from the observational data.</p>
+<p>Thus the entire logical flow from a target causal estimand to a corresponding estimate is shown in <a href="#fig-causalestimandtoestimate">Figure&nbsp;<span>2.2</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-causalestimandtoestimate" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/PotentialOutcomeEstimation.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.2: Causality Flowchart: From a Target Causal Estimand to an Estimate</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Next, we illustrate how all of the assumptions discussed above and some general statistical assumptions are used to transform from the causal to the statistical estimands.</p>
+<p><span class="math display">\[ ATE = \mathbb{E}[Y(T=1)- Y(T=0)]\]</span> (Using the no interference assumption)</p>
+<p><span class="math display">\[ ATE = \mathbb{E}[Y(T=1)]- \mathbb{E}[Y(T=0)]\]</span> (Using the linearity of expectations)</p>
+<p><span class="math display">\[          = \mathbb{E}_X[\mathbb{E}[Y(T=1)|X] -\mathbb{E}[Y(T=0)|X]]\]</span> (law of iterated expectations)</p>
+<p><span class="math display">\[          = \mathbb{E}_X[\mathbb{E}[Y(T=1)|T=1,X] -\mathbb{E}[Y(T=0)|T=0,X]]\]</span> (unconfoundedness and positivity assumption)</p>
+<p><span class="math display">\[          = \mathbb{E}_X[\mathbb{E}[Y|T=1,X] -\mathbb{E}[Y|T=0,X]]\]</span> (consistency assumption)</p>
+<p>This brings us to two important questions:</p>
+<ol type="1">
+<li><p>How do we perform identification and convert causal estimands into statistical estimands? What are the tools available for this process?</p></li>
+<li><p>Once we have obtained statistical estimands, how do we proceed with estimation? What tools can be utilized for this purpose?</p></li>
+</ol>
+<p>The next chapter will delve into Causal Graph modeling, which aids in providing a framework for practically performing the identification processes, i.e., conversion of causal estimands to statistical estimands and estimation methods. We will also discuss the algorithms and techniques for estimating the causal effect.</p>
+<!--
+_Comparison between Causal Graphs and Potential Outcome Framework_
+
+Causal graph modeling and the potential outcome framework are two widely used approaches and some similarities and differences. Both causal graph modeling and the potential outcome framework aim to estimate the causal effects of interventions or treatments on outcomes. Both approaches require assumptions about the causal structure of the problem and the relationships between variables.
+
+Some key differences are:
+
+* Causal graph modeling relies on the assumption of faithfulness, which assumes that the observed data is consistent with the causal graph. The potential outcome framework does not rely on this assumption.
+
+* The potential outcome framework requires the definition of a counterfactual outcome. Causal graph modeling does not require this definition.
+
+* Causal graph modeling can handle interventions on multiple variables simultaneously, while the potential outcome framework generally considers only one treatment at a time.
+
+## Machine Learning and Causal Learning
+Fig. \@ref(fig:causalmachinecomparison) depicts the divergence between machine learning and causal learning. In supervised machine learning, the primary objective is establishing the correlation or association between input $X$ and output $Y$ from the given data. Conversely, in the rudimentary form of causal inference, the inputs (including confounding factors) $X$ and outcome $Y$ are associated with a treatment $T$, and the goal is to examine the treatment's effect(s) on the outcome while taking the inputs into account. The causal diagram below exemplifies the relationship between the inputs, treatment, and outcome.
+
+
+::: {.cell layout-align="center"}
+::: {.cell-output-display}
+![Machine Learning and Causal Learning Comparisons](img/MachineLearning.png){fig-align='center' width=40% height=35%}
+:::
+
+::: {.cell-output-display}
+![Machine Learning and Causal Learning Comparisons](img/CausalLearning.png){fig-align='center' width=40% height=35%}
+:::
+:::
+
+-->
+<!---
+## Linear Regression Mapping of Causality
+
+Let us map the relationship between a treatment variable ($T$), a potential outcome ($Y$), and a single confounding variable ($X$), with a two-stage linear regression.
+
+1. _First Stage: Treatment Model_
+In the first stage, we'll represent the Treatment $T$ as a function of the confounding variable $X$:
+
+$$T_{i} = \gamma_{0} + \gamma_{1}X_{i} + u_{i}$$
+In this equation, $T_{i}$ represents the treatment for unit $i$, $X_{i}$ is the value of the confounding variable for unit $i$, $\gamma_{0}$ and $\gamma_{1}$ are parameters to be estimated, and $u_{i}$ is the error term for unit $i$.
+
+2. _Second Stage: Outcome Model_
+In the second stage, we'll represent the potential outcome $Y$ as a function of the Treatment $T$ and the confounder $X$:
+
+$$ Y_{i} = \beta_{0} + \beta_{1}T_{i} + \beta_{2}X_{i} + \varepsilon_{i}
+$$
+In this equation, $Y_{i}$ is the potential outcome for unit $i$, $\beta_{0}$, $\beta_{1}$, and $\beta_{2}$ are parameters to be estimated, and $\varepsilon_{i}$ is the error term for unit $i$. The parameter $\beta_{1}$ represents the average effect of the Treatment $T$ on the outcome $Y$, controlling for the confounder $X$.
+
+We then substitute $T_{i}$ from the first equation into the second equation:
+
+$$Y_{i} = \beta_{0} + \beta_{1}(\gamma_{0} + \gamma_{1}X_{i} + u_{i}) + \beta_{2}X_{i} + \varepsilon_{i}$$
+$$Y_{i} =       = \beta_{0} + \beta_{1}\gamma_{0} + \beta_{1}\gamma_{1}X_{i} + \beta_{1}u_{i} + \beta_{2}X_{i} + \varepsilon_{i}$$
+$$Y_{i} =       = (\beta_{0} + \beta_{1}\gamma_{0}) + (\beta_{1}\gamma_{1} + \beta_{2})X_{i} + \beta_{1}u_{i} + \varepsilon_{i}$$
+The term $\beta_{1}\gamma_{1} + \beta_{2}$ represents the total effect of the confounder $X_{i}$ on the outcome $Y_{i}$, accounting for its direct effect ($\beta_{2}$) and its indirect effect through the treatment ($\beta_{1}\gamma_{1}$).
+
+However, remember that these interpretations assume a perfect linear relationship and no omitted variable bias. If these conditions are not met, the coefficients may not accurately reflect the true relationships between $T$, $Y$, and $X$.
+-->
+</section>
+<section id="case-study" class="level2" data-number="2.7">
+<h2 data-number="2.7" class="anchored" data-anchor-id="case-study"><span class="header-section-number">2.7</span> Case Study</h2>
+<p><em>The Electric Company</em> study presents data from an educational experiment conducted in the 1970s on a collection of elementary school classes in two cities, Fresno and Youngstown. The primary objective of this experiment was to assess the impact of The Electric Company, a newly introduced educational television program, on students’ reading ability.</p>
+<p>For each grade and city, a small number of schools (10-20) were selected, and within each school, the two poorest reading classes were randomized into treated and control groups. The classes were randomly divided into treated and control groups, with exposure to the program serving as the treatment. Individual student data is not available for analysis, and as a result, the entire analysis was conducted at the classroom level.</p>
+<p>To examine the causal impact of the program on the students, we will undertake experiments similar to those conducted by Gelman and Hill.</p>
+<section id="tools-and-libraries" class="level3" data-number="2.7.1">
+<h3 data-number="2.7.1" class="anchored" data-anchor-id="tools-and-libraries"><span class="header-section-number">2.7.1</span> Tools and libraries</h3>
+<p>We will use BAyesian Model-Building Interface <strong>(Bambi)</strong>, a Python library that works with the probabilistic programming frameworks <strong>PyMC</strong> and is designed to make it extremely easy to fit Bayesian mixed-effects. We will use it to model regression with various variables.</p>
+<p>Python libraries such as <strong>pandas</strong> and <strong>matplotlib</strong> etc. are used for data processing and visualization.</p>
+</section>
+<section id="basic-regression-analysis" class="level3" data-number="2.7.2">
+<h3 data-number="2.7.2" class="anchored" data-anchor-id="basic-regression-analysis"><span class="header-section-number">2.7.2</span> Basic Regression Analysis</h3>
+<p>A general difference estimate is conducted, a regression analysis using a treatment indicator variable, under the assumption of a fully randomized experiment that generated the observational data and without the presence of any pre-test scores as variables. The obtained result shows a regression coefficient of <strong>5.6</strong> with a standard error of <strong>2.5</strong>. This initial estimate serves as the foundation, assuming that making modifications will enhance the estimate’s accuracy.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit the linear regression model</span></span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a>X <span class="op">=</span> electric[<span class="st">'treatment'</span>].values.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> electric[<span class="st">'post_test'</span>].values</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>reg <span class="op">=</span> LinearRegression().fit(X, y)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="co"># Print the coefficients and intercept of the linear regression model</span></span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Coefficients: '</span>, reg.coef_)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="st">'Intercept: '</span>, reg.intercept_)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>Coefficients:  [5.65729167]
+Intercept:  94.32083333333335</code></pre>
+</section>
+<section id="regression-analysis-per-grade" class="level3" data-number="2.7.3">
+<h3 data-number="2.7.3" class="anchored" data-anchor-id="regression-analysis-per-grade"><span class="header-section-number">2.7.3</span> Regression Analysis Per Grade</h3>
+<p>The histogram plot of the post-test scores distributed across different grades, as presented in <a href="#fig-pergradedist">Figure&nbsp;<span>2.3</span></a>, illustrates a considerable degree of variation among the test scores across various grades.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pergradedist" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/DistributionPerGrade.png" class="img-fluid figure-img" width="742"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.3: Scores Per Grade Distribution for Treated and Control</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Considering the substantial heterogeneity observed in the test scores across different grades, it is logical to proceed with the next analytical step, which involves conducting individual regression analyses for each grade’s dataset. This approach corresponds to fitting a model that accounts for the variability of treatment effects by grade, specifically the interaction between the treatment and grade indicators. It allows for the possibility of varying residual variance across different grades.</p>
+<p><a href="#fig-regressiontreatment5095">Figure&nbsp;<span>2.4</span></a> displays general effectiveness, particularly in the lower grades, albeit the large standard errors of estimation make it challenging to ascertain with certainty.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-regressiontreatment5095" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Treatment5095.png" class="img-fluid figure-img" width="778"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.4: Regression on treatment indicator with 50 and 95 percent uncertainty intervals</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="regression-analysis-with-treatment-and-pre-test-scores" class="level3" data-number="2.7.4">
+<h3 data-number="2.7.4" class="anchored" data-anchor-id="regression-analysis-with-treatment-and-pre-test-scores"><span class="header-section-number">2.7.4</span> Regression Analysis with Treatment and Pre-Test Scores</h3>
+<p>In an attempt to refine the treatment effect estimates, we incorporate the pre-test scores as an additional input variable alongside the treatment variable. Specifically, we fit separate models for each grade, with the treatment and pre-test variables included as input parameters. As the model does not account for any interaction, the treatment effect is presumed to remain constant across all pre-test score levels.</p>
+<p>In <a href="#fig-regressiontreatmentandpretest">Figure&nbsp;<span>2.5</span></a>, the difference between the regression lines for the two groups depicts the estimated treatment effect as a function of the pre-treatment score, separately for each grade. It is observed that the regression lines for the treated groups lie slightly higher than those for the control groups.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-regressiontreatmentandpretest" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/RegressionTreatmentAndPreTest.png" class="img-fluid figure-img" width="990"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.5: Regression with treatment and pretest scores per grade</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-treatmentpretest5095">Figure&nbsp;<span>2.6</span></a>, the regression analysis of post-test scores with treatment and pre-test scores is presented, with <span class="math inline">\(50\)</span>% and <span class="math inline">\(95\)</span>% uncertainty intervals illustrated through error plots and compared to one with just treatment. The inclusion of pre-test scores in the analysis provides greater clarity regarding the effectiveness of the treatment as compared to just the treatment. The results indicate that the treatment displays average effectiveness for each grade, with relatively more significant effects observed in the lower grades.</p>
+<div id="fig-treatmentpretest5095" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Treatment5095.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Coefficients of treatment alone</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/TreatmentPlusPretTest5095.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Coefficients of treatment when including pre-test scores</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;2.6: Post Scores with just treatment (left) and treatment plus pre-test scores (right) with 50 and 95 percent uncertainty intervals.</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="interactions-of-treatment-effect-with-pre-treatment-inputs" class="level3" data-number="2.7.5">
+<h3 data-number="2.7.5" class="anchored" data-anchor-id="interactions-of-treatment-effect-with-pre-treatment-inputs"><span class="header-section-number">2.7.5</span> Interactions of Treatment Effect with Pre-Treatment Inputs</h3>
+<p>After incorporating the pre-test score as an input in the model, the subsequent analytical step enables its interaction with the treatment effect. This allows the treatment to influence both the intercept and the slope of the pre-test/post-test regression. <a href="#fig-regressiontreatmentpretestandinteraction">Figure&nbsp;<span>2.7</span></a> shows regression with interaction element added.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-regressiontreatmentpretestandinteraction" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/RegressionTreatmentPreTestAndInteraction.png" class="img-fluid figure-img" width="742"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.7: Regression with treatment and pre-test and their interactions on scores per grade</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>For grade 4, the estimated treatment effect is <span class="math inline">\(3.7\)</span> with a standard error of <span class="math inline">\(1.8\)</span>,, when we add pre-test scores, the estimated treatment effect is <span class="math inline">\(1.7\)</span> with a standard error of <span class="math inline">\(0.7\)</span>.</p>
+<pre><code>            coefficient  standard error
+(Intercept) 110           1.3
+treatment   3.7           1.8</code></pre>
+<pre><code>            coefficient  standard error
+(Intercept) 42           4.3
+treatment   1.7          0.7
+pre-test    0.7           0</code></pre>
+<p>Incorporating the interaction of treatment with pre-test introduces additional complexity. The estimated treatment effect, expressed as <span class="math inline">\(17 - 0.15x\)</span>, cannot be readily interpreted without knowledge of the corresponding range of <span class="math inline">\(x\)</span>. It is worth noting that pre-test scores have been observed to range between approximately <span class="math inline">\(80\)</span> and <span class="math inline">\(120\)</span> from the grade <span class="math inline">\(4\)</span> plot as in <a href="#fig-regressiontreatmentpretestandinteraction">Figure&nbsp;<span>2.7</span></a>. Within this range, the estimated treatment effect varies between <span class="math inline">\(17-0.15·80=5\)</span> for classes with pre-test scores of <span class="math inline">\(80\)</span>, and <span class="math inline">\(17-0.15·120=-1\)</span> for classes with pre-test scores of <span class="math inline">\(120\)</span>. The observed range illustrates the variation in estimated treatment effects with respect to pre-test scores, and does not represent the uncertainty associated with the estimation of treatment effects. To quantify the uncertainty, a graphical representation of the estimated treatment effects as a function of <span class="math inline">\(x\)</span> can be generated, superimposing random simulation draws on the plot as shown in <a href="#fig-uncertaintyplot">Figure&nbsp;<span>2.8</span></a>.</p>
+<p>The estimated treatment effect as a function of pre-test score is denoted by the dark line in <a href="#fig-uncertaintyplot">Figure&nbsp;<span>2.8</span></a>. This line represents the difference between the two regression lines in the grade 4 plot, as depicted in <a href="#fig-regressiontreatmentpretestandinteraction">Figure&nbsp;<span>2.7</span></a>. We can compute the treatment effect and is <span class="math inline">\(1.8\)</span> with a standard error of <span class="math inline">\(0.7\)</span> – similar to the result from the model adjusting for pre-test but with no interactions.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-uncertaintyplot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/UncertaintyPlot.png" class="img-fluid figure-img" width="633"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.8: Treatment effect in grade with 50 and 90 perent uncertainty intervals for Grade 4 with interactions</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="effect-of-supplementfor-each-grade-with-pre-test." class="level3" data-number="2.7.6">
+<h3 data-number="2.7.6" class="anchored" data-anchor-id="effect-of-supplementfor-each-grade-with-pre-test."><span class="header-section-number">2.7.6</span> Effect of supplement,for each grade with pre-test.</h3>
+<p>The educational experiment detailed above includes an embedded observational study where, after treatments were assigned, the teacher for each Electric Company treatment group class decided to either replace or supplement the regular reading program with the Electric Company television show. This decision resulted in some classes watching the show instead of the regular reading program while others watched it in addition to it. The analysis of these observational data is simplified by treating the choice between the two treatment options, “replace” or “supplement”, as randomly assigned based on pre-test scores, within the randomized treatment group.</p>
+<p>A new variable, referred to as “supp”, is generated in this study to differentiate between the replacement and supplement forms of treatment. The value of 0 is assigned to the replacement group, while the supplement group is assigned a value of 1. The control group is assigned a value of NA.</p>
+<p>Subsequently, the effect of supplement relative to replacement for every grade is evaluated through a regression of post-test on the indicator and pre-test.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-withsupplement" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SupplementEffect.png" class="img-fluid figure-img" width="662"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.9: Estimated effect of supplement compared to replacement with 50 and 95 percent uncertainty intervals</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The level of uncertainty is substantial, rendering the comparison inconclusive, barring grade <span class="math inline">\(2\)</span> where the conclusion is less ambiguous as shown in Fig.@fig-withsupplement. Nevertheless, overall the results align with the reasonable supposition that supplementing is more efficacious than replacing in the lower grades.</p>
+</section>
+</section>
+<section id="hands-on-excercises" class="level2" data-number="2.8">
+<h2 data-number="2.8" class="anchored" data-anchor-id="hands-on-excercises"><span class="header-section-number">2.8</span> Hands-on Excercises</h2>
+<p>This section aims to provide readers with a comprehensive understanding of the causal inference approach by solving various exercises from Gelman and Hill’s Causal Inference chapter. The aim is to equip readers with the necessary skills to approach problems using causal reasoning and provide an opportunity to practice basic inference and estimation techniques.</p>
+<section id="queston-randomized-experiments-in-a-perfect-world" class="level3" data-number="2.8.1">
+<h3 data-number="2.8.1" class="anchored" data-anchor-id="queston-randomized-experiments-in-a-perfect-world"><span class="header-section-number">2.8.1</span> Queston: Randomized Experiments in a Perfect World</h3>
+<p>(Adapted from Hill and Gelman, Chapter 9, Question 1)</p>
+<p><strong>Suppose you are interested in the effect of the presence of vending machines in schools on childhood obesity. What randomized experiment would you want to do (in a perfect world) to evaluate this question?</strong></p>
+<p><em>A conceivable experimental design entails employing vending machines as the treatment and assessing the obesity prevalence as the outcome. A random assignment of schools to the treatment and control groups would be conducted, such that the vending machines would be installed in the treatment group while the control group would have no vending machines. Prior to the installation of the vending machines, the weight of children in all schools would be measured, and the same procedure would be repeated at the end of the school year.</em></p>
+</section>
+<section id="queston-simulating-randomized-experiments-in-the-real-world" class="level3" data-number="2.8.2">
+<h3 data-number="2.8.2" class="anchored" data-anchor-id="queston-simulating-randomized-experiments-in-the-real-world"><span class="header-section-number">2.8.2</span> Queston: Simulating Randomized Experiments in the Real-World</h3>
+<p>(Adapted from Hill and Gelman, Chapter 9, Question 2)</p>
+<p><strong>Suppose you are interested in the effect of smoking on lung cancer. What randomized experiment could you plausibly perform (in the real world) to evaluate this effect?</strong></p>
+<p><em>In real-world, one could identify an existing population that is already divided into smokers and non-smokers, and use statistical methods to adjust for potential confounding factors to estimate the causal effect of smoking on lung cancer. However, such observational studies have inherent limitations and the estimated effect may be subject to bias due to unobserved confounding factors.</em></p>
+</section>
+<section id="question-real-world-causal-design-quesitons" class="level3" data-number="2.8.3">
+<h3 data-number="2.8.3" class="anchored" data-anchor-id="question-real-world-causal-design-quesitons"><span class="header-section-number">2.8.3</span> Question: Real-world Causal Design Quesitons</h3>
+<p>(Adapted from Hill and Gelman, Chapter 9, Question 3)</p>
+<p><strong>Suppose you are a consultant for a researcher who is interested in investigating the effects of teacher quality on student test scores. Use the strategy of mapping this question to a randomized experiment to help define the question more clearly. Write a memo to the researcher asking for needed clarifications to this study proposal.</strong></p>
+<p><em>The clarifications for the study would include questions pertaining to:</em></p>
+<p><strong>Treatment and Control Groups</strong>: <em>Could you please clarify how you plan to assign students to the treatment and control groups? Will this be done randomly or through some other method?</em></p>
+<p><strong>Sample Size and Selection</strong>: <em>Could you provide details about the population from which the sample will be selected? Will the sample size be large enough to ensure statistical validity?</em></p>
+<p><strong>Teacher Quality</strong>: <em>How do you plan to measure teacher quality? Will this be based on standardized test scores, years of teaching experience, or some other metric?</em></p>
+<p><strong>Test Scores</strong>: <em>What kind of test scores do you plan to use as an outcome measure? Will you use standardized tests or some other kind of test?</em></p>
+<p><strong>Other Variables</strong>: <em>Are there any other variables that you plan to control for in the analysis? If so, could you provide more details on these variables and how they will be measured?</em></p>
+</section>
+<section id="questionunderstanding-effects-of-treatment-using-causal-analysis" class="level3" data-number="2.8.4">
+<h3 data-number="2.8.4" class="anchored" data-anchor-id="questionunderstanding-effects-of-treatment-using-causal-analysis"><span class="header-section-number">2.8.4</span> Question:Understanding Effects of Treatment Using Causal Analysis</h3>
+<p>(Adapted from Hill and Gelman, Chapter 9, Question 4)</p>
+<p>The table below describes a hypothetical experiment on <span class="math inline">\(2400\)</span> persons. Each row of the table specifies a category of person, as defined by his or her pre-treatment predictor <span class="math inline">\(x\)</span>, treatment indicator <span class="math inline">\(T\)</span>, and potential outcomes <span class="math inline">\(y^0\)</span>,<span class="math inline">\(y^1\)</span>. (For simplicity, we assume unrealistically that all the people in this experiment fit into these eight categories.)</p>
+<p>In this study, we define two treatment groups: <span class="math inline">\(T=0\)</span> refers to subjects who do not receive aspirin, while <span class="math inline">\(T=1\)</span> refers to those who do receive aspirin. Moreover, we consider the covariate <span class="math inline">\(x\)</span>, which takes on the value <span class="math inline">\(0\)</span> if the subject is male and <span class="math inline">\(1\)</span> if the subject is female.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Category</th>
+<th>#persons in category</th>
+<th><span class="math inline">\(x\)</span></th>
+<th><span class="math inline">\(T\)</span></th>
+<th><span class="math inline">\(y^0\)</span></th>
+<th><span class="math inline">\(y^1\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>1</td>
+<td>300</td>
+<td>0</td>
+<td>0</td>
+<td>4</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>2</td>
+<td>300</td>
+<td>1</td>
+<td>0</td>
+<td>4</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<td>3</td>
+<td>500</td>
+<td>0</td>
+<td>1</td>
+<td>4</td>
+<td>6</td>
+</tr>
+<tr class="even">
+<td>4</td>
+<td>500</td>
+<td>1</td>
+<td>1</td>
+<td>4</td>
+<td>6</td>
+</tr>
+<tr class="odd">
+<td>5</td>
+<td>200</td>
+<td>0</td>
+<td>0</td>
+<td>10</td>
+<td>12</td>
+</tr>
+<tr class="even">
+<td>6</td>
+<td>200</td>
+<td>1</td>
+<td>0</td>
+<td>10</td>
+<td>12</td>
+</tr>
+<tr class="odd">
+<td>7</td>
+<td>200</td>
+<td>0</td>
+<td>1</td>
+<td>10</td>
+<td>12</td>
+</tr>
+<tr class="even">
+<td>8</td>
+<td>200</td>
+<td>1</td>
+<td>1</td>
+<td>10</td>
+<td>12</td>
+</tr>
+</tbody>
+</table>
+<p>In making the table we are assuming omniscience, so that we know both <span class="math inline">\(y^0\)</span> and <span class="math inline">\(y^1\)</span> for all observations. But the (nonomniscient) investigator would only observe <span class="math inline">\(x\)</span>, <span class="math inline">\(T\)</span>, and <span class="math inline">\(y^T\)</span> for each unit. (For example, a person in category 1 would have <span class="math inline">\(x=0\)</span>,<span class="math inline">\(T=0\)</span>,<span class="math inline">\(y=4\)</span>, and a person in category 3 would have <span class="math inline">\(x=0\)</span>,<span class="math inline">\(T =1\)</span>,<span class="math inline">\(y=6\)</span>.)</p>
+<p><strong>(a) What is the average treatment effect in this population of 2400 persons?</strong></p>
+<p><span class="math inline">\(\hat{y}(0)\)</span> = <span class="math inline">\(\frac{300 \times 4 + 300 \times 4 + 500 \times 4 + 200 \times 10 + 200 \times 10 + 200 \times 10+ 200 \times 10}{300 + 300 + 500 + 500 + 200 + 200 + 200 + 200} =6\)</span></p>
+<p><span class="math inline">\(\hat{y}(1)\)</span> = <span class="math inline">\(\frac{300 \times 6 + 300 \times 6 + 500 \times 6 + 200 \times 12 + 200 \times 12 + 200 \times 12+ 200 \times 12}{300 + 300 + 500 + 500 + 200 + 200 + 200 + 200} =8\)</span></p>
+<p><em>Thus, the average treatment effect <span class="math inline">\(\hat{y}(0)-\hat{y}(1)\)</span> = <span class="math inline">\(6-8\)</span> = <span class="math inline">\(-2\)</span></em></p>
+<p><strong>(b)Is it plausible to believe that these data came from a randomized experiment? Defend your answer.</strong></p>
+<p><em>In the event that the data was obtained through a randomized experiment, the expectation is that the observed covariates would be equally distributed between the experimental groups. In the present study, <span class="math inline">\(500\)</span> out of <span class="math inline">\(1000\)</span> (<span class="math inline">\(50%\)</span>) subjects in the <span class="math inline">\(T=0\)</span> group have <span class="math inline">\(x=0\)</span>, while <span class="math inline">\(700\)</span> out of <span class="math inline">\(1400\)</span> (<span class="math inline">\(50%\)</span>) subjects in the <span class="math inline">\(T=1\)</span> group have <span class="math inline">\(x=0\)</span>. Hence, the data appears to have plausibly originated from a randomized experiment.</em></p>
+<p><strong>(c) Another population quantity is the mean of <span class="math inline">\(Y\)</span> for those who received the treatment minus the mean of <span class="math inline">\(Y\)</span> for those who did not. What is the relation between this quantity and the average treatment effect?</strong></p>
+<p><em>The average for those that received <span class="math inline">\(T=0\)</span> can be given by:</em> <span class="math inline">\(=\frac{300 \times 4 + 300 \times 4 + 200 \times 10+ 200 \times 10}{300 + 300 + 200 + 200} =6.4\)</span></p>
+<p><em>The average for those that received <span class="math inline">\(T=1\)</span> can be given by:</em> <span class="math inline">\(=\frac{500 \times 6 + 350 \times 6 + 200 \times 12 + 200 \times 12}{500 + 500 + 200 + 200} =7.7\)</span></p>
+<p><em>The treatment effect using these averages is <span class="math inline">\(7.7-6.4=1.3\)</span></em></p>
+<p><em>The relationship between this population quantity and the average treatment effect can be explained by the fact that this population quantity relies solely on the observed responses, whereas the average treatment effect takes into account both the observed and unobserved responses. As a result, the treatment effect obtained from this quantity may differ from that obtained from the average treatment effect.</em></p>
+<p><strong>(d)For these data, is it plausible to believe that treatment assignment is strongly ignorable given the covariate x? Defend your answer.</strong></p>
+<p><em>In case of ignorability, then <span class="math inline">\(P(T|Y(T=0)=y0,Y(T=1)=y1,X=x)=P(T=0|X=x)\)</span></em></p>
+<p><em>Let us consider couple of cases to check.</em></p>
+<p><em>First, let us consider <span class="math inline">\(Y(T=0)=10, Y(T=1)=12, X=0\)</span>, then</em> <span class="math inline">\(P(T|Y(T=0)=10,Y(T=1)=12,X=0) = \frac{200}{200+200} = 0.5\)</span> <span class="math inline">\(P(T=0|X=0)=\frac{300+200}{300+500+200+200}=\frac{5}{12}\)</span></p>
+<p><em>Thus, we can see that</em> <span class="math inline">\(P(T|Y(T=0)=y0,Y(T=1)=y1,X=x) \neq P(T=0|X=x)\)</span>.</p>
+<p><em>Next, let us consider <span class="math inline">\(Y(T=0)=4, Y(T=1)=4, X=0\)</span>, then</em> <span class="math inline">\(P(T|Y(T=0)=10,Y(T=1)=12,X=0) = \frac{300}{300+500} = \frac{3}{8}\)</span> <span class="math inline">\(P(T=0|X=0)=\frac{300+200}{300+500+200+200}=\frac{5}{12}\)</span></p>
+<p><em>Thus, we can see that</em> <span class="math inline">\(P(T|Y(T=0)=y0,Y(T=1)=y1,X=x) \neq P(T=0|X=x)\)</span>.</p>
+<p><em>This suggests that the treatment assignment is non-ignorable, as given the covariate, it is not conditionally independent from the potential outcomes.</em></p>
+</section>
+<section id="question-causal-modeling-and-assumptons" class="level3" data-number="2.8.5">
+<h3 data-number="2.8.5" class="anchored" data-anchor-id="question-causal-modeling-and-assumptons"><span class="header-section-number">2.8.5</span> Question Causal Modeling and Assumptons</h3>
+<p>(Adapted from Hill and Gelman, Chapter 9, Question 6)</p>
+<p><strong>You are consulting for a researcher who has performed a randomized trial where the Treatment was a series of 26 weekly therapy sessions, the control was no therapy, and the outcome was self-report of emotional state one year later. However, most people in the treatment group did not attend every therapy session. In fact there was a good deal of variation in the number of therapy sessions actually attended. The researcher is concerned that her results represent “watered down” estimates because of this variation and suggests adding in another predictor to the model: number of therapy sessions attended. What would you advise her?</strong></p>
+<p><em>If there was a good deal of variation in the number of therapy sessions actually attended, including the number of therapy sessions as a predictor in the model could help account for this variation and help improve the precision of the estimated treatment effect.</em></p>
+<p><em>However, there are a few potential issues to consider. First, including the number of therapy sessions attended as a predictor assumes a linear relationship between the number of sessions and the outcome, which may not be true. The relationship could be nonlinear or there could be threshold effects, where the number of sessions attended only has an effect above a certain threshold.</em></p>
+<p><em>Second, including the number of therapy sessions as a predictor assumes that attending more therapy sessions is a good thing, which may not always be the case. If attending more sessions means that the treatment is more intense or difficult, it could actually have a negative effect on the outcome.</em></p>
+<p><em>Finally, if the goal is to estimate the average treatment effect of receiving the therapy sessions, including the number of sessions attended as a predictor could result in biased estimates if attendance is correlated with unobserved variables that are also related to the outcome.</em></p>
+<p><em>Therefore, before advising the researcher, it would be important to carefully consider these potential issues and assess whether including the number of therapy sessions attended as a predictor is appropriate in this particular context.</em></p>
+</section>
+<section id="question-understanding-the-causal-effect-with-different-treatment-effects" class="level3" data-number="2.8.6">
+<h3 data-number="2.8.6" class="anchored" data-anchor-id="question-understanding-the-causal-effect-with-different-treatment-effects"><span class="header-section-number">2.8.6</span> Question: Understanding the Causal Effect with Different Treatment Effects</h3>
+<p>Assume that linear regression is appropriate for the regression of an outcome, <span class="math inline">\(y\)</span>, on treatment indicator, <span class="math inline">\(T\)</span>, and a single confounding covariate, <span class="math inline">\(x\)</span>. Sketch hypothetical data (plotting <span class="math inline">\(y\)</span> versus <span class="math inline">\(x\)</span>) and regression lines (for treatment and control group) that represent each of the following situations: (a) No treatment effect, (b) Constant treatment effect, (c) Treatment effect increasing with x.</p>
+<p><em>(a) No treatment effect</em> <em>In this case, the regression lines for both the control and treatment groups will be parallel or overlapping with similar slope.</em></p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.linear_model <span class="im">import</span> LinearRegression</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>x <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.random.binomial(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="dv">100</span>)</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>plt.scatter(x[t<span class="op">==</span><span class="dv">0</span>], y[t<span class="op">==</span><span class="dv">0</span>], label<span class="op">=</span><span class="st">'Control'</span>)</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>plt.scatter(x[t<span class="op">==</span><span class="dv">1</span>], y[t<span class="op">==</span><span class="dv">1</span>], label<span class="op">=</span><span class="st">'Treatment'</span>)</span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x'</span>)</span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'y'</span>)</span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit regression lines</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a>lr_t0 <span class="op">=</span> LinearRegression()<span class="op">\</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a>  .fit(x[t<span class="op">==</span><span class="dv">0</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>       y[t<span class="op">==</span><span class="dv">0</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>lr_t1 <span class="op">=</span> LinearRegression()<span class="op">\</span></span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>  .fit(x[t<span class="op">==</span><span class="dv">1</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>       y[t<span class="op">==</span><span class="dv">1</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot regression lines</span></span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lr_t0.predict(x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lr_t1.predict(x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/NoTreatment.png" class="img-fluid figure-img" width="192"></p>
+<figcaption class="figure-caption">No Treatmentment Effect</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><em>(b)Constant treatment effect</em></p>
+<p><em>In this case, the regression lines for both the control and treatment groups will be parallel to each other with different y-intercepts.</em></p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>x <span class="op">+</span> <span class="dv">5</span><span class="op">*</span>t <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.random.binomial(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="dv">100</span>)</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>plt.scatter(x[t<span class="op">==</span><span class="dv">0</span>], y[t<span class="op">==</span><span class="dv">0</span>], label<span class="op">=</span><span class="st">'Control'</span>)</span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>plt.scatter(x[t<span class="op">==</span><span class="dv">1</span>], y[t<span class="op">==</span><span class="dv">1</span>], label<span class="op">=</span><span class="st">'Treatment'</span>)</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x'</span>)</span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'y'</span>)</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit regression lines</span></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>lr_t0 <span class="op">=</span> LinearRegression()<span class="op">\</span></span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>  .fit(x[t<span class="op">==</span><span class="dv">0</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>       y[t<span class="op">==</span><span class="dv">0</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb6-19"><a href="#cb6-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-20"><a href="#cb6-20" aria-hidden="true" tabindex="-1"></a>lr_t1 <span class="op">=</span> LinearRegression()<span class="op">\</span></span>
+<span id="cb6-21"><a href="#cb6-21" aria-hidden="true" tabindex="-1"></a>  .fit(x[t<span class="op">==</span><span class="dv">1</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb6-22"><a href="#cb6-22" aria-hidden="true" tabindex="-1"></a>       y[t<span class="op">==</span><span class="dv">1</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb6-23"><a href="#cb6-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-24"><a href="#cb6-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot regression lines</span></span>
+<span id="cb6-25"><a href="#cb6-25" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lr_t0.predict(x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb6-26"><a href="#cb6-26" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lr_t1.predict(x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb6-27"><a href="#cb6-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-28"><a href="#cb6-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/ConstantTreatmentEffect.png" class="img-fluid figure-img" width="197"></p>
+<figcaption class="figure-caption">Constant Treatmentment Effect</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><em>(c) Treatment effect increasing with x:</em></p>
+<p>In this case, the regression lines for the control and treatment groups will have different slopes and different y-intercepts.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>np.random.seed(<span class="dv">0</span>)</span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>x <span class="op">=</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>y <span class="op">=</span> <span class="dv">2</span> <span class="op">+</span> <span class="dv">3</span><span class="op">*</span>x <span class="op">+</span> <span class="dv">5</span><span class="op">*</span>x<span class="op">*</span>t <span class="op">+</span> np.random.normal(<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">100</span>)</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>t <span class="op">=</span> np.random.binomial(<span class="dv">1</span>, <span class="fl">0.5</span>, <span class="dv">100</span>)</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>plt.scatter(x[t<span class="op">==</span><span class="dv">0</span>], y[t<span class="op">==</span><span class="dv">0</span>], label<span class="op">=</span><span class="st">'Control'</span>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a>plt.scatter(x[t<span class="op">==</span><span class="dv">1</span>], y[t<span class="op">==</span><span class="dv">1</span>], label<span class="op">=</span><span class="st">'Treatment'</span>)</span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>plt.legend()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>plt.xlabel(<span class="st">'x'</span>)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>plt.ylabel(<span class="st">'y'</span>)</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Fit regression lines</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>lr_t0 <span class="op">=</span> LinearRegression()<span class="op">\</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>  .fit(x[t<span class="op">==</span><span class="dv">0</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>       y[t<span class="op">==</span><span class="dv">0</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>lr_t1 <span class="op">=</span> LinearRegression()<span class="op">\</span></span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>  .fit(x[t<span class="op">==</span><span class="dv">1</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>),</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>       y[t<span class="op">==</span><span class="dv">1</span>].reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>))</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot regression lines</span></span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lr_t0.predict(x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>plt.plot(x, lr_t1.predict(x.reshape(<span class="op">-</span><span class="dv">1</span>, <span class="dv">1</span>)))</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/IncreaseTreatmentEffect.png" class="img-fluid figure-img" width="196"></p>
+<figcaption class="figure-caption">Increasing Treatmentment Effect</figcaption>
+</figure>
+</div>
+</div>
+</div>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-rubin1974estimating" class="csl-entry" role="listitem">
+Rubin, D. B. 1974. <span>“Estimating Causal Effects of Treatments in Randomized and Nonrandomized Studies.”</span> <em>Journal of Educational Psychology</em> 66: 688–701.
+</div>
+<div id="ref-splawa1990application" class="csl-entry" role="listitem">
+Splawa-Neyman, Jerzy, Dorota M Dabrowska, and TP Speed. 1990. <span>“On the Application of Probability Theory to Agricultural Experiments. Essay on Principles. Section 9.”</span> <em>Statistical Science</em>, 465–72.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./01-intro-to-causality.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./03-causal-estimation-process.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

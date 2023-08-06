@@ -1,0 +1,1794 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.">
+
+<title>Applied Causal Inference - 3&nbsp; Causal Inference: A Practical Approach</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./04-causal-discovery.html" rel="next">
+<link href="./02-potential-outcomes-framework.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./03-causal-estimation-process.html"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Applied Causal Inference</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro-to-causality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-potential-outcomes-framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-causal-estimation-process.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-causal-discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-part-2-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 2: Causality in ML Domains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-nlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-computer-vision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-time-dependent-causal-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-part-3-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 3: Advanced Topics in Causality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-fairness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Fairness</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-reinforcement-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reinforcement Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#causal-inference-logical-flow" id="toc-causal-inference-logical-flow" class="nav-link active" data-scroll-target="#causal-inference-logical-flow"><span class="header-section-number">3.1</span> Causal Inference: Logical Flow</a></li>
+  <li><a href="#causal-inference-practical-flow" id="toc-causal-inference-practical-flow" class="nav-link" data-scroll-target="#causal-inference-practical-flow"><span class="header-section-number">3.2</span> Causal Inference: Practical Flow</a></li>
+  <li><a href="#causal-modeling" id="toc-causal-modeling" class="nav-link" data-scroll-target="#causal-modeling"><span class="header-section-number">3.3</span> Causal Modeling</a>
+  <ul class="collapse">
+  <li><a href="#assumptions-in-causal-modeling" id="toc-assumptions-in-causal-modeling" class="nav-link" data-scroll-target="#assumptions-in-causal-modeling"><span class="header-section-number">3.3.1</span> Assumptions in Causal Modeling</a></li>
+  <li><a href="#building-blocks-in-causal-graphs" id="toc-building-blocks-in-causal-graphs" class="nav-link" data-scroll-target="#building-blocks-in-causal-graphs"><span class="header-section-number">3.3.2</span> Building Blocks in Causal Graphs</a></li>
+  <li><a href="#causal-graphs-and-structural-interventions" id="toc-causal-graphs-and-structural-interventions" class="nav-link" data-scroll-target="#causal-graphs-and-structural-interventions"><span class="header-section-number">3.3.3</span> Causal Graphs and Structural Interventions</a></li>
+  <li><a href="#observational-data-and-interventional-data" id="toc-observational-data-and-interventional-data" class="nav-link" data-scroll-target="#observational-data-and-interventional-data"><span class="header-section-number">3.3.4</span> Observational Data and Interventional Data</a></li>
+  <li><a href="#the-do-operator-and-interventions" id="toc-the-do-operator-and-interventions" class="nav-link" data-scroll-target="#the-do-operator-and-interventions"><span class="header-section-number">3.3.5</span> The <em>do</em>-operator and Interventions</a></li>
+  <li><a href="#modularity-assumptions" id="toc-modularity-assumptions" class="nav-link" data-scroll-target="#modularity-assumptions"><span class="header-section-number">3.3.6</span> Modularity assumptions</a></li>
+  <li><a href="#modularity-assumptions-and-truncated-factorization" id="toc-modularity-assumptions-and-truncated-factorization" class="nav-link" data-scroll-target="#modularity-assumptions-and-truncated-factorization"><span class="header-section-number">3.3.7</span> Modularity Assumptions and Truncated Factorization</a></li>
+  <li><a href="#structural-causal-models-scm" id="toc-structural-causal-models-scm" class="nav-link" data-scroll-target="#structural-causal-models-scm"><span class="header-section-number">3.3.8</span> Structural Causal Models (SCM)</a></li>
+  </ul></li>
+  <li><a href="#identification" id="toc-identification" class="nav-link" data-scroll-target="#identification"><span class="header-section-number">3.4</span> Identification</a>
+  <ul class="collapse">
+  <li><a href="#randomized-control-trials-rct" id="toc-randomized-control-trials-rct" class="nav-link" data-scroll-target="#randomized-control-trials-rct"><span class="header-section-number">3.4.1</span> Randomized Control Trials (RCT)</a></li>
+  <li><a href="#backdoor-criterion-and-backdoor-adjustment" id="toc-backdoor-criterion-and-backdoor-adjustment" class="nav-link" data-scroll-target="#backdoor-criterion-and-backdoor-adjustment"><span class="header-section-number">3.4.2</span> Backdoor Criterion and Backdoor Adjustment</a></li>
+  <li><a href="#front-door-adjustments" id="toc-front-door-adjustments" class="nav-link" data-scroll-target="#front-door-adjustments"><span class="header-section-number">3.4.3</span> Front-door Adjustments</a></li>
+  <li><a href="#instrumental-variable-analysis" id="toc-instrumental-variable-analysis" class="nav-link" data-scroll-target="#instrumental-variable-analysis"><span class="header-section-number">3.4.4</span> Instrumental Variable Analysis</a></li>
+  <li><a href="#regression-discontinuity" id="toc-regression-discontinuity" class="nav-link" data-scroll-target="#regression-discontinuity"><span class="header-section-number">3.4.5</span> Regression Discontinuity</a></li>
+  <li><a href="#difference-in-differences" id="toc-difference-in-differences" class="nav-link" data-scroll-target="#difference-in-differences"><span class="header-section-number">3.4.6</span> Difference-in-Differences</a></li>
+  <li><a href="#pearls-do-calculus" id="toc-pearls-do-calculus" class="nav-link" data-scroll-target="#pearls-do-calculus"><span class="header-section-number">3.4.7</span> Pearl’s do-calculus</a></li>
+  </ul></li>
+  <li><a href="#sec-estimationprocess" id="toc-sec-estimationprocess" class="nav-link" data-scroll-target="#sec-estimationprocess"><span class="header-section-number">3.5</span> Estimation</a>
+  <ul class="collapse">
+  <li><a href="#grouped-conditional-outcome-modeling-estimator-gcom-estimator" id="toc-grouped-conditional-outcome-modeling-estimator-gcom-estimator" class="nav-link" data-scroll-target="#grouped-conditional-outcome-modeling-estimator-gcom-estimator"><span class="header-section-number">3.5.1</span> Grouped Conditional Outcome Modeling Estimator (GCOM Estimator)</a></li>
+  <li><a href="#tarnet" id="toc-tarnet" class="nav-link" data-scroll-target="#tarnet"><span class="header-section-number">3.5.2</span> TARNet</a></li>
+  <li><a href="#sec-xlearner" id="toc-sec-xlearner" class="nav-link" data-scroll-target="#sec-xlearner"><span class="header-section-number">3.5.3</span> X-Learner</a></li>
+  <li><a href="#matching" id="toc-matching" class="nav-link" data-scroll-target="#matching"><span class="header-section-number">3.5.4</span> Matching</a></li>
+  <li><a href="#doubly-robust-estimator" id="toc-doubly-robust-estimator" class="nav-link" data-scroll-target="#doubly-robust-estimator"><span class="header-section-number">3.5.5</span> Doubly Robust Estimator</a></li>
+  <li><a href="#double-machine-learning" id="toc-double-machine-learning" class="nav-link" data-scroll-target="#double-machine-learning"><span class="header-section-number">3.5.6</span> Double Machine Learning</a></li>
+  <li><a href="#causal-trees-and-causal-forests" id="toc-causal-trees-and-causal-forests" class="nav-link" data-scroll-target="#causal-trees-and-causal-forests"><span class="header-section-number">3.5.7</span> Causal Trees and Causal Forests</a></li>
+  <li><a href="#propensity-score-based" id="toc-propensity-score-based" class="nav-link" data-scroll-target="#propensity-score-based"><span class="header-section-number">3.5.8</span> Propensity Score-Based</a></li>
+  <li><a href="#propensity-score-matching" id="toc-propensity-score-matching" class="nav-link" data-scroll-target="#propensity-score-matching"><span class="header-section-number">3.5.9</span> Propensity Score Matching</a></li>
+  <li><a href="#propensity-score-stratification" id="toc-propensity-score-stratification" class="nav-link" data-scroll-target="#propensity-score-stratification"><span class="header-section-number">3.5.10</span> Propensity Score Stratification</a></li>
+  </ul></li>
+  <li><a href="#evaluation-and-validation-techniques" id="toc-evaluation-and-validation-techniques" class="nav-link" data-scroll-target="#evaluation-and-validation-techniques"><span class="header-section-number">3.6</span> Evaluation and Validation Techniques</a>
+  <ul class="collapse">
+  <li><a href="#evaluation-metrics" id="toc-evaluation-metrics" class="nav-link" data-scroll-target="#evaluation-metrics"><span class="header-section-number">3.6.1</span> Evaluation Metrics</a></li>
+  <li><a href="#robustness-checks-and-refutation-techniques" id="toc-robustness-checks-and-refutation-techniques" class="nav-link" data-scroll-target="#robustness-checks-and-refutation-techniques"><span class="header-section-number">3.6.2</span> Robustness Checks and Refutation Techniques</a></li>
+  </ul></li>
+  <li><a href="#unconfoundedness-assumptions-bounds-and-sensitivity-analysis" id="toc-unconfoundedness-assumptions-bounds-and-sensitivity-analysis" class="nav-link" data-scroll-target="#unconfoundedness-assumptions-bounds-and-sensitivity-analysis"><span class="header-section-number">3.7</span> Unconfoundedness: Assumptions, Bounds, and Sensitivity Analysis</a>
+  <ul class="collapse">
+  <li><a href="#observational-counterfactual-decomposition" id="toc-observational-counterfactual-decomposition" class="nav-link" data-scroll-target="#observational-counterfactual-decomposition"><span class="header-section-number">3.7.1</span> Observational Counterfactual Decomposition</a></li>
+  <li><a href="#bounds" id="toc-bounds" class="nav-link" data-scroll-target="#bounds"><span class="header-section-number">3.7.2</span> Bounds</a></li>
+  <li><a href="#sensitivity-analysis" id="toc-sensitivity-analysis" class="nav-link" data-scroll-target="#sensitivity-analysis"><span class="header-section-number">3.7.3</span> Sensitivity Analysis</a></li>
+  </ul></li>
+  <li><a href="#case-study" id="toc-case-study" class="nav-link" data-scroll-target="#case-study"><span class="header-section-number">3.8</span> Case Study</a>
+  <ul class="collapse">
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">3.8.1</span> Dataset</a></li>
+  <li><a href="#tools-and-library" id="toc-tools-and-library" class="nav-link" data-scroll-target="#tools-and-library"><span class="header-section-number">3.8.2</span> Tools and Library</a></li>
+  <li><a href="#exploratory-data-analysis" id="toc-exploratory-data-analysis" class="nav-link" data-scroll-target="#exploratory-data-analysis"><span class="header-section-number">3.8.3</span> Exploratory Data Analysis</a></li>
+  <li><a href="#estimation-and-results" id="toc-estimation-and-results" class="nav-link" data-scroll-target="#estimation-and-results"><span class="header-section-number">3.8.4</span> Estimation and Results</a></li>
+  <li><a href="#refutation-and-validation" id="toc-refutation-and-validation" class="nav-link" data-scroll-target="#refutation-and-validation"><span class="header-section-number">3.8.5</span> Refutation and Validation</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-causalestimation" class="quarto-section-identifier"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Having laid the foundation with the potential outcome framework and fundamental causal concepts, we now delve into the world of causal modeling. In this chapter, we explore the power of causal graphs as a comprehensive approach for inferring causal relationships. Firstly, we introduce causal graphs, explaining the basics of graph modeling in the context of causal inference. Next, we offer an overview of the high-level process involved in causal inference using causal graphs. Subsequently, we discuss each stage of the causal inference process, providing a more detailed examination of the methods and techniques commonly employed. Finally, we present a comprehensive case study utilizing the Lalonde dataset. This study compares and contrasts the various techniques for causal inference discussed, accompanied by a thorough analysis.</p>
+<section id="causal-inference-logical-flow" class="level2" data-number="3.1">
+<h2 data-number="3.1" class="anchored" data-anchor-id="causal-inference-logical-flow"><span class="header-section-number">3.1</span> Causal Inference: Logical Flow</h2>
+<p>In the last chapter, we introduced the causality flowchart for estimating the causal effect, as shown in <a href="#fig-causalestimandtoestimate1">Figure&nbsp;<span>3.1</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-causalestimandtoestimate1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/PotentialOutcomeEstimation.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.1: Causality flowchart: From a target causal estimand to an estimate</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The two pertinent questions will be answered in this chapter, as shown in <a href="#fig-causalestimandtoestimate2">Figure&nbsp;<span>3.2</span></a>.</p>
+<ol type="1">
+<li>How do we perform identification and convert causal estimands into statistical estimands? What are the tools available for this process?</li>
+</ol>
+<blockquote class="blockquote">
+<p><em>The identification and conversion of causal estimands to statistical estimands are achieved through causal modeling.</em></p>
+</blockquote>
+<ol start="2" type="1">
+<li>Once we have obtained statistical estimands, how do we proceed with estimation? What tools can be utilized for this purpose?</li>
+</ol>
+<blockquote class="blockquote">
+<p><em>Estimation is carried out by leveraging the statistical estimands derived from the causal modeling process and utilizing observational data in conjunction with appropriate statistical techniques.</em></p>
+</blockquote>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-causalestimandtoestimate2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/PotentialOutcomeEstimationHow.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.2: Causality Flowchart: How to go from a target causal estimand to an estimate using causal modeling</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Causal models can be constructed either by experts with domain knowledge or through automated procedures known as causal discovery (discussed in <a href="04-causal-discovery.html"><span>Chapter&nbsp;4</span></a>). Building causal models requires domain knowledge, identifying relevant variables, and determining the relationships between them.</p>
+</div>
+</div>
+</section>
+<section id="causal-inference-practical-flow" class="level2" data-number="3.2">
+<h2 data-number="3.2" class="anchored" data-anchor-id="causal-inference-practical-flow"><span class="header-section-number">3.2</span> Causal Inference: Practical Flow</h2>
+<p>In the previous section, we examined the logical flowchart that illustrates transitioning from a target causal estimand to an estimate. Now, we will delve into the practical aspect of this process, providing a high-level overview of the steps involved in practice.</p>
+<p>This section aims to bridge the gap between theory and application, offering insights into how the causal inference process unfolds in real-world scenarios.</p>
+<p>Notably, unlike the machine learning process, the causal inference process involves distinct steps, as Dow et al.&nbsp;underscored in their work <span class="citation" data-cites="dowhypaper">(<a href="#ref-dowhypaper" role="doc-biblioref">Sharma and Kiciman 2020</a>)</span> and given by <a href="#fig-inferencingprocess">Figure&nbsp;<span>3.3</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-inferencingprocess" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/InferencingProcess.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.3: Causal inference process in practice</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ol type="1">
+<li><p>To initiate the causal modeling process, one of the methodologies employed is constructing a causal graph with appropriate structural assumptions. Causal graphs depict the causal structure by utilizing nodes to represent variables and edges to represent the causal relationships between them.</p></li>
+<li><p>After establishing the causal assumptions within a causal model, the subsequent stage of causal analysis is identification. During this stage, the objective is to examine the causal model, encompassing the relationships between variables and the observed variables, to ascertain if there is sufficient information to address a particular causal inference question. Different techniques are utilized with the aim of converting the causal estimands into statistical estimands.</p></li>
+<li><p>After confirming the estimability of the causal effect and transforming the causal estimands into statistical estimands, the third step revolves around estimating the effect using suitable statistical estimators. Different estimation techniques, such as regression models or propensity score matching, can be utilized to estimate the causal effect.</p></li>
+<li><p>Finally, the fourth step involves validating and assessing the robustness of the obtained estimate through rigorous checks and sensitivity analyses. This step includes examining the sensitivity of the estimated effect to different model specifications, testing the robustness of the results against potential sources of bias or unobserved confounding, and assessing the generalizability of the findings.</p></li>
+</ol>
+</section>
+<section id="causal-modeling" class="level2" data-number="3.3">
+<h2 data-number="3.3" class="anchored" data-anchor-id="causal-modeling"><span class="header-section-number">3.3</span> Causal Modeling</h2>
+<p>The initial phase of any causal inference effort entails constructing causal models, graphical models in our case, which encode domain understanding and assumptions. A well-designed causal model should capture most of the relationships between the outcome and variables and inter-relationships between the variables.</p>
+<p>Causal graphs are a common way of representing the relationships between variables when modeling the joint distribution.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>A cause in a directed acyclic graph (DAG), similar to Bayesian networks, is defined as if any changes are made to a node, a response, or corresponding modifications are observed in the connected node(s). In the context of graphical models, a causal graph is a type of Bayesian network in which each node’s direct causes are represented by its parents.</p>
+</div>
+</div>
+<p>For a comprehensive and in-depth exploration of causal graphs, we highly recommend referring to Judea Pearl’s work <span class="citation" data-cites="pearl2009overview pearl2000">(<a href="#ref-pearl2009overview" role="doc-biblioref">Pearl 2009</a>, <a href="#ref-pearl2000" role="doc-biblioref">2000</a>)</span>.</p>
+<section id="assumptions-in-causal-modeling" class="level3" data-number="3.3.1">
+<h3 data-number="3.3.1" class="anchored" data-anchor-id="assumptions-in-causal-modeling"><span class="header-section-number">3.3.1</span> Assumptions in Causal Modeling</h3>
+<p><a href="#fig-causalgraph">Figure&nbsp;<span>3.4</span></a> shows the entire flow of assumptions that help in causal modeling.</p>
+<ul>
+<li><strong>Local Markov Assumption</strong>: Given the parents in the DAG, a node is independent of all its non-descendants.</li>
+<li><strong>Minimality assumption</strong>: The adjacent nodes in the DAG are dependent and have to be considered in the factorization in addition to the local Markov assumption. This assumption removes independent assumptions when the edges are present in the DAG.</li>
+<li><strong>Causal Edge assumption</strong>: In causal relationships, every parent is the direct cause of their children.</li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-causalgraph" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/CausalGraphs.png" class="img-fluid figure-img" width="773"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.4: Causal Graph Assumptions</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Thus for a given distribution represented by DAGs, the local Markov assumption helps to measure statistical independence, the minimality assumption helps to focus on statistical dependencies (at least between the adjacent nodes), and finally, layering the causal edge assumption gives us the causal dependencies.</p>
+<p>Causal graphs possess an essential characteristic of being able to identify confounding variables. These variables are associated with the cause and the effect but are not causally connected. For instance, in the case of <em>smoking</em> and <em>lung cancer</em>, <em>age</em> may act as a confounding variable related to both <em>smoking</em> and <em>lung cancer</em> but does not lie on the causal pathway between them. By including <em>age</em> as a node in the causal graph, researchers can control for its effects and isolate the causal relationship between <em>smoking</em> and <em>lung cancer</em>.</p>
+<p>Causal graphs can identify the minimal set of variables, which are imperative in estimating the causal effect of one variable on another. This technique is known as the <em>identification</em> (discussed later), based on the notion that several paths may exist between two variables in a causal graph. However, only some are crucial in estimating the causal effect. By identifying the minimal set of variables needed, researchers can effectively and accurately estimate the causal effect with less bias and more efficiency.</p>
+</section>
+<section id="building-blocks-in-causal-graphs" class="level3" data-number="3.3.2">
+<h3 data-number="3.3.2" class="anchored" data-anchor-id="building-blocks-in-causal-graphs"><span class="header-section-number">3.3.2</span> Building Blocks in Causal Graphs</h3>
+<p>In graph theory, the term “flow of association” refers to the presence or absence of association between any two nodes in a given graph. This concept can also be expressed as the statistical dependence or independence between two nodes. In the following section, we shall delve into fundamental constituents such as the building block and terminologies essential to graphical representations of various causal associations between variables. Furthermore, we shall conduct preliminary analyses to investigate the variables’ conditional independence or dependence within the building blocks.</p>
+<section id="chains" class="level4" data-number="3.3.2.1">
+<h4 data-number="3.3.2.1" class="anchored" data-anchor-id="chains"><span class="header-section-number">3.3.2.1</span> Chains</h4>
+<p>A chain is a sequence of nodes such that each node is a parent of the next node in the sequence as shown in <a href="#fig-chains">Figure&nbsp;<span>3.5</span></a>.</p>
+<p>There is dependence between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> and also between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(X_3\)</span> because of the causal edges assumption. <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are dependent as there is a flow of association or statistical dependence from <span class="math inline">\(X_1\)</span> to <span class="math inline">\(X_3\)</span> through <span class="math inline">\(X_2\)</span>. Similarly, if we condition on the <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are independent of each other. In other words, <span class="math inline">\(X_2\)</span> will block the association flow between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> by conditioning.</p>
+<div id="fig-chains" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/chain-flow.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Flow without conditioning</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/chain-blocked.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Flow with conditioning</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.5: Association flow in immoralities without conditioning and with conditioning</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="forks" class="level4" data-number="3.3.2.2">
+<h4 data-number="3.3.2.2" class="anchored" data-anchor-id="forks"><span class="header-section-number">3.3.2.2</span> Forks</h4>
+<p>In a fork, two variables have a single parent between them, as shown in <a href="#fig-forks">Figure&nbsp;<span>3.6</span></a>. Similar to chains, there is dependence between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> and between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(X_3\)</span> because of the causal edges assumption. <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are dependent as there is a flow of association or statistical dependence from <span class="math inline">\(X_1\)</span> to <span class="math inline">\(X_3\)</span> through <span class="math inline">\(X_2\)</span>. Also, if we condition on the <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are independent. In other words, <span class="math inline">\(X_2\)</span> will block the association flow between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> by conditioning.</p>
+<div id="fig-forks" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/fork-flow.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Flow without conditioning</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/fork-blocked.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Flow with conditioning</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.6: Association flow in forks without conditioning and with conditioning</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="immoralities" class="level4" data-number="3.3.2.3">
+<h4 data-number="3.3.2.3" class="anchored" data-anchor-id="immoralities"><span class="header-section-number">3.3.2.3</span> Immoralities</h4>
+<p>Immoralities refer to a configuration in a directed acyclic graph where a single node relies on two parents who are not directly connected, as depicted in <a href="#fig-immorality">Figure&nbsp;<span>3.7</span></a>. The node <span class="math inline">\(X_2\)</span> in this structure is called a <em>collider</em> and obstructs the flow of association between nodes <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> without conditioning, unlike in chains or forks. However, unlike chains or forks, by conditioning on the collider <span class="math inline">\(X_2\)</span>, the flow of association or dependence persists between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span>.</p>
+<div id="fig-immorality" class="quarto-layout-panel">
+<figure class="figure">
+<div class="quarto-layout-row quarto-layout-valign-top">
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/immorality.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Flow without conditioning</figcaption>
+</figure>
+</div>
+</div>
+<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/immorality-cond.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Flow with conditioning</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p></p><figcaption class="figure-caption">Figure&nbsp;3.7: Association flow in forks without and with conditioning</figcaption><p></p>
+</figure>
+</div>
+</section>
+<section id="blocked-path" class="level4" data-number="3.3.2.4">
+<h4 data-number="3.3.2.4" class="anchored" data-anchor-id="blocked-path"><span class="header-section-number">3.3.2.4</span> Blocked Path</h4>
+<p>The concept of a blocked path is intimately tied to the flow of causal influence. A path between two nodes, <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, can be blocked or unblocked by a conditioning set (<span class="math inline">\(Z\)</span>). The two scenarios that one comes across are:</p>
+<ol type="1">
+<li><p>If there exists a node <span class="math inline">\(W\)</span> on the path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> such that it is part of a chain structure (<span class="math inline">\(X \rightarrow W \rightarrow Y\)</span>) or a fork structure (<span class="math inline">\(X \leftarrow W \rightarrow Y\)</span>), and <span class="math inline">\(W\)</span> is conditioned on (<span class="math inline">\(W \in Z\)</span>).</p></li>
+<li><p>There is a collider <span class="math inline">\(W\)</span> on the path that is not conditioned on (<span class="math inline">\(W \notin Z\)</span>), and none of its descendants are conditioned on, i.e.&nbsp;(<span class="math inline">\(de(W) \notin Z\)</span>).</p></li>
+</ol>
+</section>
+<section id="d-separation" class="level4" data-number="3.3.2.5">
+<h4 data-number="3.3.2.5" class="anchored" data-anchor-id="d-separation"><span class="header-section-number">3.3.2.5</span> d-Separation</h4>
+<p>The concept of d-separation is tied to the concept of a blocked path in the graph. A path from a node(set) <span class="math inline">\(X\)</span> to a node(set) <span class="math inline">\(Y\)</span> is considered blocked given a set <span class="math inline">\(Z\)</span>, if nodes block any node in <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> in <span class="math inline">\(Z\)</span>.</p>
+<p>The concept of d-separation implies an important theorem that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are conditionally independent given <span class="math inline">\(Z\)</span>. On the contrary, if there exists at least one unblocked path from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span> given <span class="math inline">\(Z\)</span>, then <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are not d-separated by <span class="math inline">\(Z\)</span>, suggesting that <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> are not conditionally independent given <span class="math inline">\(Z\)</span>. Mathematically,</p>
+<p><span class="math display">\[ X \perp_G Y |Z \implies X \perp_P Y|Z \]</span></p>
+</section>
+</section>
+<section id="causal-graphs-and-structural-interventions" class="level3" data-number="3.3.3">
+<h3 data-number="3.3.3" class="anchored" data-anchor-id="causal-graphs-and-structural-interventions"><span class="header-section-number">3.3.3</span> Causal Graphs and Structural Interventions</h3>
+<p>In the context of Causal graphs, a <strong>structural intervention</strong> is represented as an exogenous variable <span class="math inline">\(I\)</span>, a variable without any causes. It has two possible states (on/off), with a single arrow pointing to the variable it manipulates. When <span class="math inline">\(I\)</span> is set to the off state, the passive observational distribution is obtained over the variables. In contrast, when <span class="math inline">\(I\)</span> is set to the on state, all other arrows incident on the intervened variable are removed. The probability distribution over the intervened variable is determined solely by the intervention.</p>
+<p>For example, consider a causal graph representing the relationship between smoking, age, and cancer, as shown in <a href="#fig-intervention">Figure&nbsp;<span>3.8</span></a>. Suppose that <em>smoking</em> and <em>age</em> are the direct causes of <em>cancer</em>. A structural intervention can be performed on smoking, where <span class="math inline">\(I\)</span> is introduced as an exogenous variable with two states: on and off. When <span class="math inline">\(I\)</span> is off, the system behaves according to the passive observational distribution, where the effect of _age_confounds the effect of smoking on <em>cancer</em>. However, when <span class="math inline">\(I\)</span> is on, all other arrows pointing to <em>cancer</em> from variables other than <em>smoking</em> are removed, and the probability distribution of <em>cancer</em> is a deterministic function of <em>smoking</em> only, allowing for the identification of the causal effect of <em>smoking</em> on <em>cancer</em>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-intervention" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Intervention.png" class="img-fluid figure-img" width="804"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.8: Structural Interventions</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>This “structural” property is critical to understanding the effect of interventions on causal graphs. Suppose there are multiple simultaneous structural interventions on variables in the graph. In that case, the manipulated distribution for each intervened variable is independent of every other manipulated distribution, and the edge-breaking process is applied separately to each variable. This process implies that all edges between variables subject to intervention are removed. After removing all edges from the original graph incident to variables that are the target of a structural intervention, the resulting graph is called the post-manipulation graph, which represents the manipulated distribution over the variables.</p>
+</section>
+<section id="observational-data-and-interventional-data" class="level3" data-number="3.3.4">
+<h3 data-number="3.3.4" class="anchored" data-anchor-id="observational-data-and-interventional-data"><span class="header-section-number">3.3.4</span> Observational Data and Interventional Data</h3>
+<p>Next, let us discuss the terminologies of observational and interventional data, which play a vital role in understanding the causal process in greater detail.</p>
+<p>Observational data is collected simply by passively observing a system or population without any intervention or change in the process. In contrast, interventional data is collected by actively manipulating the system or population in some way, like in randomized control trials. Observational studies may be subject to various types of biases, such as confounding, selection bias, and measurement bias, making it difficult to distinguish between causal and non-causal relationships in the dataset.</p>
+<p>Interventional data, on the other hand, is often considered to be the gold standard for establishing causal relationships between variables. This is because interventions allow actively manipulating the independent variable and observing the resulting changes in the dependent variable. Researchers can minimize the effects of confounding and other biases by randomly assigning participants to different treatment groups, like in randomized control trials.</p>
+<p>The acquisition of observational data is generally less resource-intensive than interventional data, which can be expensive and impractical to obtain in specific scenarios. This raises the question of whether it is possible to derive interventional data from observational data.</p>
+</section>
+<section id="the-do-operator-and-interventions" class="level3" data-number="3.3.5">
+<h3 data-number="3.3.5" class="anchored" data-anchor-id="the-do-operator-and-interventions"><span class="header-section-number">3.3.5</span> The <em>do</em>-operator and Interventions</h3>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The <em>do</em>-operator and identification process are essential tools that facilitate us going from observational to interventional data. The <em>do</em>-operator helps distinguish interventional distributions from observational distributions, while identification helps determine which causal relationships can be inferred from the observed data. We will discuss the process in detail in the following section.</p>
+</div>
+</div>
+<p>The <em>do</em>-operator is a symbolic notation used in causal inference to represent interventions. The <em>do</em>-operator is a notation to represent the population’s intervention distribution. Given a treatment (<span class="math inline">\(T=t\)</span>), <strong>intervention</strong> corresponds to the <strong>whole population</strong> subjected to that treatment and given by <span class="math inline">\(do(T=t)\)</span>. This is different from the <strong>conditional</strong> distribution (<span class="math inline">\(P(Y|T=t)\)</span>), which represents a <strong>subset</strong> of the population <span class="math inline">\((T=t)\)</span> rather than the whole population in the case of intervention as shown in the <a href="#fig-conditionalvsinterventional">Figure&nbsp;<span>3.9</span></a>. The interventional measures can be computed only through experiments, while the conditional measures can be computed directly from the observational data.</p>
+<p>Also, the potential outcome (<span class="math inline">\(P(Y(t)=y)\)</span>) in terms of interventional distribution using the <em>do</em>-operator is given by:</p>
+<p><span class="math display">\[P(Y(t)=y) \triangleq P(Y=y | do(T=t)) \triangleq P(y|do(t)) \]</span> Similarly, the average treatment effect (ATE) in the case of binary treatment using the <em>do</em>-operator is given by:</p>
+<p><span class="math display">\[ATE = \mathbb{E}[Y|do(T=1)] - \mathbb{E}[Y|do(T=0)]\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-conditionalvsinterventional" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/ConditionalVsInterventional.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.9: Conditional vs Interventiona</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="modularity-assumptions" class="level3" data-number="3.3.6">
+<h3 data-number="3.3.6" class="anchored" data-anchor-id="modularity-assumptions"><span class="header-section-number">3.3.6</span> Modularity assumptions</h3>
+<p>A modular assumption is about the local impact of any intervention when applied to a causal graph. Modularity assumption is also known as invariance, autonomy, and independent mechanisms.</p>
+<p>It states that if a node <span class="math inline">\(X_i\)</span> is being intervened, then only the mechanism <span class="math inline">\(P(x_i|pa_i)\)</span> changes and the intervention has no impact on any other mechanism changes, i.e., <span class="math inline">\(P(x_j|pa_j)\)</span> where <span class="math inline">\(i \neq j\)</span> remain unchanged. Modularity assumptions is graphically demonstrated in <a href="#fig-parents">Figure&nbsp;<span>3.10</span></a>. The violation of the modularity assumption implies that when a node is intervened, mechanisms of other non-parent nodes changes, and thus any local effect assumption goes away for computation purposes.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-parents" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Parents.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.10: Modularity and Interventions</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="modularity-assumptions-and-truncated-factorization" class="level3" data-number="3.3.7">
+<h3 data-number="3.3.7" class="anchored" data-anchor-id="modularity-assumptions-and-truncated-factorization"><span class="header-section-number">3.3.7</span> Modularity Assumptions and Truncated Factorization</h3>
+<p>The network factorization for <a href="#fig-parents">Figure&nbsp;<span>3.10</span></a> can be written as: <span class="math display">\[P(x_1, \cdots, x_n) = \prod_iP(x_i|pa_i) \]</span> When we intervene on variable set <span class="math inline">\(S\)</span>, the factorization becomes: <span class="math display">\[P(x_1, \cdots, x_n|do(S=s)) = \prod_{i\notin X S}P(x_i|pa_i) \]</span> if the <span class="math inline">\(x\)</span> is consistent with the intervention, otherwise <span class="math display">\[P(x_1, \cdots, x_n|do(S=s)) = 0\]</span> The truncated factorization can be employed to estimate the causal effect of treatment <span class="math inline">\(T\)</span> on outcome <span class="math inline">\(Y\)</span> in a simple graph comprising three variables <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, and <span class="math inline">\(T\)</span>, with <span class="math inline">\(X\)</span> as the confounder as shown in <a href="#fig-truncated">Figure&nbsp;<span>3.11</span></a>. The aim is to estimate the causal quantity <span class="math inline">\(P(y|do(T))\)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-truncated" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/TruncatedFactorization.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.11: Modularity and Interventions</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The network factorization gives us the following:</p>
+<p><span class="math display">\[ P(y,t,x) = P(x)P(t|x)P(y|t,x)\]</span> When we intervene on treatment <span class="math inline">\(T\)</span>, we can remove <span class="math inline">\(t\)</span> factor, i.e.&nbsp;<span class="math inline">\(P(t|x)\)</span>, thus the truncated factorization gives us:</p>
+<p><span class="math display">\[P(y,x|do(T)) = P(x)P(y|t,x)\]</span> Next, if we marginalize <span class="math inline">\(x\)</span> using summation (discrete) or integration (continuous), we get: <span class="math display">\[P(y|do(T)) = \sum_xP(y|t,x)P(x)\]</span> Thus, we got identifiability or could go from causal estimand <span class="math inline">\(P(y|do(T))\)</span> to statistical estimand <span class="math inline">\(\sum_xP(y|t,x)P(x)\)</span> from observational data.</p>
+<p>Now, in a separate statistical world we can rewrite <span class="math inline">\(P(y|t)\)</span> using marginalization as: <span class="math display">\[P(y|t) = \sum_xP(y,x|t)\]</span> Using the the factorization property: <span class="math display">\[P(y|t) = \sum_xP(y|t)P(x|t)\]</span> Thus, comparing the two equations, we can conclude that <span class="math display">\[P(y|do(t)) \neq P(y|t)\]</span> as <span class="math inline">\(P(y|do(t))\)</span> has <span class="math inline">\(P(x)\)</span> where as <span class="math inline">\(P(y|t)\)</span> has <span class="math inline">\(P(x|t)\)</span>.</p>
+</section>
+<section id="structural-causal-models-scm" class="level3" data-number="3.3.8">
+<h3 data-number="3.3.8" class="anchored" data-anchor-id="structural-causal-models-scm"><span class="header-section-number">3.3.8</span> Structural Causal Models (SCM)</h3>
+<p>Structural Causal Models (SCMs) are a critical component of modeling for causal inference. SCMs are mathematical models representing the causal relationships between variables in a system <span class="citation" data-cites="spirtes2000causation">(<a href="#ref-spirtes2000causation" role="doc-biblioref">Spirtes et al. 2000</a>)</span>.</p>
+<p>Structural Causal Models (SCMs) consist of two fundamental constituents: endogenous variables’ structural equations that portray causal relationships among variables and exogenous variables that represent system variables unaffected by other variables. Causal graph structures depict the structural equations as functions among the variables, visually showcasing the relationships between exogenous and endogenous variables.</p>
+<p>In simplest form, if variable <span class="math inline">\(X\)</span> causes <span class="math inline">\(Y\)</span>, then it can be written as a structural equation:</p>
+<p><span class="math display">\[ Y := f(X)\]</span> Stochasticity can be added to the structural equation in the form of noise variables (<span class="math inline">\(U\)</span>), and the above equation can be rewritten as:</p>
+<p><span class="math display">\[ Y := f(X, U)\]</span> When there are many cause-effect relationships, as shown in <a href="#fig-scm">Figure&nbsp;<span>3.12</span></a>, the representation using structural causal models equation with exogenous, endogenous, and noise variables is given by: <span class="math display">\[X = f_X(W,U_X)\]</span> <span class="math display">\[Z = f_Z(X,Y,U_Z)\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-scm" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SCM.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.12: Structural Causal Models</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="interventions-and-modularity-assumptions-in-scm" class="level4" data-number="3.3.8.1">
+<h4 data-number="3.3.8.1" class="anchored" data-anchor-id="interventions-and-modularity-assumptions-in-scm"><span class="header-section-number">3.3.8.1</span> Interventions and Modularity Assumptions in SCM</h4>
+<p>For the basic causal model as shown in <a href="#fig-scmintervention">Figure&nbsp;<span>3.13</span></a>, with single confounder <span class="math inline">\(X\)</span> affecting both the treatment <span class="math inline">\(T\)</span> and the outcome <span class="math inline">\(Y\)</span>, the SCM equations can be written as: <span class="math display">\[ T = f_T(X, U_T)\]</span> <span class="math display">\[Y = f_Y(X,T, U_Y)\]</span> The interventional SCM or a submodel follows the same as above but replaces the function <span class="math inline">\(f_T(X,U_T)\)</span> with a variable <span class="math inline">\(t\)</span> as: <span class="math display">\[ T = t\]</span> <span class="math display">\[Y = f_Y(X,T, U_Y)\]</span></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-scmintervention" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SCM-Intervention.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.13: Intervention and removing the edge corresponding to <span class="math inline">\(do(T=t)\)</span></figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="identification" class="level2" data-number="3.4">
+<h2 data-number="3.4" class="anchored" data-anchor-id="identification"><span class="header-section-number">3.4</span> Identification</h2>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Identification is the process of converting causal estimands to statistical estimands. i.e., to go from <span class="math inline">\(P(Y|do(t))\)</span> to <span class="math inline">\(P(Y|t)\)</span>. If we can go from <span class="math inline">\(P(Y|do(t))\)</span> to <span class="math inline">\(P(Y|t)\)</span>, we have <strong>identifiability</strong>.</p>
+</div>
+</div>
+<p>Let us consider a simple identification process with one treatment (<span class="math inline">\(T\)</span>), one confounding variable (<span class="math inline">\(X\)</span>), and one outcome (<span class="math inline">\(Y\)</span>) as given in <a href="#fig-identification">Figure&nbsp;<span>3.14</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-identification" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Identification.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.14: Identification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Identification</strong> is to find <span class="math inline">\(P(y|do(T))\)</span>, which can be iteratively computed from the joint distribution as below: <span class="math display">\[ P(y,t,x) = P(x)P(t|x)P(y|t,x)\]</span></p>
+<p>Applying the modularity assumption by intervening on the variable (<span class="math inline">\(T\)</span>),we get <span class="math inline">\(P(t|x)=1\)</span> and thus the equation transforms: <span class="math display">\[ P(y,x|do(T)) = P(x)P(y|t,x)\]</span></p>
+<p>If we marginalize the variable (<span class="math inline">\(X\)</span>), we get: <span class="math display">\[ P(y|do(T)) = \sum_x P(y|t,x)P(x)\]</span></p>
+<p>Thus, from the causal estimand <span class="math inline">\(P(y|do(T))\)</span>, and identification, we have an equation with only observational or statistical quantities <span class="math inline">\(\sum_x P(y|t,x)P(x)\)</span>. This is called the <strong>adjustment formula</strong>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>As highlighted in the overall process illustrated in <a href="#fig-identificationmath">Figure&nbsp;<span>3.15</span></a>, the identification process involves a transformation from causal estimand <span class="math inline">\(P(y|do(T))\)</span> to statistical estimand (<span class="math inline">\(\mathbb{E}_{X} P(y|t,X)\)</span> or <span class="math inline">\(P(y|t)\)</span>) contingent upon the existence or absence of confounding variables.</p>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-identificationmath" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/IdentificationWithWithoutConfoudners.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.15: Identification in presence or absence of confouding variable</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Identification methods can be classified into two broad categories with subcategories, as shown below.</p>
+<ul>
+<li>Graphical Constraint-based Methods
+<ul>
+<li>Randomized Control Tests</li>
+<li>Backdoor Adjustments</li>
+<li>Frontdoor Adjustments</li>
+</ul></li>
+<li>Non-Graphical Constraint-based Methods
+<ul>
+<li>Instrumental Variables</li>
+<li>Regression Discontinuity</li>
+<li>Difference-in-Differences</li>
+<li>Pearl’s do-calculus</li>
+</ul></li>
+</ul>
+<p>Next, we will go over these different methods of identification.</p>
+<section id="randomized-control-trials-rct" class="level3" data-number="3.4.1">
+<h3 data-number="3.4.1" class="anchored" data-anchor-id="randomized-control-trials-rct"><span class="header-section-number">3.4.1</span> Randomized Control Trials (RCT)</h3>
+<p>As elucidated in the second chapter, comprehending the impact of unseen confounding factors when measuring treatment effects on an outcome is challenging. One way to address this issue is through randomized controlled trials, which introduce randomness in the treatment allocation process and ensure that the resulting groups (binary <span class="math inline">\(T=0\)</span> and <span class="math inline">\(T=1\)</span>) are comparable, thus mitigating the confounding impact. In other words, randomization ensures exchangeability, i.e., the treatment groups are entirely interchangeable because of the randomization. Thus the average outcome of the two groups <span class="math inline">\(\mathbb{E}[Y|(T=1)]=y_1]\)</span> and <span class="math inline">\(\mathbb{E}[Y|(T=0)]=y_0]\)</span> remain the same. From a causal graph perspective, the randomized treatment removes the edge between the confounder <span class="math inline">\(X\)</span> and the treatment <span class="math inline">\(T\)</span>, removing the backdoor path and the confounding association.</p>
+</section>
+<section id="backdoor-criterion-and-backdoor-adjustment" class="level3" data-number="3.4.2">
+<h3 data-number="3.4.2" class="anchored" data-anchor-id="backdoor-criterion-and-backdoor-adjustment"><span class="header-section-number">3.4.2</span> Backdoor Criterion and Backdoor Adjustment</h3>
+<p>The interventional causal graph can have various paths from the treatment (<span class="math inline">\(T\)</span>) to the outcome (<span class="math inline">\(Y\)</span>). Some of the paths are non-causal, and some of them are causal. One method to perform identification is to block backdoor paths <span class="citation" data-cites="pearl2010causal">(<a href="#ref-pearl2010causal" role="doc-biblioref">Pearl 2010</a>)</span>. Backdoor paths are the edges that flow into the intervening treatment.</p>
+<p>As shown in <a href="#fig-observationalvscausal">Figure&nbsp;<span>3.16</span></a>, the left side graph is observational <span class="math inline">\(P(Y| t)\)</span> with various causal and non-causal paths between the treatment (<span class="math inline">\(T\)</span>) and the outcome (<span class="math inline">\(Y\)</span>). There are many non-causal paths from <span class="math inline">\(T\)</span> to <span class="math inline">\(Y\)</span>, and they are <span class="math inline">\(T \rightarrow W \rightarrow U \rightarrow V \rightarrow Y\)</span>, <span class="math inline">\(T \rightarrow X \rightarrow Y\)</span> and <span class="math inline">\(T \rightarrow P \rightarrow Y\)</span>. Only backdoor paths are <span class="math inline">\(T \rightarrow W \rightarrow U \rightarrow V \rightarrow Y\)</span> and<span class="math inline">\(T \rightarrow X \rightarrow Y\)</span> as the edges flow into the intervening treatment <span class="math inline">\(T\)</span>. The non-causal path <span class="math inline">\(T \rightarrow P \rightarrow Y\)</span> is not a backdoor path. The path <span class="math inline">\(T \rightarrow X \rightarrow Y\)</span> is the only causal path. The equivalent interventional causal graph <span class="math inline">\(P(Y | do(t))\)</span> on the right side is with the backdoor paths blocked by removing the edges.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-observationalvscausal" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/ObservationalVsCausal.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.16: Observational Vs Causal</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Can we get an equivalent interventional causal graph from the observational graph? The answer is yes, and it can be done by conditioning the nodes/variables in the backdoor paths. By conditioning on <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span>, we get <span class="math inline">\(P(Y |t,w,x)\)</span> and that is equivalent to removing the edges and blocking the paths as shown in <a href="#fig-causalvsconditoning">Figure&nbsp;<span>3.17</span></a></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-causalvsconditoning" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/CausalVsConditioning.png" class="img-fluid figure-img" style="width:80.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.17: Causal vs Conditoning</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Formally, a set of variables <span class="math inline">\(Z\)</span> are set to satisfy <strong>backdoor criterion</strong> with respect to treatment <span class="math inline">\(T\)</span> and outcome <span class="math inline">\(Y\)</span> if it satisfies the following:</p>
+<ul>
+<li>If the variable set <span class="math inline">\(Z\)</span> blocks all the backdoor paths from <span class="math inline">\(T\)</span> to <span class="math inline">\(Y\)</span></li>
+<li><span class="math inline">\(Z\)</span> does not contain any descendant of the treatment <span class="math inline">\(T\)</span></li>
+</ul>
+<p>Thus, based on the modularity assumption and the backdoor criterion, one can identify the causal effect by:</p>
+<p><span class="math display">\[P(y| do(t)) = \sum_z P(y|t,z) P(z)\]</span></p>
+</section>
+<section id="front-door-adjustments" class="level3" data-number="3.4.3">
+<h3 data-number="3.4.3" class="anchored" data-anchor-id="front-door-adjustments"><span class="header-section-number">3.4.3</span> Front-door Adjustments</h3>
+<p>Judea Pearl justifies the use of the front-door adjustment method through the illustration of an example in which the effect of smoking (treatment) on cancer (outcome) is studied while taking into account the influence of tar (observed mediator) and an unknown genotype (unobserved confounder), as depicted in <a href="#fig-pearlfrontdoor">Figure&nbsp;<span>3.18</span></a>. In such Directed Acyclic Graphs (DAGs), the backdoor criterion is inapplicable due to an unobserved confounder.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pearlfrontdoor" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/PearlFrontdoor.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.18: Cancer and Smoking relationship</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The more generic DAG is shown in <a href="#fig-genericfrontdoor">Figure&nbsp;<span>3.19</span></a> The intuition behind the front-door adjustment can be broken into the following three steps as follows:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-genericfrontdoor" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/GenericFrontdoor.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.19: Generalized Front-door</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ul>
+<li><p>Identify the causal impact of treatment (<span class="math inline">\(T\)</span>) on the mediator (<span class="math inline">\(M\)</span>) <span class="math inline">\(P(m|do(t)\)</span> Since there are no backdoor paths, we can write: <span class="math inline">\(P(m|do(t) = P(m|t)\)</span></p></li>
+<li><p>Identify the causal impact of mediator (<span class="math inline">\(M\)</span>) on the outcome (<span class="math inline">\(Y\)</span>) <span class="math inline">\(P(y|do(m)\)</span> Since there is a backdoor path from <span class="math inline">\(M\)</span> to <span class="math inline">\(Y\)</span> through <span class="math inline">\(T\)</span>, we can use the backdoor criterion by conditioning on <span class="math inline">\(T\)</span>.</p></li>
+</ul>
+<p><span class="math display">\[P(y|do(m) = \sum_t P(y|m,t)P(t)\]</span></p>
+<ul>
+<li>Combined the two previous steps to identify the causal impact of treatment (<span class="math inline">\(T\)</span>) on the outcome (<span class="math inline">\(Y\)</span>) <span class="math display">\[P(y|do(t) = \sum_m P(m|do(t))P(y|do(m)) \]</span> <span class="math display">\[P(y|do(t) = \sum_m P(m|t) \sum_{t'}P(y|m,t')P(t') \]</span> The above equation is called the frontdoor adjustment. The set of variables <span class="math inline">\(M\)</span> satisfy the frontdoor criterion if:</li>
+</ul>
+<ol type="1">
+<li>Variable <span class="math inline">\(M\)</span> mediates the effect of <span class="math inline">\(T\)</span> on <span class="math inline">\(Y\)</span>.</li>
+<li>There is no unlocked backdoor path from <span class="math inline">\(T\)</span> to <span class="math inline">\(M\)</span>.</li>
+<li>All backdoor paths from <span class="math inline">\(M\)</span> to <span class="math inline">\(Y\)</span> are blocked by <span class="math inline">\(T\)</span>.</li>
+</ol>
+</section>
+<section id="instrumental-variable-analysis" class="level3" data-number="3.4.4">
+<h3 data-number="3.4.4" class="anchored" data-anchor-id="instrumental-variable-analysis"><span class="header-section-number">3.4.4</span> Instrumental Variable Analysis</h3>
+<p>In situations where specific variables affect the treatment variable(s) but do not directly influence the outcome variable, identification can be achieved through instrumental variable analysis. For instance, consider the example of three variables, namely smoking, cigarette prices, and cancer, as shown in <a href="#fig-ivexample">Figure&nbsp;<span>3.20</span></a>. It is apparent that cigarette prices affect whether an individual smokes but do not directly impact the likelihood of developing cancer. Such variables that affect the treatment variable(s) but not the outcome variable are referred to as instrumental variables, as described by Pearl <span class="citation" data-cites="pearl2010causal">(<a href="#ref-pearl2010causal" role="doc-biblioref">Pearl 2010</a>)</span>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ivexample" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/IVExample.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.20: Example of Instrumental Variables</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The role of instrumental variables in the identification process is to help address the problem of endogeneity, which occurs when a variable of interest is correlated with the error term in a regression model. This correlation leads to biased and inconsistent estimates of the treatment effect, making it difficult to establish a causal relationship between the treatment and the outcome variable. By using an instrumental variable that is uncorrelated with the error term and affects the treatment but not the outcome variable, the IV analysis can isolate the causal effect of the treatment on the outcome variable.</p>
+<p>Thus, when generalized, as shown in <a href="#fig-ivgeneral">Figure&nbsp;<span>3.21</span></a>, the identification process is a two-stage process. The first step is to measure the effect of the instrument variable on the treatment using regression as given by: <span class="math display">\[\hat{T} = \beta_0 + \beta_1Z \]</span> and then use the predictor <span class="math inline">\(\hat{T}\)</span> to measure the effect on the outcome <span class="math inline">\(Y\)</span> as another regression, given by: <span class="math display">\[\hat{Y} = \beta_2 + \beta_3\hat{T} \]</span> In addition to the conditions described above being met, instrumental variable analysis is applicable when there are only moderate to small confounding effects and a good sample size of observational data.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-ivgeneral" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/IVGeneric.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.21: Generalized relationship between Instrumental Variables, Treatment, and Outcome</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="regression-discontinuity" class="level3" data-number="3.4.5">
+<h3 data-number="3.4.5" class="anchored" data-anchor-id="regression-discontinuity"><span class="header-section-number">3.4.5</span> Regression Discontinuity</h3>
+<p>The regression discontinuity approach is a regression-based technique that is well-suited for identifying real-valued outcomes, particularly in scenarios where the outcome data contain thresholds or cut-offs. This method is commonly applied in cases where treatment is provided when the outcome surpasses a certain threshold but not when it falls below it <span class="citation" data-cites="imbens2008regression">(<a href="#ref-imbens2008regression" role="doc-biblioref">Imbens and Lemieux 2008</a>)</span>. The treatment/intervention impact above/below the threshold can be used for causality estimation. Examples include receiving scholarships and their implications on admissions/SAT scores or receiving a specific medicine dosage for patients above a certain cut-off of diabetes or cholesterol etc. <a href="#fig-regressiondiscontinuity">Figure&nbsp;<span>3.22</span></a> shows an example of student GPA as the outcome (<span class="math inline">\(Y\)</span>) on the y-axis, and student test scores normalized as a variable (<span class="math inline">\(X\)</span>) on the x-axis with a threshold deciding scholarship (<span class="math inline">\(T\)</span>) and its impact as a shifted GPA on the y-axis. The shift is the regression discontinuity. Regression discontinuity can be measured using the same trend on either side of the discontinuity using the regression formula: <span class="math display">\[\hat{y} = \beta_0 + \beta_1X + \beta_2I(x&gt;x_0) \]</span> <span class="math inline">\(\beta_2\)</span> is the measure fo regression discontinuity.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-regressiondiscontinuity" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/RegressionDiscontinuity.png" class="img-fluid figure-img" style="width:60.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.22: Regression Discontinuity</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="difference-in-differences" class="level3" data-number="3.4.6">
+<h3 data-number="3.4.6" class="anchored" data-anchor-id="difference-in-differences"><span class="header-section-number">3.4.6</span> Difference-in-Differences</h3>
+<p>The Difference-in-Differences (DID) approach is a regression-based method that effectively identifies real-valued outcomes when measured over time, as highlighted in <span class="citation" data-cites="lechner2011estimation">(<a href="#ref-lechner2011estimation" role="doc-biblioref">Lechner et al. 2011</a>)</span>. Specifically, the DID approach allows for estimating the treatment effect by comparing the differences in outcomes over time between the treatment and control groups. This method is often applied at a particular time and enables estimating the treatment effect using regression analysis, wherein the significant differences between the treatment and control groups can be effectively captured.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-did" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/DID.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.23: Difference-in-Differences</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>To make things concrete, let us consider a simple use case of a binary treatment (<span class="math inline">\(T=0, T=1\)</span>), with a real-valued outcome (<span class="math inline">\(y \in \mathbb R\)</span>), and the outcome is measured w.r.t to time as shown in <a href="#fig-did">Figure&nbsp;<span>3.23</span></a> Regression analysis can be done using a couple of variables: <span class="math inline">\(D\)</span> for treatment and <span class="math inline">\(T\)</span> for time as given by:</p>
+<p><span class="math display">\[ y= \beta_0 + \beta_1D + \beta_2T + \beta_3D \times T + \mu\]</span> The regression variables can be interpreted as <span class="math inline">\(\beta_1\)</span> estimates the marginal effect of treatment, <span class="math inline">\(\beta_2\)</span> estimates the baseline change over time for the control group, and <span class="math inline">\(\beta_3\)</span> the treatment effect. There are several assumptions made from regression analysis and causal effect perspective, such as both the groups having common trends and non-independence of observations.</p>
+</section>
+<section id="pearls-do-calculus" class="level3" data-number="3.4.7">
+<h3 data-number="3.4.7" class="anchored" data-anchor-id="pearls-do-calculus"><span class="header-section-number">3.4.7</span> Pearl’s do-calculus</h3>
+<p>If a query <span class="math inline">\(Q\)</span> is provided as a do-expression, such as <span class="math inline">\(Q = P(y|do(x),z)\)</span>, its identifiability can be systematically determined using Pearl’s do-calculus. In scenarios where both backdoor and front-door adjustment approaches fail to enable identification, Pearl’s do-calculus provides an effective means of identifying any causal quantity that can be identified <span class="citation" data-cites="pearl2012calculus">(<a href="#ref-pearl2012calculus" role="doc-biblioref">Pearl 2012</a>)</span>.</p>
+<p>Consider a causal Directed Acyclic Graph (DAG) <span class="math inline">\(G\)</span>, where <span class="math inline">\(X\)</span>, <span class="math inline">\(Y\)</span>, <span class="math inline">\(Z\)</span>, and <span class="math inline">\(W\)</span> are arbitrary disjoint sets of nodes. The graph <span class="math inline">\(G_{\overline{X}}\)</span> is obtained by removing all arrows that point to nodes in <span class="math inline">\(X\)</span> from <span class="math inline">\(G\)</span>. Similarly, the graph <span class="math inline">\(G_{\underline{X}}\)</span> is obtained by deleting all arrows from nodes in <span class="math inline">\(X\)</span> from <span class="math inline">\(G\)</span>. To indicate the removal of both incoming and outgoing arrows, we employ the notation <span class="math inline">\(G_{\overline{X}\underline{Z}}\)</span>.</p>
+<p>The following three rules apply to all interventional distributions that align with the structure of G.</p>
+<ol type="1">
+<li><strong>Rule 1 (Insertion/deletion of observations)</strong>:</li>
+</ol>
+<p>Per Rule 1, any observational node that fails to influence the outcome through a given path or is d-separated from the outcome can be safely disregarded.</p>
+<p>The following is the formal definition: <span class="math display">\[P(y|do(x),z,w) = P(y|do(x),w)\ if\ (Y \perp Z|X,W)_{G_{\overline{X}}}\]</span> If the nodes <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> are d-separated from one another, once we factor in both <span class="math inline">\(W\)</span> and <span class="math inline">\(X\)</span>, we can eliminate <span class="math inline">\(Z\)</span> and remove it from the <span class="math inline">\(P(y| z, w)\)</span>.</p>
+<ol start="2" type="1">
+<li><strong>Rule 2 (Action/observation exchange)</strong>:</li>
+</ol>
+<p>In the context of a randomized controlled trial, researchers can assign treatment and perform either <span class="math inline">\(do(x)\)</span> or not <span class="math inline">\(do(x)\)</span>. However, with observational data, it is not feasible to directly perform <span class="math inline">\(do(x)\)</span>. It would be a significant advantage if we could treat an intervention like <span class="math inline">\(do(x)\)</span> as regular non-interventional observational data. Rule 2 facilitates this transformation.</p>
+<p>Per Rule 2, interventions, represented by <span class="math inline">\(do(x)\)</span>, can be handled as observations when the causal effect of a variable on the outcome, specifically <span class="math inline">\(X \rightarrow Y\)</span>, influences the outcome solely through directed paths. Formally this can be written as:</p>
+<p><span class="math display">\[P(y|do(x),do(z),w) = P(y|do(x),z,w)\ if\ (Y \perp Z|X,W)_{G_{{\overline{X}}{\underline{Z}}}}\]</span> One can note that the left-hand side involves the interventional operator <span class="math inline">\(do(z)\)</span>, while the right-hand side employs the observed variable <span class="math inline">\(z\)</span>. As long as the condition <span class="math inline">\((Y \perp Z \mid W)_{G{\underline{Z}}}\)</span> holds, we can convert <span class="math inline">\(do(z)\)</span> to <span class="math inline">\(z\)</span> and solely rely on observational data.</p>
+<ol start="3" type="1">
+<li><strong>Rule 3 (Insertion/deletion of actions</strong>)__: Rule <span class="math inline">\(3\)</span> states that if an intervention (or a <span class="math inline">\(do(\cdot)\)</span> expression) does not influence the outcome through any uncontrolled path, it can be disregarded. Specifically, we can eliminate <span class="math inline">\(do(z)\)</span> if no causal association (or unblocked causal paths) runs from <span class="math inline">\(Z\)</span> to <span class="math inline">\(Y\)</span>.</li>
+</ol>
+<p><span class="math display">\[P(y|do(x),do(z),w) = P(y|do(x),w)\ if\ (Y \perp Z|X,W)_{G_{\overline{XZ(W)}}}\]</span></p>
+<p>Both front-door and backdoor adjustment formulae can be derived using solely the do-calculus. It has been established that the do-calculus is complete, i.e., it can identify all the causal estimands if they exist <span class="citation" data-cites="huang2012pearl">Shpitser and Pearl (<a href="#ref-shpitser2006identification" role="doc-biblioref">2006</a>)</span>. This theorem implies that if the repeated application of these three rules cannot eliminate the do-operations, the query <span class="math inline">\(Q\)</span> cannot be identified.</p>
+</section>
+</section>
+<section id="sec-estimationprocess" class="level2" data-number="3.5">
+<h2 data-number="3.5" class="anchored" data-anchor-id="sec-estimationprocess"><span class="header-section-number">3.5</span> Estimation</h2>
+<p>This section will discuss various methods to compute estimation from statistical estimands.</p>
+<p>There are two broad types of estimation methods:</p>
+<p><strong>Covariate Adjustment Methods</strong>:</p>
+<p>Covariate adjustment techniques involve utilizing the covariates or features (<span class="math inline">\(X\)</span>) and the treatment (<span class="math inline">\(T\)</span>) as inputs to one or more machine learning models, which are then used to fit the inputs to the potential outcome output ($Y), thereby capturing the relationship between them. The appropriate model selection, such as linear or non-linear, is contingent on the nature of the relationship between these variables. There are numerous covariate adjustment techniques commonly utilized in practice, which we will describe in detail, including:</p>
+<ol type="1">
+<li>COM Estimator</li>
+<li>GCOM Estimator</li>
+<li>X-Learner</li>
+<li>TarNET</li>
+<li>Matching</li>
+<li>Doubly Robust Learners</li>
+</ol>
+<p><strong>Propensity Score Methods</strong>:</p>
+<p>In these methods, a propensity score is defined as the conditional probability of treatment assignment given a set of observed covariates <span class="math inline">\(X\)</span>. The propensity score adjusts for differences in observed covariates between treated and control groups, creating a pseudo-population in which the covariate distribution is balanced between the two groups.</p>
+<p>Some of the techniques are: 1. Propensity Score Matching 2. Propensity Score Stratification 3. Inverse Propensity Score Weighting</p>
+<section id="sec-slearner" class="level4" data-number="3.5.0.1">
+<h4 data-number="3.5.0.1" class="anchored" data-anchor-id="sec-slearner"><span class="header-section-number">3.5.0.1</span> Conditional Outcome Modeling Estimator (COM Estimator or S-Learner)</h4>
+<p>As discussed in Chapter 2, the individualized treatment effect (ITE) is fundamentally unknowable; hence, large randomized experiments allow us to measure the average treatment effect (ATE). The individualized treatment effect <span class="math inline">\(\tau_i\)</span> for a binary treatment is given by: <span class="math display">\[ \tau_i \triangleq Y_i(1)- Y_i(0)\]</span> The average treatment effect <span class="math inline">\(\tau\)</span> is given by: <span class="math display">\[\tau = \mathbb{E}[Y_i(1)- Y_i(0)]\]</span> When there are other covariates <span class="math inline">\(x\)</span> present (observed and/or unobserved), we estimate a more specific effect using those covariates, and it is called the conditional average effect (CATE)</p>
+<p><span class="math display">\[\tau(x) \triangleq \mathbb{E}[Y(1)- Y(0)|X=x] \]</span> From the identification discussion, given a sufficient adjustment set <span class="math inline">\(W\)</span> and the covariates <span class="math inline">\(X\)</span>, we assume that <span class="math inline">\(W \cup X\)</span> is also a sufficient adjustment set and satisfies the backward criterion, giving us the unconfoundedness.</p>
+<p>The ATE is given by:</p>
+<p><span class="math display">\[\tau \triangleq \mathbb{E}[Y(1)- Y(0)] = \mathbb{E}_W[\mathbb{E}[Y|T=1,W]- \mathbb{E}[Y|T=0,W]]\]</span> Thus from the causal estimand <span class="math inline">\(\mathbb{E}[Y(1)- Y(0)]\)</span> we can get statistical estimand <span class="math inline">\(\mathbb{E}_W[\mathbb{E}[Y|T=1,W]- \mathbb{E}[Y|T=0,W]]\)</span>.</p>
+<p>To compute the statistical estimand, a machine learning model (for example, a regression model) can be used <span class="math inline">\(\hat{\mu} \approx \mu\)</span> to compute the conditional expectation <span class="math inline">\(\mathbb{E}[Y|T,W]\)</span> and an empirical mean (<span class="math inline">\(\frac{1}{n}\sum_i\)</span>) can be computed over all the data (<span class="math inline">\(n\)</span>) to approximate <span class="math inline">\(\mathbb{E}_W\)</span></p>
+<p><span class="math display">\[\mu(1,W) - \mu(0,W) = \mathbb{E}[Y|T=1,W]- \mathbb{E}[Y|T=0,W]\]</span> The model <span class="math inline">\(\hat{\mu}\)</span> is known as the conditional outcome model, and the estimator as the COM estimator or S-Learner (Single) <span class="citation" data-cites="kunzel2019metalearners">(<a href="#ref-kunzel2019metalearners" role="doc-biblioref">Künzel et al. 2019</a>)</span>.</p>
+<p>Thus, the ATE using COM estimator is denoted by <span class="math inline">\(\hat{\tau}\)</span> and can be given by:</p>
+<p><span class="math display">\[\tau = \frac{1}{n}\sum_i(\hat{\mu}(1,w_i) - \hat{\mu}(0,w_i))\]</span></p>
+<p>Now, CATE estimation using both the adjustment set <span class="math inline">\(W\)</span> and the observed (and unobserved) covariates <span class="math inline">\(X\)</span>, using the model <span class="math inline">\(\mu\)</span></p>
+<p><span class="math display">\[\mu(t,w,x) \triangleq \mathbb{E}[Y|T=t,X=x,W]\]</span> Thus the statistical model <span class="math inline">\(\hat{\mu}\)</span> can be used to compute the CATE <span class="math inline">\(\tau{x}\)</span> using the COM estimator as: <span class="math display">\[\hat{\tau(x)} = \frac{1}{n_x}\sum_{i:x_i=x}(\hat{\mu}(1,w_i,x) - \hat{\mu}(0,w_i,x))\]</span></p>
+<p>Thus, ITE (which is primarily the measure we want) can be approximated using the difference in the predictions of two models as <span class="math inline">\(n_x=1\)</span>$: <span class="math display">\[\tau_i = \hat{\mu}(1,w_i,x) - \hat{\mu}(0,w_i,x)\]</span></p>
+</section>
+<section id="grouped-conditional-outcome-modeling-estimator-gcom-estimator" class="level3" data-number="3.5.1">
+<h3 data-number="3.5.1" class="anchored" data-anchor-id="grouped-conditional-outcome-modeling-estimator-gcom-estimator"><span class="header-section-number">3.5.1</span> Grouped Conditional Outcome Modeling Estimator (GCOM Estimator)</h3>
+<p>In most cases, the treatment <span class="math inline">\(T\)</span> is binary while the adjustment set and the covariates <span class="math inline">\(W \cup X\)</span> are high dimensional. As seen in the equation, with binary treatment (<span class="math inline">\(0,1\)</span>) and a high dimensional <span class="math inline">\(w\)</span>, the model fitting the two differences <span class="math inline">\(\hat{\mu}(1,w_i) - \hat{\mu}(0,w_i)\)</span> will ignore the treatment and resulting ATE will be closer to zero. One easy fix would be to compute two different models for each treatment. Grouping all the data with treatment <span class="math inline">\(T=1\)</span> and fitting a model <span class="math inline">\(\hat{\mu}_1(w)\)</span> to predict outcome <span class="math inline">\(Y\)</span> from <span class="math inline">\(W \cup X\)</span> and doing the same for treatment <span class="math inline">\(T=0\)</span> by fitting a model <span class="math inline">\(\hat{\mu}_0(w)\)</span> and computing the average as below: <span class="math display">\[\hat{\tau(x)} = \frac{1}{n_x}\sum_{i:x_i=x}(\hat{\mu_1}(w_i,x) - \hat{\mu_0}(w_i,x))\]</span> Since the estimation is done by grouping based on the treatment values, the estimator is known as grouped conditional outcome model estimator (GCOM estimator). Though the GCOM estimator overcomes the dimensionality imbalance issue over the COM estimator, it has the disadvantage of not using all the data in estimation and fitting the statistical model compared to the COM estimator.</p>
+</section>
+<section id="tarnet" class="level3" data-number="3.5.2">
+<h3 data-number="3.5.2" class="anchored" data-anchor-id="tarnet"><span class="header-section-number">3.5.2</span> TARNet</h3>
+<p>COM estimators combine treatment <span class="math inline">\(T\)</span> and the input covariates <span class="math inline">\(W\)</span>, making the estimator biased towards zero. The GCOM estimator builds two separate estimators for each treatment (binary <span class="math inline">\(T=0\)</span> and <span class="math inline">\(T=1\)</span>), and since it does not use all the data, it leads to a higher variance model. TARNet estimators can combine the two by first learning a representation <span class="math inline">\(\hat{\mu}\)</span> from all the input covariates, and then the layer can branch to two heads as shown in <a href="#fig-tarnet">Figure&nbsp;<span>3.24</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-tarnet" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/TARNet.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.24: TARNet estimator</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="sec-xlearner" class="level3" data-number="3.5.3">
+<h3 data-number="3.5.3" class="anchored" data-anchor-id="sec-xlearner"><span class="header-section-number">3.5.3</span> X-Learner</h3>
+<p>Kunzell et al.&nbsp;proposed a meta-learner, the X-learner, to overcome the limitations of Generalized Causal Outcome Model (GCOM) estimators. The GCOM approach falls short in its failure to utilize the complete dataset for estimating the Conditional Average Treatment Effect (CATE). In contrast, the X-learner uses all available data for both models that comprise the estimator, particularly in scenarios involving binary treatment variables, as detailed in <span class="citation" data-cites="kunzel2019metalearners">(<a href="#ref-kunzel2019metalearners" role="doc-biblioref">Künzel et al. 2019</a>)</span>.</p>
+<p>X-learner has the following three stages:</p>
+<p><strong>Step 1</strong></p>
+<p>Assume <span class="math inline">\(X\)</span> is a sufficient adjustment set and is also covers all the covariates, given a binary treatment, two models <span class="math inline">\(\hat{\mu_0}(x)\)</span> and <span class="math inline">\(\hat{\mu_1}(x)\)</span> are estimated similar to GCOM estimator for each group.</p>
+<p><strong>Step 2(a)</strong></p>
+<p>In the first part, imputed ITE is computed for treatment group <span class="math inline">\(\hat{\tau_{1,i}}\)</span> using the observed potential outcome <span class="math inline">\(Y_i(1)\)</span> and the imputed counterfactual that we get from the first step <span class="math inline">\(\hat{\mu_0}(x)\)</span>. Similarly, we compute imputed ITE for the control group <span class="math inline">\(\hat{\tau_{0,i}}\)</span> using the observed potential outcome <span class="math inline">\(Y_i(0)\)</span> and the corresponding imputed counterfactual that we get from the first step <span class="math inline">\(\hat{\mu_1}(x)\)</span> <span class="math display">\[\hat{\tau_{1,i}} = Y_i(1) + \hat{\mu_0}(x_i)\]</span> <span class="math display">\[\hat{\tau_{0,i}} = Y_i(0) + \hat{\mu_1}(x_i)\]</span> Only individual elements from the treatment or control groups are used to compute the ITEs.</p>
+<p><strong>Step 2(b)</strong></p>
+<p>In this step, a supervised machine learning algorithm like regression can be used to fit a model <span class="math inline">\(\hat{\tau_1}(x)\)</span> to predict <span class="math inline">\(\hat{\tau_{1,i}}\)</span> from the above step for each <span class="math inline">\(x_i\)</span> in the treatment group. Thus the model <span class="math inline">\(\hat{\tau_1}(x)\)</span> uses all the data from the treatment group in this step and the control group data <span class="math inline">\(\hat{\mu_0}\)</span> from the previous step. Similarly, a model is fit <span class="math inline">\(\hat{\tau_0}(x)\)</span> to predict <span class="math inline">\(\hat{\tau_{0,i}}\)</span> from the last step for each <span class="math inline">\(x_i\)</span> in the control group.</p>
+<p><strong>Step 3</strong></p>
+<p>The two estimators are combined using a weighting function <span class="math inline">\(0 &lt; g(x) &lt;1\)</span> as given:</p>
+<p><span class="math display">\[\hat{\tau}(x) = g(x)\hat{\tau_0}(x) + (1-g(x))\hat{\tau_1}(x)\]</span> The authors found that the propensity score performs well as a weighting function.</p>
+</section>
+<section id="matching" class="level3" data-number="3.5.4">
+<h3 data-number="3.5.4" class="anchored" data-anchor-id="matching"><span class="header-section-number">3.5.4</span> Matching</h3>
+<p>Matching is a relatively straightforward estimation technique wherein individuals from the treated and control groups are matched based on their covariates or confounders <span class="math inline">\(X\)</span>, using a similarity or distance metric <span class="math inline">\(d(\cdot,\cdot)\)</span>, as described in <span class="citation" data-cites="stuart2010matching">(<a href="#ref-stuart2010matching" role="doc-biblioref">Stuart 2010</a>)</span>.</p>
+<p><a href="#fig-matching">Figure&nbsp;<span>3.25</span></a> shows a simplified view with two dimensions <span class="math inline">\((X_1,X_2)\)</span> how the nearest neighbor (1-NN) can be used for matching between the treated and the control group.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-matching" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Matching1.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.25: Matching Algorithm</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Formally, the following procedure is followed for 1-NN as below:</p>
+<ol type="1">
+<li><p>Define a similarity or a distance metric <span class="math inline">\(d(\cdot,\cdot)\)</span>.</p></li>
+<li><p>For each individual, define <span class="math inline">\(\mathcal{J}(i)\)</span> so that we find the closest counterfactual match (treatment (<span class="math inline">\(t_j \neq t_i\)</span>)) with another individual <span class="math inline">\(j \neq i\)</span> <span class="math display">\[\mathcal{J}(i) = \text{argmin}_{j\ s.t\ t_j \neq t_i} d(x_j,x_i)\]</span></p></li>
+<li><p>Thus, every individual ITE can be computed using the actual and the potential counterfactual outcome obtained from <span class="math inline">\(\mathcal{J}(i)\)</span> above. <span class="math display">\[\hat{\tau_{1, i}} = y_i(1) - y_{\mathcal{J}(i)}\]</span> <span class="math display">\[\hat{\tau_{0, i}} = y_{\mathcal{J}(i)} - y_i(0)\]</span> These two can be combined into a single notation: <span class="math display">\[\hat{\tau_{i}} = (2t_i -1)(y_i - y_{\mathcal{J}(i)})\]</span></p></li>
+<li><p>Thus, ATE can be computed using the average across all the individuals <span class="math display">\[\hat{\tau(x)} = \frac{1}{n}\sum_{i=1}^{n} \hat{\tau_{i}}\]</span> Consequently, calculating the average treatment effect across the matched groups enables the causal effect estimation since the confounders are similar within these groups, and any differences are attributed solely to the treatment. This simplistic method works particularly well when the number of confounders is limited. However, as the number of dimensions or confounders increases, the method may suffer from the curse of dimensionality. Despite this drawback, the matching technique is easily interpretable by domain experts, although it heavily relies on the underlying metric of distance or similarity.</p></li>
+</ol>
+<p>Notably, it has been demonstrated that the matching algorithm employing the 1-Nearest Neighbor (1-NN) method is equivalent to the covariate adjustment method, which facilitates relating theoretical properties based on this method.</p>
+</section>
+<section id="doubly-robust-estimator" class="level3" data-number="3.5.5">
+<h3 data-number="3.5.5" class="anchored" data-anchor-id="doubly-robust-estimator"><span class="header-section-number">3.5.5</span> Doubly Robust Estimator</h3>
+<p>Conditional outcome modeling (<span class="math inline">\(\hat{\mu}(x)\)</span>) and propensity score-based estimators (<span class="math inline">\(\hat{e}(x)\)</span>) can be combined to form the doubly robust estimator <span class="citation" data-cites="robins1994estimation">(<a href="#ref-robins1994estimation" role="doc-biblioref">Robins, Rotnitzky, and Zhao 1994</a>)</span>. <span class="math display">\[\hat{\tau}(x) = \frac{1}{n}\sum_i[\hat{\mu}(1,x_i)-\hat{\mu}(0,x_i)]\]</span> <span class="math display">\[\hat{\tau}(x) = \frac{1}{n}\sum_i[\hat{\mu}(1,\hat{e}(x_i))-\hat{\mu}(0,(1-\hat{e}(x_i))]\]</span></p>
+<p>The doubly robust method has a property that they are consistent estimators of ATE <span class="math inline">\(\hat{\tau}\)</span> if either the conditional outcome modeling estimator (<span class="math inline">\(\hat{\mu}(x)\)</span>) or the propensity score-based estimator (<span class="math inline">\(\hat{e}(x)\)</span>) are consistent. Also, the technique converges much faster to <span class="math inline">\(\tau\)</span> than either (<span class="math inline">\(\hat{\mu}(x)\)</span>) converging to (<span class="math inline">\(\mu(x)\)</span>) or (<span class="math inline">\(\hat{e}(x)\)</span>) converging to (<span class="math inline">\(e(x)\)</span>). This technique has a distinct advantage in high-dimensional data.</p>
+</section>
+<section id="double-machine-learning" class="level3" data-number="3.5.6">
+<h3 data-number="3.5.6" class="anchored" data-anchor-id="double-machine-learning"><span class="header-section-number">3.5.6</span> Double Machine Learning</h3>
+<p>Double machine learning estimators, as the name suggests, use machine learning to learn estimators in two stages to “partial out” the confounders (and other covariates) <span class="math inline">\(X\)</span> as shown in <a href="#fig-doubleml">Figure&nbsp;<span>3.26</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-doubleml" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/DoubleMachineLearning.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.26: Double Machine Learning</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<ol type="1">
+<li>Stage</li>
+</ol>
+<p>1.1 Fit a machine learning model to predict <span class="math inline">\(Y\)</span> from <span class="math inline">\(X\)</span> to get <span class="math inline">\(\hat{Y}\)</span></p>
+<p>1.2 Fit a machine learning model to predict <span class="math inline">\(T\)</span> from <span class="math inline">\(X\)</span> to get <span class="math inline">\(\hat{T}\)</span></p>
+<ol start="2" type="1">
+<li>Partial out the confounding effect by fitting another model to predict <span class="math inline">\(Y-\hat{Y}\)</span> and <span class="math inline">\(T-\hat{T}\)</span></li>
+</ol>
+</section>
+<section id="causal-trees-and-causal-forests" class="level3" data-number="3.5.7">
+<h3 data-number="3.5.7" class="anchored" data-anchor-id="causal-trees-and-causal-forests"><span class="header-section-number">3.5.7</span> Causal Trees and Causal Forests</h3>
+<p>Causal trees are similar to classification/regression trees, where leaf nodes, similar to the decision trees, are outcome variables, but the internal nodes are only limited to covariates and do not include the treatment <span class="citation" data-cites="wager2018estimation">(<a href="#ref-wager2018estimation" role="doc-biblioref">Wager and Athey 2018</a>)</span>. The general algorithm is:</p>
+<ol type="1">
+<li><p>First, the observational data is divided into a train (<span class="math inline">\(\mathcal{S}^{train}\)</span>) and a test (<span class="math inline">\(\mathcal{S}^{test}\)</span>) set. The train set is used for building the tree, and the test set is used for estimation.</p></li>
+<li><p>A greedy algorithm creates the splits like a regular decision tree. The goal of creating partition (<span class="math inline">\(\Pi\)</span>) using the covariates is slightly different in causal trees compared to standard decision trees. The purpose of creating splits is to find the best covariate to split the node such that the treated group have a different outcome than the control group. The Kullback-Leibler Divergence is one of the techniques used to measure divergence between the outcome class distributions. If there are <span class="math inline">\(i\)</span> outcomes, <span class="math inline">\(p_i\)</span> and <span class="math inline">\(q_i\)</span> are the outcome distribution in the treated and control groups, respectively, the KL divergence <span class="math inline">\(D\)</span> between the two is given by: <span class="math display">\[D(P:Q) = \sum_i p_i\log \frac{p_i}{q_i}\]</span> For a covariate <span class="math inline">\(X\)</span> that splits a node into children nodes, with total <span class="math inline">\(N\)</span> instances into <span class="math inline">\(N_x\)</span> children, a conditional divergence test can be performed using KL divergence</p></li>
+</ol>
+<p><span class="math display">\[D(P(Y|T=1):P(Y|T=0)|X) = \sum_x \frac{N_x}{N}D(P(Y|T=1,x):P(Y|T=0,x))\]</span> For the best split, the objective is to maximize the gain of the divergence between the outcome class distributions between treatment and control, and can be computed using:</p>
+<p><span class="math display">\[D_{gain}(X) = D(P(Y|T=1):P(Y|T=0)|X) - D(P(Y|T=1):P(Y|T=0))\]</span> 3. Cross-validation is used to select the depth <span class="math inline">\(d*\)</span> with pruning that minimizes the MSE of treatment effects using the folds as proxies for the test set.</p>
+<ol start="4" type="1">
+<li>Once the tree is fully constructed, the test set <span class="math display">\[\mathcal{S}^{test}\]</span> is used to estimate the treatment effects at the leaf nodes.</li>
+</ol>
+<p>Causal Forests are an extension of the idea of Causal trees for estimating the ATE. If we have a training set <span class="math inline">\(\{(X_i, Y_i,T_i)\}^n_{i=1}\)</span>, a test data <span class="math inline">\(x\)</span> and a causal tree predictor given by: <span class="math display">\[\hat{\tau}(x) = T(x;\{(X_i, Y_i,T_i)\}^n_{i=1})\]</span> The intention behind causal forests is that instead of one causal tree if many different trees <span class="math inline">\(T^*\)</span> are built, the average across them would be:</p>
+<p><span class="math display">\[\hat{\tau}(x) = \frac{1}{B}\sum_{b=1}^BT_b^*(x;\{(X_i, Y_i,T_i)\}^n_{i=1})\]</span> Many techniques, such as bagging or subsampling the training set, can be employed to build many causal trees for the causal forest. Employing random covariates from the whole set for the splitting criterion can also result in different trees. Creating a tree from one subsample of observations and estimating the effect using other leads to a more unbiased estimate for each tree, making them ``honest’’ and the average of these honest trees make it an unbiased estimate overall. Regression forests built using the honest trees were shown to have a nice theoretical property of the estimates asymptotically normal as the observations go towards infinity.</p>
+</section>
+<section id="propensity-score-based" class="level3" data-number="3.5.8">
+<h3 data-number="3.5.8" class="anchored" data-anchor-id="propensity-score-based"><span class="header-section-number">3.5.8</span> Propensity Score-Based</h3>
+<p>As previously discussed, unbiased estimation of the average treatment effect can be achieved through a randomized controlled test, wherein individuals are assigned to either the treatment or control group based on a coin flip. The propensity score technique, on the other hand, aims to re-weight the observational data such that it resembles pseudo-randomized control test data <span class="citation" data-cites="imbens2015causal">(<a href="#ref-imbens2015causal" role="doc-biblioref">Imbens and Rubin 2015</a>)</span>.</p>
+<p>Consider a scenario involving binary treatment and two covariates within an observational dataset. The data points can be separated into two regions with opposing distributions. The propensity scores method involves re-weighting the samples, as depicted, to modify the distribution through weighting such that it is similar and closely approximates randomized assignment.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Propensity-before.png" style="width:40.0%;height:35.0%" class="figure-img"></p>
+<figcaption class="figure-caption">Observed data before and after Propensity reweighting</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Propensity-after.png" style="width:40.0%;height:35.0%" class="figure-img"></p>
+<figcaption class="figure-caption">Observed data before and after Propensity reweighting</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><strong>Propensity score</strong> is the probability of being subjected to the treatment <span class="math inline">\((T=1)\)</span> given the adjustment set <span class="math inline">\(W\)</span> and is denoted by: <span class="math display">\[e(W) \triangleq P(T=1|X)\]</span> The propensity score can be learned using machine learning algorithms as any other regression problem. If the samples are re-weighted using the inverse propensity score of the treatment they received, thus changing the distribution to be more random and balanced.</p>
+<p><strong>Propensity score theorem</strong> Given the positivity assumption, the unconfoundedness given the adjustment set <span class="math inline">\(W\)</span> implies unconfoundedness given the propensity score <span class="math inline">\(e(W)\)</span> and formally written as: <span class="math display">\[(Y(1),Y(0)) \perp T|W \implies (Y(1),Y(0)) \perp T| e(W) \]</span> The advantage of propensity scores and the theorem is that during conditioning, when the adjustment set <span class="math inline">\(W\)</span> is high dimensional, one can use the propensity score <span class="math inline">\(e(W)\)</span>, which is a scalar.</p>
+<p><strong>Inverse Propensity Weighting (IPW) Estimator</strong> Given the data <span class="math inline">\((X_1,T_1,Y_1),\cdots,(X_n,T_n,Y_n)\)</span> the machine learning algorithm is first used to learn the estimator <span class="math inline">\(\hat{p}(T=t|X)\)</span>. The ATE can be estimated using: <span class="math display">\[\hat{\tau(x)} = \frac{1}{n_1}\sum_{i\ s.t. t_i=1} \frac{y_i}{\hat{p}(T=1|x_i)}- \frac{1}{n_0}\sum_{i\ s.t. t_i=0} \frac{y_i}{\hat{p}(T=0|x_i)}\]</span></p>
+</section>
+<section id="propensity-score-matching" class="level3" data-number="3.5.9">
+<h3 data-number="3.5.9" class="anchored" data-anchor-id="propensity-score-matching"><span class="header-section-number">3.5.9</span> Propensity Score Matching</h3>
+<p>The Propensity Score Matching (PSM) algorithm is a methodology that emulates a Randomized Controlled Trial (RCT) in its approach to contrasting outcomes between treated and untreated cohorts within the sample that Propensity Score has matched.</p>
+<p>However, the implementation of PSM necessitates careful consideration of certain caveats:</p>
+<ol type="1">
+<li><p>The first caveat, termed ‘Common Support’, necessitates that the distribution of propensity for treatment is analogous or identical across both treated and untreated cases.</p></li>
+<li><p>The second caveat demands the exclusive utilization of baseline attributes unaffected by the intervention during the Matching process.</p></li>
+<li><p>Thirdly, potential confounding variables must be both observable and without any hidden variables. A failure in this respect could result in biased estimates.</p></li>
+<li><p>Finally, the fourth caveat advises matching the most pertinent characteristics rather than indiscriminately incorporating every variable into the equation.</p></li>
+</ol>
+<p>The PSM process involves several key steps, as outlined by Jalan and Ravallion <span class="citation" data-cites="jalan2003estimating">(<a href="#ref-jalan2003estimating" role="doc-biblioref">Jalan and Ravallion 2003</a>)</span>:</p>
+<ol type="1">
+<li>The calculation of the Propensity Score for all units.</li>
+<li>The matching of treatment cohorts with control cohorts is performed following a predetermined matching strategy; for instance, a strategy could involve using the nearest neighbor method between the treated and control groups, implemented without replacement.</li>
+<li>The evaluation of covariate balance. In the event of an imbalance, revisiting the first and second steps and incorporating alternative specifications is advisable.</li>
+<li>The computation of the average outcome difference between the treatment and control groups.</li>
+</ol>
+</section>
+<section id="propensity-score-stratification" class="level3" data-number="3.5.10">
+<h3 data-number="3.5.10" class="anchored" data-anchor-id="propensity-score-stratification"><span class="header-section-number">3.5.10</span> Propensity Score Stratification</h3>
+<p>King and Nielsen propose that Propensity Score Matching (PSM) is designed to replicate a fully randomized experiment instead of a blocked randomized one. They further discuss that the exact matching procedure in PSM exacerbates issues such as imbalance, inefficiency, model dependence, and bias while also being unable to effectively mitigate the imbalance <span class="citation" data-cites="king2019propensity">(<a href="#ref-king2019propensity" role="doc-biblioref">King and Nielsen 2019</a>)</span>.</p>
+<p>Propensity Score (PS) stratification serves as a balancing mechanism, ensuring that the distribution of observed covariates appears comparable between treated and control groups when conditioned on the PS <span class="citation" data-cites="austin2011introduction">(<a href="#ref-austin2011introduction" role="doc-biblioref">Austin 2011</a>)</span>. As a result, it facilitates adjusting imbalances in the covariates by modifying the score accordingly.</p>
+<p>The specific steps to execute for PS stratification are:</p>
+<ol type="1">
+<li>Calculate the Propensity Score (PS) using logistic regression.</li>
+<li>Mutually exclusive strata are established based on the estimated PS.</li>
+<li>Both the treated and control units are grouped into each stratum.</li>
+<li>The difference in means between treated and control groups is calculated within each stratum.</li>
+<li>The means within each stratum are then weighted to achieve the target estimate.</li>
+</ol>
+<p>In the second step of the process, studies have shown that approximately 90% of the bias inherent in the unadjusted estimate can be removed using five strata <span class="citation" data-cites="rosenbaum1984reducing">(<a href="#ref-rosenbaum1984reducing" role="doc-biblioref">Rosenbaum and Rubin 1984</a>)</span>. However, the idea that increasing the number of strata beyond this point would lead to a further decrease in bias is not empirically supported. Indeed, simulation studies have indicated that the most favorable outcomes are achieved with between 5 and 10 strata, with different strata beyond this range contributing only minor improvements <span class="citation" data-cites="neuhauser2018number">(<a href="#ref-neuhauser2018number" role="doc-biblioref">Neuhäuser, Thielmann, and Ruxton 2018</a>)</span>. It is also essential to consider the practical implications of increasing the number of strata. As the number of strata increases, the number of data points available within each stratum decreases.</p>
+<p>During the fifth step of the process, Propensity Score (PS) stratification enables the calculation of both the Average Treatment Effect (ATE) and the Average Treatment Effect on the Treated (ATT), contingent on the weighting method utilized for the means. For the estimation of the ATE, the weighting is determined by the number of units within each stratum. On the other hand, the estimation of the ATT involves assigning weights according to the count of treated units present in each stratum <span class="citation" data-cites="imbens2004nonparametric">(<a href="#ref-imbens2004nonparametric" role="doc-biblioref">Imbens 2004</a>)</span>.</p>
+</section>
+</section>
+<section id="evaluation-and-validation-techniques" class="level2" data-number="3.6">
+<h2 data-number="3.6" class="anchored" data-anchor-id="evaluation-and-validation-techniques"><span class="header-section-number">3.6</span> Evaluation and Validation Techniques</h2>
+<p>Evaluating and validating causal models differ from traditional machine learning models, where techniques such as cross-validation and test set evaluations are performed. This section will highlight some standard metrics and methodologies to evaluate causal models.</p>
+<section id="evaluation-metrics" class="level3" data-number="3.6.1">
+<h3 data-number="3.6.1" class="anchored" data-anchor-id="evaluation-metrics"><span class="header-section-number">3.6.1</span> Evaluation Metrics</h3>
+<p>The two broad categories for the evaluation metrics are based on whether the subpopulation is homogeneous or heterogeneous and are:</p>
+<ol type="1">
+<li>Standard Causal Effect Estimation</li>
+<li>Heterogeneous Effect Estimation</li>
+</ol>
+<section id="standard-causal-effect-estimation" class="level4" data-number="3.6.1.1">
+<h4 data-number="3.6.1.1" class="anchored" data-anchor-id="standard-causal-effect-estimation"><span class="header-section-number">3.6.1.1</span> Standard Causal Effect Estimation</h4>
+<p>Assuming the potential outcome to be real-valued, ff there <span class="math inline">\(M\)</span> experiments being performed, and for each experiment, the observed ATE is <span class="math inline">\(\tau\)</span>, and the predicted ATE is <span class="math inline">\(\hat{\tau}\)</span>, then various regression-based evaluation metrics are:</p>
+<ol type="1">
+<li>Mean Squared Error of Average Treatment Effect: <span class="math display">\[\epsilon_{MSE\_ATE} = \frac{1}{M}\sum_{j=1}^{M}(\tau_j - \hat{\tau}_j)^2\]</span></li>
+<li>Root Mean Squared Error of Average Treatment Effect: <span class="math display">\[\epsilon_{RMSE\_ATE} = \sqrt{\frac{1}{M}\sum_{j=1}^{M}(\tau_j - \hat{\tau}_j)^2}\]</span></li>
+<li>Mean Absolute Error of Average Treatment Effect: <span class="math display">\[\epsilon_{MAE\_ATE} = \frac{1}{M}\sum_{j=1}^{M}|\tau_j - \hat{\tau}_j|\]</span></li>
+</ol>
+</section>
+<section id="heterogeneous-effect-estimation" class="level4" data-number="3.6.1.2">
+<h4 data-number="3.6.1.2" class="anchored" data-anchor-id="heterogeneous-effect-estimation"><span class="header-section-number">3.6.1.2</span> Heterogeneous Effect Estimation</h4>
+<ol type="1">
+<li>Uplift Curve</li>
+</ol>
+<p>Uplift modeling aims to identify the effect of an intervention on a particular individual rather than a population, especially in the case of heterogeneity <span class="citation" data-cites="pmlr-v67-gutierrez17a">(<a href="#ref-pmlr-v67-gutierrez17a" role="doc-biblioref">Gutierrez and Gérardy 2017</a>)</span>. Thus, uplift modeling attempts to estimate the ITE (or CATE), i.e., the treatment outcome of a given individual and how it would differ in the absence.</p>
+<p>The methodology to generate the uplift curve has parallels to ROC curves in standard machine learning, and the steps are: 1. Use the machine learning method as discussed for estimation and generate CATE for each individual (<span class="math inline">\(\hat{\mu}^1_i - \hat{\mu}^0_i\)</span>) 2. Sort the uplift scores by decreasing order and compute percentiles in a range (<span class="math inline">\((0,10)(10,20)\cdots(90,100)\)</span>) 3. For each bucket in the percentiles, one can estimate the difference in prediction for the treatment and the control group predictions on responses. The difference in average is taken for each decile.</p>
+<p><span class="math display">\[\bigg(\frac{Y^1}{N^1} - \frac{Y^0}{N^0}\bigg)(N^1 + N^0)\]</span> where <span class="math inline">\(Y^1\)</span> and <span class="math inline">\(N^1\)</span> are the sum of the treated individual outcome and the number of treated individuals for the bin. Similarly, <span class="math inline">\(Y^0\)</span> and <span class="math inline">\(N^0\)</span> are the control observations’ sum and number.</p>
+<ol start="4" type="1">
+<li>The uplift curve is then plotted with the x-axis representing the percentiles of the population and the y-axis representing the uplift gain from the above corresponding to each group.</li>
+</ol>
+<p>The advantage of the uplift curve is that we can select the decile that maximizes the gain as the limit of the population to be targeted next time rather than the whole population.</p>
+<ol start="2" type="1">
+<li>Qini Curve</li>
+</ol>
+<p>Qini curve is a variant of uplift curve where Qini score is computed instead of the uplift score as:</p>
+<p><span class="math display">\[Y^1 - Y^0 \frac{N^0}{N^1}\]</span> When there is an imbalance between the treatment and control groups, this measure offers more correction than the uplift score.</p>
+<ol start="3" type="1">
+<li>Uplift(Qini) Coefficient</li>
+</ol>
+<p>Similar to AUC-ROC curve, one can compute the area under the uplift (qini) curve, and is referred to as the uplift (qini) coefficient and is given by:</p>
+<p><span class="math display">\[Uplift_{Coef} = \sum_{a=0}^{N-1}(Uplift(a+1) + Uplift(a))\]</span> <span class="math display">\[Qini_{Coef} = \sum_{a=0}^{N-1}(Qini(a+1) + Qini(a))\]</span></p>
+</section>
+</section>
+<section id="robustness-checks-and-refutation-techniques" class="level3" data-number="3.6.2">
+<h3 data-number="3.6.2" class="anchored" data-anchor-id="robustness-checks-and-refutation-techniques"><span class="header-section-number">3.6.2</span> Robustness Checks and Refutation Techniques</h3>
+<p>Several assumptions are made in every step of causal inference, from building the causal model to estimation. Assumptions are made at the modeling level, such nonexistence of unobserved variables, the relationship between variables (edges in the graph), etc. We might make parametric assumptions for deriving the estimand at the identification step. At the estimation step, we might assume a linear relationship between treatment and observed and similarly between treatment and outcome. Many of these assumptions can be and should be tested for violations, if any. There are many assumptions that are not possible to be validated or refuted.</p>
+<p>Similar to standard software testing, there is unit or modular testing and integration testing.</p>
+<section id="unit-or-modular-tests" class="level4" data-number="3.6.2.1">
+<h4 data-number="3.6.2.1" class="anchored" data-anchor-id="unit-or-modular-tests"><span class="header-section-number">3.6.2.1</span> Unit or Modular Tests</h4>
+<p>Designing tests or validations to individually check the assumptions on the model, identification, and estimation process. Some of the tests are:</p>
+<ol type="1">
+<li><p>Conditional Independence Tests: Using the dependence graph and data to validate various independence assumptions, for example, with two variables (<span class="math inline">\(X_1,X_2\)</span>) and their relationship with treatment <span class="math inline">\(T\)</span> if <span class="math inline">\(P(T|X_1,X_2) =P(T|X_1)P(T|X_2)\)</span></p></li>
+<li><p>D-Separation Tests: Conditional and marginal independence can be tested between variables in graphs using moralize, orient, delete/add edges, etc.</p></li>
+<li><p>Bootstrap Sample Validation: Replacing the dataset completely with bootstrapped samples from the graph helps calculate statistically significant changes in the estimand.</p></li>
+<li><p>Data Subsets Validation: Replacing the given dataset with a randomly selected subset helps to compute changes in the estimands and gauge the impact.</p></li>
+</ol>
+</section>
+<section id="integration-or-complete-tests" class="level4" data-number="3.6.2.2">
+<h4 data-number="3.6.2.2" class="anchored" data-anchor-id="integration-or-complete-tests"><span class="header-section-number">3.6.2.2</span> Integration or Complete Tests</h4>
+<p>In integration testing, comprehensive testing on the entire process for validating many underlying assumptions rather than on single steps. Some of them are:</p>
+<ol type="1">
+<li><p>Placebo Treatment Refuter: What would impact the outcome if the treatment variable is replaced by a random variable (e.g., Gaussian)? It should have no impact (zero value of estimation) if the assumptions are all correct or some steps must be corrected.</p></li>
+<li><p>Adding Random Common Cause: Adding an independent random variable as a common cause should keep the estimate the same. This method can be easily tested on the dataset to see the significance of the estimation change.</p></li>
+<li><p>Dummy Outcome Refuter: The estimated causal effect should be zero if we replace the outcome variable with an independent random variable.</p></li>
+<li><p>Simulated Outcome Refuter or Synth Validation: If multiple datasets are generated very close to the generation process of the existing dataset and the assumptions made, the estimation effect should remain the same. This technique is also known as the synth validation technique and is one of the most comprehensive tests for process validation.</p></li>
+<li><p>Adding Unobserved Confounder: One of the real-world cases if missing the observed confounder from the data or modeling. By simulating a confounder based on some correlation <span class="math inline">\(\rho\)</span> between the outcome and the treatment, one can run the analysis and see the difference in the estimation. A significant change illustrates a robustness issue in the process.</p></li>
+</ol>
+</section>
+</section>
+</section>
+<section id="unconfoundedness-assumptions-bounds-and-sensitivity-analysis" class="level2" data-number="3.7">
+<h2 data-number="3.7" class="anchored" data-anchor-id="unconfoundedness-assumptions-bounds-and-sensitivity-analysis"><span class="header-section-number">3.7</span> Unconfoundedness: Assumptions, Bounds, and Sensitivity Analysis</h2>
+<p>Throughout the discussion, we assumed unconfoundedness or observed confounding in our inference process. However, Manski et al., in their work, showed that the no unobserved confounding assumption is unrealistic in the real world <span class="citation" data-cites="manski2003partial">(<a href="#ref-manski2003partial" role="doc-biblioref">Manski 2003</a>)</span>.</p>
+<p>In the simplest case, we assume an unobserved confounder <span class="math inline">\(U\)</span> along with an observed confounder <span class="math inline">\(W\)</span> as shown in <a href="#fig-observedconfounding">Figure&nbsp;<span>3.27</span></a>. Thus, the ATE can be written using the adjustment formula as:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-observedconfounding" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/ObservedConfounding.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.27: Observed Confounding</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[\mathbb{E}[Y(1) -Y(0)] = \mathbb{E}_{W,U}[\mathbb{E}[Y|T=1,W,U] - ]\mathbb{E}[Y|T=0,W,U]]\]</span> Since <span class="math inline">\(U\)</span> is unobserved, the ATE can be approximated as</p>
+<p><span class="math display">\[\mathbb{E}[Y(1) -Y(0)] \approx \mathbb{E}_{W}[\mathbb{E}[Y|T=1,W] - ]\mathbb{E}[Y|T=0,W]]\]</span> The impact of this approximation and how close the ATE in the equation and equation depends on many underlying conditions. Thus, instead of the ATE being a single value becomes an interval with bounds that depend on the assumptions.</p>
+<p>With the simple assumption that the outcome <span class="math inline">\(Y\)</span> is bounded between <span class="math inline">\(0\)</span> and <span class="math inline">\(1\)</span>, we know that the individual treatment effect is bounded between the maximum limit as below <span class="math display">\[0-1  \leq Y_i(1) -Y_i(0) \leq 1-0\]</span> Thus, <span class="math display">\[-1  \leq Y_i(1) -Y_i(0) \leq 1\]</span> Hence the expectations can be bounded as follows: <span class="math display">\[-1  \leq \mathbb{E}[Y(1) -Y(0)] \leq 1\]</span> More generally if potential outcomes are bounded between <span class="math inline">\(l\)</span> and <span class="math inline">\(h\)</span>, the ATE bounds have the interval length <span class="math inline">\(2(h-1)\)</span> and given by:</p>
+<p><span class="math display">\[l-h  \leq \mathbb{E}[Y(1) -Y(0)] \leq h-l\]</span></p>
+<section id="observational-counterfactual-decomposition" class="level3" data-number="3.7.1">
+<h3 data-number="3.7.1" class="anchored" data-anchor-id="observational-counterfactual-decomposition"><span class="header-section-number">3.7.1</span> Observational Counterfactual Decomposition</h3>
+<p>The ATE can be written in terms of observational and counterfactual components, known as observational-counterfactual decomposition.</p>
+<p>The linearity of expectations gives: <span class="math display">\[\mathbb{E}[Y(1) -Y(0)] = \mathbb{E}[Y(1)]- \mathbb{E}[Y(0)]\]</span> Conditioning and marginalization on the treatments give: <span class="math display">\[
+\begin{aligned}
+\mathbb{E}[Y(1) -Y(0)] = P(T=1)\mathbb{E}[Y(1)|T=1] + P(T=0)\mathbb{E}[Y(1)|T=0]\\
+                                           - (P(T=1)\mathbb{E}[Y(0)|T=1] +P(T=0)\mathbb{E}[Y(0)|T=0])
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[
+\begin{aligned}
+\mathbb{E}[Y(1) -Y(0)]  = P(T=1)\mathbb{E}[Y(1)|T=1] + P(T=0)\mathbb{E}[Y(1)|T=0]\\
+- P(T=1)\mathbb{E}[Y(0)|T=1] - P(T=0)\mathbb{E}[Y(0)|T=0]
+\end{aligned}
+\]</span></p>
+<p><span class="math display">\[\begin{aligned}
+\mathbb{E}[Y(1) -Y(0)]  = P(T=1)\mathbb{E}[Y|T=1] + P(T=0)\mathbb{E}[Y(1)|T=0]\\
+- P(T=1)\mathbb{E}[Y(0)|T=1] - P(T=0)\mathbb{E}[Y|T=0]
+\end{aligned}\]</span></p>
+<p>Thus the equation has observational elements <span class="math inline">\(P(T=1)\mathbb{E}[Y|T=1], P(T=0)\mathbb{E}[Y|T=0]\)</span> and the counterfactual elements <span class="math inline">\(P(T=0)\mathbb{E}[Y(1)|T=0], P(T=1)\mathbb{E}[Y(1)|T=1]\)</span> and hence the observational-counterfactual decomposition.Now if we denote <span class="math inline">\(P(T=1)\)</span> with <span class="math inline">\(\pi\)</span> and <span class="math inline">\(P(T=0)\)</span> becomes <span class="math inline">\(1-\pi\)</span>, the equation can we written as:</p>
+<p><span class="math display">\[\mathbb{E}[Y(1) -Y(0)]  = \pi\mathbb{E}[Y|T=1] + (1-\pi)\mathbb{E}[Y(1)|T=0]
+- \pi\mathbb{E}[Y(0)|T=1] - (1-\pi)\mathbb{E}[Y|T=0]\]</span></p>
+</section>
+<section id="bounds" class="level3" data-number="3.7.2">
+<h3 data-number="3.7.2" class="anchored" data-anchor-id="bounds"><span class="header-section-number">3.7.2</span> Bounds</h3>
+<p>We will provide an overview of nonparametric bounds and elucidate the process of deriving them.</p>
+<section id="no-assumption-bounds" class="level4" data-number="3.7.2.1">
+<h4 data-number="3.7.2.1" class="anchored" data-anchor-id="no-assumption-bounds"><span class="header-section-number">3.7.2.1</span> No-Assumption Bounds</h4>
+<p>The no-assumption bounds are the simplest bound that reduces the interval <span class="math inline">\(2(h-1)\)</span> by half to <span class="math inline">\((h-1)\)</span> as given below: <span class="math display">\[\mathbb{E}[Y(1) -Y(0)]  \leq \pi\mathbb{E}[Y|T=1] + (1-\pi)h
+- \pi l - (1-\pi)\mathbb{E}[Y|T=0]\]</span></p>
+<p><span class="math display">\[\mathbb{E}[Y(1) -Y(0)]  \geq \pi\mathbb{E}[Y|T=1] + (1-\pi)l
+- \pi h - (1-\pi)\mathbb{E}[Y|T=0]\]</span></p>
+<p>Thus, the interval length is: <span class="math display">\[(1-\pi)h
++ \pi h -\pi l - (1-\pi)l\]</span></p>
+<p><span class="math display">\[= h-1\]</span> The idea with more assumptions, as discussed next, is to get a tighter lower and upper bound than the no-bounds interval.</p>
+</section>
+<section id="nonnegative-monotone-treatment-response-assumption" class="level4" data-number="3.7.2.2">
+<h4 data-number="3.7.2.2" class="anchored" data-anchor-id="nonnegative-monotone-treatment-response-assumption"><span class="header-section-number">3.7.2.2</span> Nonnegative Monotone Treatment Response Assumption</h4>
+<p>Assuming that the treatment always helps, i.e., <span class="math inline">\(\forall i\ Y_i(1) \geq Y_i(0)\)</span> means that ITE is always greater than <span class="math inline">\(0\)</span>, and thus the lower bound changes from <span class="math inline">\(l-h\)</span> to 0. The higher bound remains what we got from the no-assumption bounds. Thus, the intervals are:</p>
+<p><span class="math display">\[0 \leq \mathbb{E}[Y(1) -Y(0)]  \leq \pi\mathbb{E}[Y|T=1] + (1-\pi)l
+- \pi h - (1-\pi)\mathbb{E}[Y|T=0]\]</span></p>
+<p>By assuming the reverse, the treatment never helps, i.e., <span class="math inline">\(\forall i\ Y_i(1) \leq Y_i(0)\)</span>, gives us the ITE always less than <span class="math inline">\(0\)</span>, and thus the upper bound changes from <span class="math inline">\(h-1\)</span> to 0. The lower bound remains what we got from the no-assumption bounds. Thus, the intervals are:</p>
+<p><span class="math display">\[\pi\mathbb{E}[Y|T=1] + (1-\pi)h
+- \pi l - (1-\pi)\mathbb{E}[Y|T=0] \leq \mathbb{E}[Y(1) -Y(0)] \leq 0\]</span></p>
+</section>
+<section id="monotone-treatment-selection-assumption" class="level4" data-number="3.7.2.3">
+<h4 data-number="3.7.2.3" class="anchored" data-anchor-id="monotone-treatment-selection-assumption"><span class="header-section-number">3.7.2.3</span> Monotone Treatment Selection Assumption</h4>
+<p>The assumption is that the treatment groups’ potential outcomes are better than the control groups. Thus, we get <span class="math inline">\(\mathbb{E}[Y(1)|T=1] \geq \mathbb{E}[Y(1)|T=0]\)</span> for <span class="math inline">\(Y(1)\)</span> and <span class="math inline">\(\mathbb{E}[Y(0)|T=1] \geq \mathbb{E}[Y(1)|T=0]\)</span> for <span class="math inline">\(Y(0)\)</span>. It can be shown that under the monotone treatment selection assumption, the ATE is bounded by the associational difference of the observations and given by: <span class="math display">\[\mathbb{E}[Y(1)-Y(0)] \leq \mathbb{E}[Y|T=1] - \mathbb{E}[Y|T=0]\]</span> Thus, by combining the nonnegative monotone response lower bound assumption and monotone treatment selection upper bound response, we get a tighter interval than the no-assumption bounds and is:</p>
+<p><span class="math display">\[0 \leq \mathbb{E}[Y(1)-Y(0)] \leq \mathbb{E}[Y|T=1] - \mathbb{E}[Y|T=0] \]</span></p>
+</section>
+<section id="optimal-treatment-selection-assumption" class="level4" data-number="3.7.2.4">
+<h4 data-number="3.7.2.4" class="anchored" data-anchor-id="optimal-treatment-selection-assumption"><span class="header-section-number">3.7.2.4</span> Optimal Treatment Selection Assumption</h4>
+<p>The assumption here is that each individual gets the treatment that is best suited, i.e.&nbsp;<span class="math inline">\(\forall i\ T_i=1 \implies Y_i(1) \geq Y_i(0)\)</span> and <span class="math inline">\(\forall i\ T_i=0 \implies Y_i(0) \geq Y_i(1)\)</span>. Thus, we have <span class="math inline">\(\mathbb{E}[Y(1)|T=0] \leq \mathbb{E}[Y|T=0]\)</span> and <span class="math inline">\(\mathbb{E}[Y(0)|T=1] \leq \mathbb{E}[Y|T=1]\)</span> which when plugged into the observational-counterfactual equation we get <span class="math display">\[\mathbb{E}[Y(1) - Y(0)] &lt; \pi\mathbb{E}[Y|T=1] - \pi l\]</span> <span class="math display">\[\mathbb{E}[Y(1) - Y(0)] \geq (1-\pi)l -(1-\pi)\mathbb{E}[Y|T=0]\]</span></p>
+</section>
+</section>
+<section id="sensitivity-analysis" class="level3" data-number="3.7.3">
+<h3 data-number="3.7.3" class="anchored" data-anchor-id="sensitivity-analysis"><span class="header-section-number">3.7.3</span> Sensitivity Analysis</h3>
+<p>Given the presence of observed <span class="math inline">\(W\)</span> and the unobserved <span class="math inline">\(U\)</span>, the sensitivity analyses help us to quantify the unconfoundedness difference between the ATE adjusted to both <span class="math inline">\(\mathbb{E}_{W,U}\)</span> as compared to just the observed <span class="math inline">\(\mathbb{E}_{W}\)</span> <span class="citation" data-cites="cinelli2019sensitivity">(<a href="#ref-cinelli2019sensitivity" role="doc-biblioref">Cinelli et al. 2019</a>)</span>.</p>
+<p>Considering a simple setting with observed variable <span class="math inline">\(W\)</span> and an unobserved variable <span class="math inline">\(U\)</span> with only linear impacts as shown in <a href="#fig-sensitivityanalysis">Figure&nbsp;<span>3.28</span></a>, the structural causal model equations as a linear function will be:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-sensitivityanalysis" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SensitivityAnalyses.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.28: Sensitivity Analysis</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><span class="math display">\[T = \alpha_w W + \alpha_u U\]</span> <span class="math display">\[Y = \beta_w W + \beta_u U + \delta T\]</span> It can be shown that when adjusted for both <span class="math inline">\(W,U\)</span>, we get <span class="math inline">\(\delta\)</span> <span class="math display">\[\mathbb{E}[Y(1) -Y(0)]  = \mathbb{E}_{W,U}[\mathbb{E}[Y|T=1,W,U] - \mathbb{E}[Y|T=0,W,U]] =\delta\]</span> Also, when adjusted only for the observed <span class="math inline">\(W\)</span>, we get <span class="math display">\[\mathbb{E}[Y(1) -Y(0)]  = \mathbb{E}_{W}[\mathbb{E}[Y|T=1,W] - \mathbb{E}[Y|T=0,W]] = \delta + \frac{\beta_u}{\alpha_u}\]</span> Thus the bias, i.e., what would be the difference between when we do not adjust for the unobserved <span class="math inline">\(U\)</span> as compared to when we adjust for both <span class="math inline">\(W,U\)</span> will be the difference of the two and is <span class="math inline">\(\frac{\beta_u}{\alpha_u}\)</span>.</p>
+<p>A contour plot for different values of <span class="math inline">\(\beta_u\)</span> and <span class="math inline">\(\alpha_u\)</span> gives the sensitivity to single unobserved confounding as shown in <a href="#fig-sensitivityplot">Figure&nbsp;<span>3.29</span></a></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-sensitivityplot" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SensitivityPlots.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.29: Sensitivity Plot</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Many researchers, such as Cinelli et al.&nbsp;and Vetich et al., have shown techniques to reduce the constraints (linear assumptions, single variable) and yet be able to perform sensitivity analyses similar to the simple case <span class="citation" data-cites="cinelli2020making">(<a href="#ref-cinelli2020making" role="doc-biblioref">Cinelli and Hazlett 2020, veitch2020sense</a>)</span>.</p>
+</section>
+</section>
+<section id="case-study" class="level2" data-number="3.8">
+<h2 data-number="3.8" class="anchored" data-anchor-id="case-study"><span class="header-section-number">3.8</span> Case Study</h2>
+<p>We will go through different steps and processes of causal inference to demonstrate and give a practical hands-on experience with a real-world dataset. The goal is to take various steps highlighted in the chapter using the tools.</p>
+<section id="dataset" class="level3" data-number="3.8.1">
+<h3 data-number="3.8.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">3.8.1</span> Dataset</h3>
+<p>Economist Jean-Jacques Lalonde collected the Lalonde dataset in the 1970s, and has been widely used in research on the evaluation of social programs. The NSWD program was designed to test the effectiveness of a job training and placement program for disadvantaged individuals. The program provided job training, job placement services, and a wage subsidy to disadvantaged individuals (the treatment group), while a control group received no treatment. The goal of the program was to determine whether the treatment had a positive effect on the employment and earnings of the participants. The dataset includes a variety of variables, including demographic characteristics (such as age, education level, and race), employment status, and income.</p>
+</section>
+<section id="tools-and-library" class="level3" data-number="3.8.2">
+<h3 data-number="3.8.2" class="anchored" data-anchor-id="tools-and-library"><span class="header-section-number">3.8.2</span> Tools and Library</h3>
+<p>We will use <strong>doWhy</strong>, a Python library for causal inference, for most modeling and analysis. The library includes tools for performing various causal inference tasks, such as identifying the causal effect of a treatment on an outcome variable, estimating the total effect of a treatment on an outcome variable using various interchangeable estimators and assessing the robustness of causal estimates to assumptions about the data generating process. In the case study we use <strong>causalml</strong> and <strong>causallift</strong> for further distributional analysis and uplfit modeling. Python libraries such as <strong>pandas</strong>, <strong>matplotlib</strong>, <strong>scikit-learn</strong> etc. are used for data processing, visualization and machine learning.</p>
+</section>
+<section id="exploratory-data-analysis" class="level3" data-number="3.8.3">
+<h3 data-number="3.8.3" class="anchored" data-anchor-id="exploratory-data-analysis"><span class="header-section-number">3.8.3</span> Exploratory Data Analysis</h3>
+<p>Plotting the treated group vs.&nbsp;control group with various variables (age, race, income, education) for understanding the distribution across the two as shown:</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Black.png" style="width:50.0%;height:35.0%" class="figure-img"></p>
+<figcaption class="figure-caption">Treatment vs (Race, Age, Education)</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Age.png" style="width:50.0%;height:35.0%" class="figure-img"></p>
+<figcaption class="figure-caption">Treatment vs (Race, Age, Education)</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Income.png" style="width:50.0%;height:35.0%" class="figure-img"></p>
+<figcaption class="figure-caption">Treatment vs (Race, Age, Education)</figcaption>
+</figure>
+</div>
+</div>
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/Education.png" style="width:50.0%;height:35.0%" class="figure-img"></p>
+<figcaption class="figure-caption">Treatment vs (Race, Age, Education)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>One can see that the dataset is not balanced between the treated and the control group. The difference between the treated and control groups is quite evident for various variables such as education, age, and hispanic. This may cause issues in many estimation processes and in the propensity-based estimation, we will highlight how the propensity-based techniques change the distribution through weights.</p>
+</section>
+<section id="estimation-and-results" class="level3" data-number="3.8.4">
+<h3 data-number="3.8.4" class="anchored" data-anchor-id="estimation-and-results"><span class="header-section-number">3.8.4</span> Estimation and Results</h3>
+<section id="identification-of-estimand" class="level4" data-number="3.8.4.1">
+<h4 data-number="3.8.4.1" class="anchored" data-anchor-id="identification-of-estimand"><span class="header-section-number">3.8.4.1</span> Identification of Estimand</h4>
+<p>As discussed we first identify the estimand with variables <strong>treat</strong> as the treatment <span class="math inline">\(T\)</span>, <strong>re78</strong> as the outcome <span class="math inline">\(Y\)</span> and other nominal/numeric ones such as <strong>nodegr</strong>, <strong>black</strong>, <strong>hisp</strong>, <strong>age</strong>, _educ__ and __married as the covariates <span class="math inline">\(X\)</span> as shown in the listing.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dowhy <span class="im">import</span> CausalModel</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> CausalModel(</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>  data <span class="op">=</span> lalonde_df,</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>  treatment<span class="op">=</span><span class="st">'treat'</span>,</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>  outcome<span class="op">=</span><span class="st">'re78'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>  common_causes<span class="op">=</span><span class="st">'nodegr+black+hisp+age+educ+married'</span>.split(<span class="st">'+'</span>)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>identified_estimand <span class="op">=</span> model.identify_effect()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The causal graph showing the relationships between the outcome, treatment, and observed confounders is shown in <a href="#fig-causallalonde">Figure&nbsp;<span>3.30</span></a></p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-causallalonde" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/CausalModel-lalonde.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.30: Causal Graph for Identification</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="estimation-and-robustness" class="level4" data-number="3.8.4.2">
+<h4 data-number="3.8.4.2" class="anchored" data-anchor-id="estimation-and-robustness"><span class="header-section-number">3.8.4.2</span> Estimation and Robustness</h4>
+<p>We have explored many linear, non-linear, propensity-based, and causal tree-based estimators to give the readers a more comprehensive view.</p>
+<p>A simple linear regression estimation is shown, and the results.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>linear_regression_estimate <span class="op">=</span> model.estimate_effect(</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>  identified_estimand,</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>  method_name<span class="op">=</span><span class="st">"backdoor.linear_regression"</span>,</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>  control_value<span class="op">=</span><span class="dv">0</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>  treatment_value<span class="op">=</span><span class="dv">1</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(linear_regression_estimate)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<pre><code>*** Causal Estimate ***
+
+## Identified estimand
+Estimand type: EstimandType.NONPARAMETRIC_ATE
+
+### Estimand : 1
+Estimand name: backdoor
+Estimand expression:
+   d
+--------(E[re78|age,nodegr,married,educ,hisp,black])
+d[treat]
+Estimand assumption 1, Unconfoundedness: If U→{treat} and U→re78 then
+P(re78|treat,age,nodegr,married,educ,hisp,black,U) =
+P(re78|treat,age,nodegr,married,educ,hisp,black)
+
+## Realized estimand
+b: re78~treat+age+nodegr+married+educ+hisp+black
+Target units: ate
+
+## Estimate
+Mean value: 1671.1304316174173</code></pre>
+<p>As discussed in the exploratory data analysis, the data distribution was not symmetrical between the control and the treated group, so we used the inverse propensity-score weighting technique as one of the estimators.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>causal_estimate_ipw <span class="op">=</span> model.estimate_effect(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  identified_estimand,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  method_name<span class="op">=</span><span class="st">"backdoor.propensity_score_weighting"</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  target_units <span class="op">=</span> <span class="st">"ate"</span>,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  method_params<span class="op">=</span>{<span class="st">"weighting_scheme"</span>:<span class="st">"ips_weight"</span>}</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(causal_estimate_ipw)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The <strong>doWhy</strong> library provides interesting interpreting techniques to understand the change in distribution, as shown in the listing.</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a>causal_estimate_ipw.interpret(</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>  method_name<span class="op">=</span><span class="st">"confounder_distribution_interpreter"</span>,</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a>  var_type<span class="op">=</span><span class="st">'discrete'</span>,</span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a>  var_name<span class="op">=</span><span class="st">'married'</span>,</span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a>  fig_size <span class="op">=</span> (<span class="dv">10</span>, <span class="dv">7</span>),</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>  font_size <span class="op">=</span> <span class="dv">12</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div class="quarto-figure quarto-figure-center">
+<figure class="figure">
+<p><img src="img/PropensityTechnique.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption class="figure-caption">Married distribution before and after inverse propensity weighting</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Table for Estimator Comparison</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Estimator</th>
+<th>ATE</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Naive</td>
+<td>1794.342</td>
+</tr>
+<tr class="even">
+<td>Linear Regression</td>
+<td>1671.13</td>
+</tr>
+<tr class="odd">
+<td>T-Learner</td>
+<td>1693.76</td>
+</tr>
+<tr class="even">
+<td>X-Learner</td>
+<td>1763.83</td>
+</tr>
+<tr class="odd">
+<td>T-Learner</td>
+<td>1693.76</td>
+</tr>
+<tr class="even">
+<td>Double Machine Learner</td>
+<td>1408.93</td>
+</tr>
+<tr class="odd">
+<td>Propensity Score Matching</td>
+<td>1498.55</td>
+</tr>
+<tr class="even">
+<td>Propensity Score Stratification</td>
+<td>1838.36</td>
+</tr>
+<tr class="odd">
+<td>Propensity Score and Weighting</td>
+<td>1639.80</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="refutation-and-validation" class="level3" data-number="3.8.5">
+<h3 data-number="3.8.5" class="anchored" data-anchor-id="refutation-and-validation"><span class="header-section-number">3.8.5</span> Refutation and Validation</h3>
+<p>Next, we highlight some refutation and validation tests performed on the model, as discussed in the chapter.</p>
+<section id="removing-random-subset-of-data" class="level4" data-number="3.8.5.1">
+<h4 data-number="3.8.5.1" class="anchored" data-anchor-id="removing-random-subset-of-data"><span class="header-section-number">3.8.5.1</span> Removing Random Subset of Data</h4>
+<p>We choose the causal estimate from inverse causal weighting to perform the refutation as shown:</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a>res_subset <span class="op">=</span> model.refute_estimate(</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>  identified_estimand,</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a>  causal_estimate_ipw,</span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a>  method_name<span class="op">=</span><span class="st">"data_subset_refuter"</span>,</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>  show_progress_bar<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>  subset_fraction<span class="op">=</span><span class="fl">0.9</span></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The difference between the two is around <span class="math inline">\(17\)</span>, and since the p-value is <span class="math inline">\(0.98 &gt; 0.05\)</span> we can safely say that the null hypothesis is valid and the refutation task had no impact on the estimation.</p>
+<pre><code>Refute: Use a subset of data
+Estimated effect:1639.7956658905296
+New effect:1656.1009245901791
+p value:0.98
+</code></pre>
+</section>
+<section id="placebo-treatment" class="level4" data-number="3.8.5.2">
+<h4 data-number="3.8.5.2" class="anchored" data-anchor-id="placebo-treatment"><span class="header-section-number">3.8.5.2</span> Placebo Treatment</h4>
+<p>Replacing treatment with a random (placebo) variable as shown:</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>res_placebo <span class="op">=</span> model.refute_estimate(</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>  identified_estimand,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>  causal_estimate_ipw,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>  method_name<span class="op">=</span><span class="st">"placebo_treatment_refuter"</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>  show_progress_bar<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>  placebo_type<span class="op">=</span><span class="st">"permute"</span></span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The output</p>
+<pre><code>Refute: Use a Placebo Treatment
+Estimated effect:1639.7956658905296
+New effect:-209.15727259572515
+p value:0.78</code></pre>
+<p>The causal estimation through inverse probability weighting can be considered robust based on the p-value.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-austin2011introduction" class="csl-entry" role="listitem">
+Austin, Peter C. 2011. <span>“An Introduction to Propensity Score Methods for Reducing the Effects of Confounding in Observational Studies.”</span> <em>Multivariate Behavioral Research</em> 46 (3): 399–424.
+</div>
+<div id="ref-cinelli2020making" class="csl-entry" role="listitem">
+Cinelli, Carlos, and Chad Hazlett. 2020. <span>“Making Sense of Sensitivity: Extending Omitted Variable Bias.”</span> <em>Journal of the Royal Statistical Society Series B: Statistical Methodology</em> 82 (1): 39–67.
+</div>
+<div id="ref-cinelli2019sensitivity" class="csl-entry" role="listitem">
+Cinelli, Carlos, Daniel Kumor, Bryant Chen, Judea Pearl, and Elias Bareinboim. 2019. <span>“Sensitivity Analysis of Linear Structural Causal Models.”</span> In <em>International Conference on Machine Learning</em>, 1252–61. PMLR.
+</div>
+<div id="ref-pmlr-v67-gutierrez17a" class="csl-entry" role="listitem">
+Gutierrez, Pierre, and Jean-Yves Gérardy. 2017. <span>“Causal Inference and Uplift Modelling: A Review of the Literature.”</span> In <em>Proceedings of the 3rd International Conference on Predictive Applications and APIs</em>, edited by Claire Hardgrove, Louis Dorard, Keiran Thompson, and Florian Douetteau, 67:1–13. Proceedings of Machine Learning Research. PMLR.
+</div>
+<div id="ref-huang2012pearl" class="csl-entry" role="listitem">
+Huang, Yimin, and Marco Valtorta. 2012. <span>“Pearl’s Calculus of Intervention Is Complete.”</span> <em>arXiv Preprint arXiv:1206.6831</em>.
+</div>
+<div id="ref-imbens2004nonparametric" class="csl-entry" role="listitem">
+Imbens, Guido W. 2004. <span>“Nonparametric Estimation of Average Treatment Effects Under Exogeneity: A Review.”</span> <em>Review of Economics and Statistics</em> 86 (1): 4–29.
+</div>
+<div id="ref-imbens2008regression" class="csl-entry" role="listitem">
+Imbens, Guido W, and Thomas Lemieux. 2008. <span>“Regression Discontinuity Designs: A Guide to Practice.”</span> <em>Journal of Econometrics</em> 142 (2): 615–35.
+</div>
+<div id="ref-imbens2015causal" class="csl-entry" role="listitem">
+Imbens, Guido W, and Donald B Rubin. 2015. <em>Causal Inference in Statistics, Social, and Biomedical Sciences</em>. Cambridge University Press.
+</div>
+<div id="ref-jalan2003estimating" class="csl-entry" role="listitem">
+Jalan, Jyotsna, and Martin Ravallion. 2003. <span>“Estimating the Benefit Incidence of an Antipoverty Program by Propensity-Score Matching.”</span> <em>Journal of Business &amp; Economic Statistics</em> 21 (1): 19–30.
+</div>
+<div id="ref-king2019propensity" class="csl-entry" role="listitem">
+King, Gary, and Richard Nielsen. 2019. <span>“Why Propensity Scores Should Not Be Used for Matching.”</span> <em>Political Analysis</em> 27 (4): 435–54.
+</div>
+<div id="ref-kunzel2019metalearners" class="csl-entry" role="listitem">
+Künzel, Sören R, Jasjeet S Sekhon, Peter J Bickel, and Bin Yu. 2019. <span>“Metalearners for Estimating Heterogeneous Treatment Effects Using Machine Learning.”</span> <em>Proceedings of the National Academy of Sciences</em> 116 (10): 4156–65.
+</div>
+<div id="ref-lechner2011estimation" class="csl-entry" role="listitem">
+Lechner, Michael et al. 2011. <span>“The Estimation of Causal Effects by Difference-in-Difference Methods.”</span> <em>Foundations and Trends<span></span> in Econometrics</em> 4 (3): 165–224.
+</div>
+<div id="ref-manski2003partial" class="csl-entry" role="listitem">
+Manski, Charles F. 2003. <em>Partial Identification of Probability Distributions</em>. Vol. 5. Springer.
+</div>
+<div id="ref-neuhauser2018number" class="csl-entry" role="listitem">
+Neuhäuser, Markus, Matthias Thielmann, and Graeme D Ruxton. 2018. <span>“The Number of Strata in Propensity Score Stratification for a Binary Outcome.”</span> <em>Archives of Medical Science</em> 14 (3): 695–700.
+</div>
+<div id="ref-pearl2000" class="csl-entry" role="listitem">
+Pearl, Judea. 2000. <em>Causality: Models, Reasoning, and Inference</em>. USA: Cambridge University Press.
+</div>
+<div id="ref-pearl2009overview" class="csl-entry" role="listitem">
+———. 2009. <span>“Causal Inference in Statistics: An Overview.”</span> <em>Statistics Surveys</em> 3 (January): 96–146. <a href="https://doi.org/10.1214/09-SS057">https://doi.org/10.1214/09-SS057</a>.
+</div>
+<div id="ref-pearl2010causal" class="csl-entry" role="listitem">
+———. 2010. <span>“Causal Inference.”</span> <em>Causality: Objectives and Assessment</em>, 39–58.
+</div>
+<div id="ref-pearl2012calculus" class="csl-entry" role="listitem">
+———. 2012. <span>“The Do-Calculus Revisited.”</span> <em>arXiv Preprint arXiv:1210.4852</em>.
+</div>
+<div id="ref-robins1994estimation" class="csl-entry" role="listitem">
+Robins, James M, Andrea Rotnitzky, and Lue Ping Zhao. 1994. <span>“Estimation of Regression Coefficients When Some Regressors Are Not Always Observed.”</span> <em>Journal of the American Statistical Association</em> 89 (427): 846–66.
+</div>
+<div id="ref-rosenbaum1984reducing" class="csl-entry" role="listitem">
+Rosenbaum, Paul R, and Donald B Rubin. 1984. <span>“Reducing Bias in Observational Studies Using Subclassification on the Propensity Score.”</span> <em>Journal of the American Statistical Association</em> 79 (387): 516–24.
+</div>
+<div id="ref-dowhypaper" class="csl-entry" role="listitem">
+Sharma, Amit, and Emre Kiciman. 2020. <span>“DoWhy: An End-to-End Library for Causal Inference.”</span> <em>arXiv Preprint arXiv:2011.04216</em>.
+</div>
+<div id="ref-shpitser2006identification" class="csl-entry" role="listitem">
+Shpitser, Ilya, and Judea Pearl. 2006. <span>“Identification of Joint Interventional Distributions in Recursive Semi-Markovian Causal Models.”</span>
+</div>
+<div id="ref-spirtes2000causation" class="csl-entry" role="listitem">
+Spirtes, Peter, Clark N Glymour, Richard Scheines, and David Heckerman. 2000. <em>Causation, Prediction, and Search</em>. MIT press.
+</div>
+<div id="ref-stuart2010matching" class="csl-entry" role="listitem">
+Stuart, Elizabeth A. 2010. <span>“Matching Methods for Causal Inference: A Review and a Look Forward.”</span> <em>Statistical Science: A Review Journal of the Institute of Mathematical Statistics</em> 25 (1): 1.
+</div>
+<div id="ref-wager2018estimation" class="csl-entry" role="listitem">
+Wager, Stefan, and Susan Athey. 2018. <span>“Estimation and Inference of Heterogeneous Treatment Effects Using Random Forests.”</span> <em>Journal of the American Statistical Association</em> 113 (523): 1228–42.
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./02-potential-outcomes-framework.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./04-causal-discovery.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,1682 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.">
+
+<title>Applied Causal Inference - 7&nbsp; Time-dependent Causal Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./09-part-3-break.html" rel="next">
+<link href="./07-computer-vision.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./08-time-dependent-causal-inference.html"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Applied Causal Inference</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro-to-causality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-potential-outcomes-framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-causal-estimation-process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-causal-discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-part-2-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 2: Causality in ML Domains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-nlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-computer-vision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-time-dependent-causal-inference.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-part-3-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 3: Advanced Topics in Causality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-fairness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Fairness</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-reinforcement-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reinforcement Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#sec-PCTL" id="toc-sec-PCTL" class="nav-link active" data-scroll-target="#sec-PCTL"><span class="header-section-number">7.1</span> Probabilistic Computation Tree Logic</a>
+  <ul class="collapse">
+  <li><a href="#temporal-logic" id="toc-temporal-logic" class="nav-link" data-scroll-target="#temporal-logic"><span class="header-section-number">7.1.1</span> Temporal Logic</a></li>
+  <li><a href="#sec-PTL" id="toc-sec-PTL" class="nav-link" data-scroll-target="#sec-PTL"><span class="header-section-number">7.1.2</span> Probabilistic temporal logic</a></li>
+  <li><a href="#sec-PKS" id="toc-sec-PKS" class="nav-link" data-scroll-target="#sec-PKS"><span class="header-section-number">7.1.3</span> Probabilistic Kripke Structures</a></li>
+  </ul></li>
+  <li><a href="#logical-conditions-for-causality" id="toc-logical-conditions-for-causality" class="nav-link" data-scroll-target="#logical-conditions-for-causality"><span class="header-section-number">7.2</span> Logical Conditions for Causality</a>
+  <ul class="collapse">
+  <li><a href="#sec-potentialCauses" id="toc-sec-potentialCauses" class="nav-link" data-scroll-target="#sec-potentialCauses"><span class="header-section-number">7.2.1</span> Identifying Potential Causes</a></li>
+  </ul></li>
+  <li><a href="#identifying-token-causes" id="toc-identifying-token-causes" class="nav-link" data-scroll-target="#identifying-token-causes"><span class="header-section-number">7.3</span> Identifying Token Causes</a>
+  <ul class="collapse">
+  <li><a href="#types-of-causes" id="toc-types-of-causes" class="nav-link" data-scroll-target="#types-of-causes"><span class="header-section-number">7.3.1</span> Types of Causes</a></li>
+  <li><a href="#defining-token-level-causal-significance" id="toc-defining-token-level-causal-significance" class="nav-link" data-scroll-target="#defining-token-level-causal-significance"><span class="header-section-number">7.3.2</span> Defining Token-level Causal Significance</a></li>
+  <li><a href="#computing-significance-of-token-causes" id="toc-computing-significance-of-token-causes" class="nav-link" data-scroll-target="#computing-significance-of-token-causes"><span class="header-section-number">7.3.3</span> Computing Significance of Token Causes</a></li>
+  <li><a href="#finding-token-level-causal-explanations" id="toc-finding-token-level-causal-explanations" class="nav-link" data-scroll-target="#finding-token-level-causal-explanations"><span class="header-section-number">7.3.4</span> Finding Token-level Causal Explanations</a></li>
+  </ul></li>
+  <li><a href="#case-study" id="toc-case-study" class="nav-link" data-scroll-target="#case-study"><span class="header-section-number">7.4</span> Case Study</a>
+  <ul class="collapse">
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">7.4.1</span> Dataset</a></li>
+  <li><a href="#variables" id="toc-variables" class="nav-link" data-scroll-target="#variables"><span class="header-section-number">7.4.2</span> Variables</a></li>
+  <li><a href="#tools-and-library" id="toc-tools-and-library" class="nav-link" data-scroll-target="#tools-and-library"><span class="header-section-number">7.4.3</span> Tools and Library</a></li>
+  <li><a href="#procedure" id="toc-procedure" class="nav-link" data-scroll-target="#procedure"><span class="header-section-number">7.4.4</span> Procedure</a></li>
+  <li><a href="#discussion" id="toc-discussion" class="nav-link" data-scroll-target="#discussion"><span class="header-section-number">7.4.5</span> Discussion</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>The methods discussed in this book thus far don’t explicitly include the window of time between events with a causal relationship when computing things like average treatment effects. That makes it difficult to apply such methods to time-series data, where the time it takes for a cause to produce its effect can be important and the time interval between cause and effect can impact the probability of the effect’s occurrence. This chapter focuses on methods that accounts for these temporal relationships and also describes a method of automated reasoning that represents causal relationships as propositions of formulas in probabilistic temporal logic.</p>
+<section id="sec-PCTL" class="level2" data-number="7.1">
+<h2 data-number="7.1" class="anchored" data-anchor-id="sec-PCTL"><span class="header-section-number">7.1</span> Probabilistic Computation Tree Logic</h2>
+<section id="temporal-logic" class="level3" data-number="7.1.1">
+<h3 data-number="7.1.1" class="anchored" data-anchor-id="temporal-logic"><span class="header-section-number">7.1.1</span> Temporal Logic</h3>
+<p>Temporal logic is a formal system for expressing and reasoning about propositions that hold at different points in time. It provides a set of operators and symbols for specifying temporal relationships that lets us represent causal relationships as temporal logic formulas. These formulas can then be manipulated and evaluated to analyze patterns in temporal data, such as the timing and sequence of events, and infer causal relationships between those events. However, this does not allow for probabilistic relationships.</p>
+<p>If we want an automated way of capturing the temporal and probabilistic relationships between events, then we need to describe temporal relationships between variables, in the presence of uncertainty. This is provided by probabilistic temporal logic (PTL).</p>
+</section>
+<section id="sec-PTL" class="level3" data-number="7.1.2">
+<h3 data-number="7.1.2" class="anchored" data-anchor-id="sec-PTL"><span class="header-section-number">7.1.2</span> Probabilistic temporal logic</h3>
+<p>Probabilistic temporal logic (PTL) extends traditional temporal logic by incorporating probability. In PTL, propositions are assigned probabilities rather than being considered purely true or false. This allows for more nuanced reasoning about the temporal relationships between events. For example, if event A <em>typically</em> happens before event B but not always, we can express this uncertainty using probabilities. However, PTL alone does not allow us to study how the system evolves in time, since a probabilistic system can have many possible futures.</p>
+<p>By combining probabilistic temporal logic with computation tree logic (CTL) <span class="citation" data-cites="Clarke1996ModelC">(<a href="#ref-Clarke1996ModelC" role="doc-biblioref">Clarke and Schlingloff 1996</a>)</span>, we get probabilistic computation tree logic (PCTL) <span class="citation" data-cites="Hansson1990ALF">(<a href="#ref-Hansson1990ALF" role="doc-biblioref">Hansson and Jonsson 1990</a>)</span>, which is a probabilistic extension of CTL that is used to reason about the behavior of probabilistic systems that evolve in time. PCTL can be used to specify and verify various properties of probabilistic systems, such as the probability of reaching a certain state, the expected time to reach a certain state, and the long-term behavior of the system. PCTL can also specify temporal constraints on the behavior of a probabilistic system, answer questions about possible futures, and compute the likelihood of a possible future event happening in a specific time window.</p>
+</section>
+<section id="sec-PKS" class="level3" data-number="7.1.3">
+<h3 data-number="7.1.3" class="anchored" data-anchor-id="sec-PKS"><span class="header-section-number">7.1.3</span> Probabilistic Kripke Structures</h3>
+<p>Probabilistic Computation Tree Logic describes a system’s possible transitions with a probabilistic Kripke structure (PKS), which is a directed graph where each node represents a possible state of the system, and each edge (1) represents a probabilistic transition between states and (2) is labeled with a proposition that describes the conditions under which the transition can occur.</p>
+<p>By modeling the behavior of a probabilistic system, the PKS allows us to define the truth of temporal statements with respect to the structure. For example, a temporal statement such as <em>“eventually, property <span class="math inline">\(P\)</span> holds with probability at least 0.9”</em> is true in a state of the structure if there is a path from that state to a future state where property <span class="math inline">\(P\)</span> is true with probability at least 0.9. PKSs are also used in the formal verification of probabilistic systems, where they provide a way to model system and verify that it satisfies a given specification.</p>
+<section id="describing-the-system" class="level4" data-number="7.1.3.1">
+<h4 data-number="7.1.3.1" class="anchored" data-anchor-id="describing-the-system"><span class="header-section-number">7.1.3.1</span> Describing the System</h4>
+<p>A system in PCTL is described using two components: a set of atomic propositions and a probabilistic Kripke structure. In PCTL, what we know about a variable that might appear in a typical causal graph, is written as a logical proposition that can also have a probability and temporal aspects.</p>
+<p>The set of atomic propositions is commonly written as <span class="math inline">\(A\)</span> and the PKS is written as a four-tuple <span class="math inline">\(K=(S, s_i, L, T)\)</span> <span class="citation" data-cites="kleinberg_2012">(<a href="#ref-kleinberg_2012" role="doc-biblioref">Kleinberg 2012</a>)</span>, where</p>
+<ul>
+<li><span class="math inline">\(S\)</span> is a finite set of states</li>
+<li><span class="math inline">\(s_i\)</span> is the initial state</li>
+<li><span class="math inline">\(L: S \to 2^{|A|}\)</span> is a labeling function that tells us which atomic propositions are true at each state</li>
+<li><span class="math inline">\(T: S\times S \to [0,1]\)</span> is a probabilistic transition function, where <span class="math inline">\(\forall s \in S, \sum_{s^{\prime}\in S} T(s,s^{\prime})=1\)</span></li>
+</ul>
+<p><span class="math inline">\(K\)</span> defines which transitions are possible and the probability of each transition and <span class="math inline">\(L(s)\)</span> is the label(s) of state <span class="math inline">\(s\)</span>. Note that, in practice, we will not define or infer <span class="math inline">\(K\)</span>.</p>
+</section>
+<section id="example-the-monty-hall-problem" class="level4" data-number="7.1.3.2">
+<h4 data-number="7.1.3.2" class="anchored" data-anchor-id="example-the-monty-hall-problem"><span class="header-section-number">7.1.3.2</span> Example: The Monty Hall Problem</h4>
+<p>This section presents a detailed example of how you would describe a system with a probabilistic Kripke structure (PKS). Our example is the famous Monty Hall problem. The Monty Hall problem is a probability puzzle based on a game show called “Let’s Make a Deal,” which was hosted by Monty Hall. The problem is named after him and became popular after a reader’s question appeared in Marilyn vos Savant’s “Ask Marilyn” column in Parade magazine in 1990 <span class="citation" data-cites="WikipediaMontyHallProblem">(<a href="#ref-WikipediaMontyHallProblem" role="doc-biblioref">contributors 2023</a>)</span>.</p>
+<p>The problem is as follows:</p>
+<ol type="1">
+<li>There are three closed doors: Door 1, Door 2, and Door 3.</li>
+<li>Behind one of the doors, there is a car (the desired prize), and behind the other two doors, there are goats (undesired prizes).</li>
+<li>The player chooses one of the doors (say, Door 1).</li>
+<li>The host, Monty Hall, who knows what’s behind each door, opens one of the remaining doors (say, Door 2) to reveal a goat.</li>
+<li>The host then asks the player if they want to switch their choice to the other unopened door (in this case, Door 3) or stick with their original choice (Door 1).</li>
+</ol>
+<p>The Monty Hall problem asks the player to determine the best strategy: should they stick with their original choice or switch to the other unopened door? We will not discuss the solution to the problem here. Instead, we describe the problem as a probabilistic Kripke structure.</p>
+<p><strong>Monty Hall System States</strong></p>
+<p>First, we need a set of atomic propositions, <span class="math inline">\(A\)</span>, that is representative of the problem:</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th><strong>Proposition</strong></th>
+<th><strong>Description</strong></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CarBehindDoor1</td>
+<td>The car is behind door 1</td>
+</tr>
+<tr class="even">
+<td>CarBehindDoor2</td>
+<td>The car is behind door 2</td>
+</tr>
+<tr class="odd">
+<td>CarBehindDoor3</td>
+<td>The car is behind door 3</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor1</td>
+<td>The player initially chooses door 1</td>
+</tr>
+<tr class="odd">
+<td>PlayerChoosesDoor2</td>
+<td>The player initially chooses door 2</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor3</td>
+<td>The player initially chooses door 3</td>
+</tr>
+<tr class="odd">
+<td>PlayerSwitches</td>
+<td>The player switches their choice of door</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor1</td>
+<td>The host opens door 1 to reveal a goat</td>
+</tr>
+<tr class="odd">
+<td>HostOpensDoor2</td>
+<td>The host opens door 2 to reveal a goat</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor3</td>
+<td>The host opens door 3 to reveal a goat</td>
+</tr>
+<tr class="odd">
+<td>PlayerWins</td>
+<td>Player’s final choice is door with the car</td>
+</tr>
+<tr class="even">
+<td>PlayerLoses</td>
+<td>Player’s final choice is door with a goat</td>
+</tr>
+</tbody>
+</table>
+<p>Next, we need a finite set of states. In the Monty Hall problem, the state of the system can be described from the perspective of the player or the host. The host already knows which doors the car and goats are found behind. The player does not have this information at the start of the game. From the player’s perspective, the state of the system is defined by a combination of the truth values of the atomic propositions in the above table. In other words, the state is what the player knows to be true and false.</p>
+<p>Since the Monty Hall problem is simple, we can describe the sequence of states in a simple table. Below, we present three sample runs of the game, in table form. The first column lists the atomic propositions, the remaining columns are labeled with the time steps showing the five steps in the game. When a column has an entry of 1, it means the proposition is true at that time step. The first column in a row with a 1 is the time step where the proposition transitions from false to true. The value of each proposition at each time step shows which transitions are possible.</p>
+<p><strong>Game 1</strong></p>
+<p>Car is behind door 1. Player chooses door 2, host opens door 3, player chooses to switch doors, player wins.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th><strong>Proposition</strong></th>
+<th><span class="math inline">\(t_1\)</span></th>
+<th><span class="math inline">\(t_2\)</span></th>
+<th><span class="math inline">\(t_3\)</span></th>
+<th><span class="math inline">\(t_4\)</span></th>
+<th><span class="math inline">\(t_5\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CarBehindDoor1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>CarBehindDoor2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>CarBehindDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>PlayerChoosesDoor2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>PlayerSwitches</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>HostOpensDoor2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>PlayerWins</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>PlayerLoses</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Game 2</strong></p>
+<p>Car is behind door 2. Player chooses door 2, host opens door 1, player chooses to switch doors, player loses.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th><strong>Proposition</strong></th>
+<th><span class="math inline">\(t_1\)</span></th>
+<th><span class="math inline">\(t_2\)</span></th>
+<th><span class="math inline">\(t_3\)</span></th>
+<th><span class="math inline">\(t_4\)</span></th>
+<th><span class="math inline">\(t_5\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CarBehindDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>CarBehindDoor2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>CarBehindDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>PlayerChoosesDoor2</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>PlayerSwitches</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>HostOpensDoor2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>PlayerWins</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>PlayerLoses</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Game 3</strong></p>
+<p>Car is behind door 2. Player chooses door 3, host opens door 1, player chooses to switch doors, player wins.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th><strong>Proposition</strong></th>
+<th><span class="math inline">\(t_1\)</span></th>
+<th><span class="math inline">\(t_2\)</span></th>
+<th><span class="math inline">\(t_3\)</span></th>
+<th><span class="math inline">\(t_4\)</span></th>
+<th><span class="math inline">\(t_5\)</span></th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>CarBehindDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>CarBehindDoor2</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>CarBehindDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+</tr>
+<tr class="odd">
+<td>PlayerChoosesDoor2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>PlayerChoosesDoor3</td>
+<td>0</td>
+<td>1</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>PlayerSwitches</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor1</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>HostOpensDoor2</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="even">
+<td>HostOpensDoor3</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr class="odd">
+<td>PlayerWins</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>1</td>
+</tr>
+<tr class="even">
+<td>PlayerLoses</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+</tbody>
+</table>
+<p>The initial state is that all doors are closed. In the next time step, <span class="math inline">\(t_1\)</span>, the player chooses a door, making one of the propositions <code>PlayerChoosesDoor&lt;n&gt;</code> true <span class="math inline">\((n=1,2,3)\)</span>. Next, the host opens one of the other two doors that is hiding a goat, thereby setting one of the <code>HostOpensDoor&lt;m&gt;</code> propositions to true <span class="math inline">\((m=1,2,3)\)</span> and one of the <code>CarBehindDoor&lt;k&gt;</code> propositions to false <span class="math inline">\((k=1,2,3)\)</span>. Finally, the player can switch to the remaining closed door, which will set <code>PlayerSwitches</code> to true, or they can keep their initial selection. The final state is either <code>PlayerWins</code> or <code>PlayerLoses</code>. Lastly, note that the position of the car is unknown to the player at the start of the game. If we rewrite the three example games above from the perspective of the player, then we would have to mark the <code>CarBehindDoor&lt;n&gt;</code> propositions as unknown. Note that we could also add propositions for the positions of the two goats, but those are complements for the position of the car. We mention this to note that the atomic propositions used for a problem are not necessarily etched in stone, but depend on how you wish to describe the problem and the states of the system at each time step.</p>
+</section>
+<section id="properties-of-state-and-path-formulas" class="level4" data-number="7.1.3.3">
+<h4 data-number="7.1.3.3" class="anchored" data-anchor-id="properties-of-state-and-path-formulas"><span class="header-section-number">7.1.3.3</span> Properties of State and Path Formulas</h4>
+<p>Computation tree logic has formulas that state what must be true for a certain state (state formulas) and formulas that define what must be true for an entire sequence of states (path formulas). For example, stating that one of the atomic proposition in <span class="math inline">\(A\)</span> must be true in a given state can be specified as a state formula. To make it more concrete, consider the Monty Hall problem.</p>
+<p>We can summarize properties of state and path formulas as follows:</p>
+<ol type="1">
+<li>Each proposition in <span class="math inline">\(A\)</span> is a state formula</li>
+<li>If <span class="math inline">\(f\)</span> and <span class="math inline">\(g\)</span> are state formulas, so are <span class="math inline">\(\neg f\)</span>, <span class="math inline">\(f \lor g\)</span>, <span class="math inline">\(f \land g\)</span>, and <span class="math inline">\(f \to g\)</span>.</li>
+<li>If f and g are state formulas, and <span class="math inline">\(t\)</span> is a non-negative integer or <span class="math inline">\(\infty\)</span>, then <span class="math inline">\(f\, U^{\leq t} g\)</span> and <span class="math inline">\(f\, W^{\leq t} g\)</span> are path formulas</li>
+<li>If <span class="math inline">\(f\)</span> is a path formula and <span class="math inline">\(0 \leq p\leq 1\)</span>, <span class="math inline">\([f]_{\geq p}\)</span> and <span class="math inline">\([f]_{&gt; p}\)</span> are state formulas.</li>
+</ol>
+<p>The latter three properties in the above list need to be explained:</p>
+<p>Property (2) says that state formulas can be combined to make new state formulas using the standard propositional logic operations of <em>or</em>, <em>and</em>, and <em>not</em> and from the state transitions allowed by computation tree logic. The state is simply a collection of statements that are true at that time, which means we can use this property to automatically label states (<span class="citation" data-cites="kleinberg_2012">Kleinberg (<a href="#ref-kleinberg_2012" role="doc-biblioref">2012</a>)</span>).</p>
+<p>The <span class="math inline">\(U\)</span> and <span class="math inline">\(W\)</span> shown in property (3) are the <em>until</em> and <em>unless</em> operators of PCTL, respectively. <span class="math inline">\(f\,U^{\leq t}\, g\)</span> is a shorthand that means <span class="math inline">\(f\)</span> must be true at every state along the path <em>until</em> there is a state where <span class="math inline">\(g\)</span> becomes true, and this must happen within <span class="math inline">\(t\)</span> time steps. <span class="math inline">\(f\, W^{\leq t}\, g\)</span> is a shorthand that means <span class="math inline">\(f\)</span> must be true at every state along the path for at least <span class="math inline">\(t\)</span> time steps <em>unless</em> <span class="math inline">\(g\)</span> becomes true within <span class="math inline">\(t\)</span> time steps. For this reason, <span class="math inline">\(W\)</span> is also called the <em>weak until</em>, hence it’s choice of letter.</p>
+<p>Property (4) tell us that we can construct state formulas out of the <em>until</em> and <em>unless</em> path formulas by adding probabilities to them. For example, <span class="math inline">\([f\, U^{\leq t}\, g]_{\geq p}\)</span>, which can also be written as <span class="math inline">\(f\, U^{\leq t}_{\geq p}\, g\)</span>, means that with a minimum probability of <span class="math inline">\(p\)</span>, <span class="math inline">\(g\)</span> will become true within <span class="math inline">\(t\)</span> time steps and <span class="math inline">\(f\)</span> will remain true along the path until that happens. This is a state formula, whose probability is calculated by summing the probabilities of the paths that originate from this state. Note that a path probability is the product of transition probabilities along the path.</p>
+<p>Before moving on to considering how we can identify causes, we need to introduce one more temporal operator, <span class="math inline">\(\leadsto\)</span>, “leads to”. <span class="math inline">\(f_1 \leadsto^{\leq t}_{\geq p} f_2 \equiv AG[f_1 \to F^{\leq t}_{\geq p} f_2]\)</span>, means that for every path from the current state, states where <span class="math inline">\(f_1\)</span> is true leads to states where <span class="math inline">\(f_2\)</span> is true, and that the transitions between those states occur within <span class="math inline">\(t\)</span> time step, with probability <span class="math inline">\(p\)</span>. Given this definition, consider two formulas, <span class="math inline">\(a\)</span> and <span class="math inline">\(b\)</span>, that occur at times <span class="math inline">\(t_1\)</span> and <span class="math inline">\(t_2\)</span>, respectively. This relationship can be described by the time interval between them, <span class="math inline">\(|t_1 - t_2|\)</span>. If we want <span class="math inline">\(a\)</span> to simply occur at any time before <span class="math inline">\(b\)</span>, then <span class="math inline">\(|t_1 - t_2|\)</span> can be replaced with <span class="math inline">\(\infty\)</span> <span class="citation" data-cites="Kleinberg2010TheTL">(<a href="#ref-Kleinberg2010TheTL" role="doc-biblioref">Kleinberg and Mishra 2010</a>)</span>.</p>
+</section>
+</section>
+</section>
+<section id="logical-conditions-for-causality" class="level2" data-number="7.2">
+<h2 data-number="7.2" class="anchored" data-anchor-id="logical-conditions-for-causality"><span class="header-section-number">7.2</span> Logical Conditions for Causality</h2>
+<p>The logical framework we have been discussing, PCTL, lets us describe probabilistic relationships between events in time as formulas in temporal logic. This reframes the problem in the language of model checking <span class="citation" data-cites="Clarke1996ModelC">(<a href="#ref-Clarke1996ModelC" role="doc-biblioref">Clarke and Schlingloff 1996</a>)</span>, allowing us to verify which formulas are true in relation to the model. Note that the “model” is the collection of information described in <a href="#sec-PKS"><span>Section&nbsp;7.1.3</span></a>. Section 3.3.1 of <span class="citation" data-cites="kleinberg_2012">(<a href="#ref-kleinberg_2012" role="doc-biblioref">Kleinberg 2012</a>)</span> discusses the algorithm for checking the set of propositions against a model. We will not cover model checking in this chapter, since, in practice, we will not have a model that tells us things like the set of possible states, labels, and transition probabilities. Instead these are found from the data itself. We can start with identifying potential causes, we can then identify which potential causes are likely to be true causes.</p>
+<section id="sec-potentialCauses" class="level3" data-number="7.2.1">
+<h3 data-number="7.2.1" class="anchored" data-anchor-id="sec-potentialCauses"><span class="header-section-number">7.2.1</span> Identifying Potential Causes</h3>
+<p>This section describes how to find things that <em>might</em> be causes. The literature calls these <em>prima facie</em> causes. <em>Prima facie</em> is Latin for “at first sight” or “on the face of it.” In the legal world, the term refers to a case that, based on the evidence presented, <em>appears</em> to be valid. Consider two PCTL formulas, <span class="math inline">\(c\)</span> and <span class="math inline">\(e\)</span>. <span class="math inline">\(c\)</span> is a potential cause of <span class="math inline">\(e\)</span> if there is a probability <span class="math inline">\(p\)</span> such that <em>all</em> of the following conditions hold:</p>
+<ol type="1">
+<li><span class="math inline">\(F^{\leq \infty}_{&gt; 0} c\)</span></li>
+<li><span class="math inline">\(c \leadsto^{\geq 1,\leq \infty}_{\geq p} e\)</span></li>
+<li><span class="math inline">\(F^{\leq \infty}_{&lt; p} e\)</span></li>
+</ol>
+<p>Condition (1) means that there is at least one state where <span class="math inline">\(c\)</span> will eventually be true with probability <span class="math inline">\(p&gt;0\)</span>, condition (2) says that <span class="math inline">\(c\)</span> being true “leads to” a state where <span class="math inline">\(e\)</span> is true in the future, with probability <span class="math inline">\(p&gt;0\)</span>, and condition (3) says that the probability of the system eventually transitioning from the current state to one where <span class="math inline">\(e\)</span> is true is less than <span class="math inline">\(p\)</span>. The combination of these three conditions means that <span class="math inline">\(c\)</span> must be true at least once and that the conditional probability of <span class="math inline">\(e\)</span> given <span class="math inline">\(c\)</span> is higher than the marginal probability of <span class="math inline">\(e\)</span>. By using these conditions, we can generate a list of potential causes that must be filtered for their level of significance.</p>
+<section id="causal-significance" class="level4" data-number="7.2.1.1">
+<h4 data-number="7.2.1.1" class="anchored" data-anchor-id="causal-significance"><span class="header-section-number">7.2.1.1</span> Causal significance</h4>
+<p>In <a href="02-potential-outcomes-framework.html#sec-populationMeasures"><span>Section&nbsp;2.5</span></a>, we learned about the average treatment effect as a way of quantifying the relationship between a treatment (which is a potential cause) and and outcome (an observed effect). <span class="citation" data-cites="Kleinberg2010TheTL">(<a href="#ref-Kleinberg2010TheTL" role="doc-biblioref">Kleinberg and Mishra 2010</a>)</span> introduces a quantity called the average causal significance (ACS), <span class="math inline">\(\epsilon_{avg}\)</span>, that quantifies the causal significance of a potential cause <span class="math inline">\(c\)</span> to an effect <span class="math inline">\(e\)</span>, where <span class="math inline">\(c \leadsto {}^{\geq r, \leq s}_{\geq p} e\)</span>; i.e.&nbsp;after <span class="math inline">\(c\)</span> becomes true, <span class="math inline">\(e\)</span> occurs in a time window <span class="math inline">\([r, s]\)</span>, with probability <span class="math inline">\(p\)</span>:</p>
+<p><span class="math display">\[\begin{equation}
+\epsilon_{avg}(c_{r-s}, e) = \displaystyle\frac{\sum_{x\in X\setminus c } P(e\vert c \land x) - P(e\vert \neg{c} \land x) }{\vert X \setminus{c} \vert},
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(X\)</span> is the set of potential causes, <span class="math inline">\(c\)</span> is the potential cause in <span class="math inline">\(X\)</span> that is under consideration, <span class="math inline">\(e\)</span> is the effect. Note that <span class="math inline">\(X \setminus c\)</span> means <span class="math inline">\(c\)</span> is being excluded from the set. The numerator in the ACS is the difference in the probability of the effect with and without the potential cause, and is conceptually similar to the average treatment effect. More formally, the numerator is the difference between the probability of the system moving to a state where <span class="math inline">\(e\)</span> is true from one where <span class="math inline">\(c\)</span> and <span class="math inline">\(x\)</span> are true and the probability of the system moving to a state where <span class="math inline">\(e\)</span> is true from one where <span class="math inline">\(x\)</span> is true but <span class="math inline">\(c\)</span> is not true.</p>
+</section>
+</section>
+</section>
+<section id="identifying-token-causes" class="level2" data-number="7.3">
+<h2 data-number="7.3" class="anchored" data-anchor-id="identifying-token-causes"><span class="header-section-number">7.3</span> Identifying Token Causes</h2>
+<section id="types-of-causes" class="level3" data-number="7.3.1">
+<h3 data-number="7.3.1" class="anchored" data-anchor-id="types-of-causes"><span class="header-section-number">7.3.1</span> Types of Causes</h3>
+<p>There are two types of causal relationships: token-level and type-level <span class="citation" data-cites="kleinberg_2012">(<a href="#ref-kleinberg_2012" role="doc-biblioref">Kleinberg 2012</a>)</span>. Type-level relationships describe general relationships between variables, indicating a causal relationship that holds across multiple events. In contrast, token-level relationships are specific to individual events and refer to the causal relationship between a particular cause and effect pair. In this chapter, we have focused on type-level relationships.</p>
+</section>
+<section id="defining-token-level-causal-significance" class="level3" data-number="7.3.2">
+<h3 data-number="7.3.2" class="anchored" data-anchor-id="defining-token-level-causal-significance"><span class="header-section-number">7.3.2</span> Defining Token-level Causal Significance</h3>
+<p><span class="citation" data-cites="Zheng2017AMF">(<a href="#ref-Zheng2017AMF" role="doc-biblioref">Zheng and Kleinberg 2017</a>)</span> shows that the ACS can be used to compute the significance of a token-level cause. The significance of <span class="math inline">\(c\)</span> at time <span class="math inline">\(t^{\prime}\)</span> of <span class="math inline">\(e\)</span> at time <span class="math inline">\(t\)</span>, where <span class="math inline">\(c_{t^{\prime}}\)</span> is a specific instance of cause type <span class="math inline">\(c\)</span>, is given by</p>
+<p><span class="math display">\[\begin{equation}
+S(c_{t^{\prime}}, e_t) = \epsilon_{avg}(c_{r-s}, e) \times P(c_{t^{\prime}}\vert \mathcal{V}) \times \mathcal{f}(c_{t^{\prime}}, e_t, r, s)
+\end{equation}\]</span></p>
+<p>where <span class="math inline">\(\mathcal{V}\)</span> is the sequence of time series data, <span class="math inline">\(\epsilon_{avg}\)</span> is the average causal significance of type-level cause <span class="math inline">\(c\)</span> on effect <span class="math inline">\(e\)</span>, <span class="math inline">\(P(c\vert\mathcal{V})\)</span> is the probability of the token cause <span class="math inline">\(c_{t^{\prime}}\)</span> given the sequence of observations, and <span class="math inline">\(\mathcal{f}\)</span> is a weighting function that captures how closely the time gap between <span class="math inline">\(c_{t^{\prime}}\)</span> and <span class="math inline">\(e_t\)</span>, <span class="math inline">\(t-t^{\prime}\)</span>, fits into the type-level window <span class="math inline">\([r, s]\)</span>. There are two constraints on <span class="math inline">\(\mathcal{f}\)</span>:</p>
+<ol type="1">
+<li>When <span class="math inline">\(t^ \in [t^{\prime} + r, t^{\prime} + s]\)</span>, <span class="math inline">\(\mathcal{f}(c_{t^{\prime}} , e_t) = 1\)</span></li>
+<li><span class="math inline">\(\mathcal{f}\)</span> decreases monotonically outside of the specified range range</li>
+<li><span class="math inline">\(\mathcal{f}(c_{t^{\prime}} , e_t) \in [0, 1]\)</span></li>
+</ol>
+</section>
+<section id="computing-significance-of-token-causes" class="level3" data-number="7.3.3">
+<h3 data-number="7.3.3" class="anchored" data-anchor-id="computing-significance-of-token-causes"><span class="header-section-number">7.3.3</span> Computing Significance of Token Causes</h3>
+<p>To compute the significance of a token cause, we need to know <span class="math inline">\(\mathcal{f}\)</span> and the average causal significance of the corresponding type-level cause. <span class="citation" data-cites="Zheng2017AMF">(<a href="#ref-Zheng2017AMF" role="doc-biblioref">Zheng and Kleinberg 2017</a>)</span> describes an algorithm for computing <span class="math inline">\(\mathcal{f}\)</span> and an algorithm for finding token-level causes. They rest upon the assumption that token causes are observed in the data. Computing token significance gives us the token-level causes. The algorithm for finding token-level causes limits itself to token causes with a single variable.</p>
+<section id="computing-mathcalf-from-data" class="level4" data-number="7.3.3.1">
+<h4 data-number="7.3.3.1" class="anchored" data-anchor-id="computing-mathcalf-from-data"><span class="header-section-number">7.3.3.1</span> Computing <span class="math inline">\(\mathcal{f}\)</span> from data</h4>
+<p>This section describes the algorithm from <span class="citation" data-cites="Zheng2017AMF">(<a href="#ref-Zheng2017AMF" role="doc-biblioref">Zheng and Kleinberg 2017</a>)</span> for estimating <span class="math inline">\(\mathcal{f}\)</span> from a time-series dataset.</p>
+<p><strong>Algorithm 1: compute_<span class="math inline">\(f(V, T, H, l_{max}, D)\)</span></strong></p>
+<p><strong>Input:</strong></p>
+<ul>
+<li><span class="math inline">\(V\)</span>, a set of variables</li>
+<li><span class="math inline">\(T\)</span>, length of the time series</li>
+<li><span class="math inline">\(H\)</span>, a set of all causal relationships between <span class="math inline">\(v \in V\)</span></li>
+<li><span class="math inline">\(l_{max}\)</span>, the maximum time lag to test</li>
+<li><span class="math inline">\(D\)</span>, a <span class="math inline">\(V \times T\)</span> matrix, stores value of each variable at each time step</li>
+</ul>
+<p><strong>Output:</strong></p>
+<ul>
+<li><span class="math inline">\(F\)</span>, a list with a function <span class="math inline">\(\mathcal{f}\)</span> for each relationship in <span class="math inline">\(H\)</span></li>
+</ul>
+<p><strong>Procedure:</strong></p>
+<ol type="1">
+<li>for each causal relationship <span class="math inline">\(h\in H\)</span> for which <span class="math inline">\(c \leadsto {}^{\geq r, \leq s}_{\geq p} e\)</span>, do
+<ol type="1">
+<li>Calculate <span class="math inline">\(\epsilon_{avg}\)</span> for each lag <span class="math inline">\(l \in [1, lmax]\)</span> using <span class="math inline">\(D\)</span></li>
+<li>Normalize <span class="math inline">\(\epsilon_{avg}\)</span> by dividing by its maximum value</li>
+<li>Delete outliers where <span class="math inline">\(\epsilon_{avg} &lt; 0\)</span></li>
+<li><span class="math inline">\(\mathcal{f}(c_{t^{\prime}}, e_t, r, s)=1\)</span> when <span class="math inline">\((t - t^{\prime}) \in [r, s]\)</span></li>
+<li><span class="math inline">\(\mathcal{f}(c_{t^{\prime}}, e_t, r, s)\)</span> for <span class="math inline">\((t - t^{\prime}) \in [1, r) \bigcup (s, lmax]\)</span> is fit to <span class="math inline">\(\epsilon_{avg}\)</span> with nonlinear least squares. Then add <span class="math inline">\(\mathcal{f}\)</span> to <span class="math inline">\(F\)</span>.</li>
+</ol></li>
+<li>return <span class="math inline">\(F\)</span></li>
+</ol>
+<p>Two explanatory notes:</p>
+<ul>
+<li>The time lag mentioned above is the time difference between a potential cause and the effect. Recall that each causal relationship being considered has a time window <span class="math inline">\([r, s]\)</span> where any time difference in the window is allowed. Each interval that is in the window is a time lag.</li>
+<li>The matrix <span class="math inline">\(D\)</span> is a matrix representation of the time series, where each row represents a variable in <span class="math inline">\(\mathcal V\)</span> and each column represents one time step in the time series.</li>
+</ul>
+<p>Algorithm 1 gives us <span class="math inline">\(\mathcal{f}\)</span> and <span class="math inline">\(\epsilon_{avg}\)</span>, which are two of the three things we need to compute the token significance, <span class="math inline">\(S(c_{t^{\prime}}, e_t)\)</span>. The remaining quantity is <span class="math inline">\(P(c\vert\mathcal{V})\)</span>, the probability of token cause <span class="math inline">\(c_{t^{\prime}}\)</span>, given <span class="math inline">\(\mathcal{V}\)</span>. That can be counted from the dataset.</p>
+</section>
+</section>
+<section id="finding-token-level-causal-explanations" class="level3" data-number="7.3.4">
+<h3 data-number="7.3.4" class="anchored" data-anchor-id="finding-token-level-causal-explanations"><span class="header-section-number">7.3.4</span> Finding Token-level Causal Explanations</h3>
+<p>This section describes a method for identifying and removing known causes from the set of events to be explained. Then, the remaining events are tested to see if any variables can explain them. The set of events that cannot be explained by the known causes is the residual set, and the causes of these events are to be found without removing any potential causes of other events. Variables that are not in their initial state or have recently changed state are considered as possible causes.</p>
+<p><strong>Algorithm 2: <code>find-novel-causes</code><span class="math inline">\((V, T, D, k, m, lmax, E)\)</span></strong></p>
+<p><strong>Input:</strong></p>
+<ul>
+<li><span class="math inline">\(V\)</span>, a set of variables</li>
+<li><span class="math inline">\(T\)</span>, length of the time series</li>
+<li><span class="math inline">\(D\)</span>, a <span class="math inline">\(V \times T\)</span> matrix, stores value of each variable at each time step</li>
+<li><span class="math inline">\(k\)</span>, number of explanations to select (for top-<span class="math inline">\(k\)</span>)</li>
+<li><span class="math inline">\(m\)</span>, max time lag for detecting state change</li>
+<li><span class="math inline">\(l_{max}\)</span>, the maximum time lag for finding novel explanation</li>
+<li><span class="math inline">\(E\)</span>, set of explained events (pairs of form: <span class="math inline">\((c_{t^{\prime}} , e_{t^{\prime}})\)</span>)</li>
+</ul>
+<p><strong>Output:</strong></p>
+<ul>
+<li><span class="math inline">\(E'\)</span>, token causal explanations for each event</li>
+</ul>
+<p><strong>Procedure:</strong></p>
+<ol type="1">
+<li>for each <span class="math inline">\(e \in V\)</span> do
+<ol type="1">
+<li>Use <span class="math inline">\(E\)</span> to remove explained events to get matrix <code>De</code></li>
+<li>for each <span class="math inline">\(c \in V\)</span> do
+<ol type="1">
+<li>for each <span class="math inline">\(l \in [1, l_{max}]\)</span> do
+<ol type="1">
+<li>Get <span class="math inline">\(P (e\vert c_l)\)</span>. When <span class="math inline">\(c\)</span> has a default state, use instances of <span class="math inline">\(c\)</span> where <span class="math inline">\(c\)</span> is not in its default state or changed state up to <span class="math inline">\(m\)</span> time units before.</li>
+</ol></li>
+<li>for each non-null <span class="math inline">\(D_e [e, i]\)</span>, <span class="math inline">\(1 \leq i \leq T\)</span> do
+<ol type="1">
+<li><span class="math inline">\(L_i \gets [ ]\)</span></li>
+<li>for each <span class="math inline">\(D_e [c, j]\)</span>, where <span class="math inline">\(i - l_{max} \leq j \leq i - 1\)</span> do</li>
+</ol>
+<ul>
+<li>Add <span class="math inline">\((c_j , e_i, P (e\vert c_j-i))\)</span> to <span class="math inline">\(L_i\)</span></li>
+</ul></li>
+<li>Add top <span class="math inline">\(k\)</span> explanations for event <span class="math inline">\(e_i\)</span> to <span class="math inline">\(E'\)</span> (tuples: <span class="math inline">\((c_j , e_i, P (e\vert c))\)</span>)</li>
+</ol></li>
+</ol></li>
+<li>return <span class="math inline">\(E'\)</span></li>
+</ol>
+<p>The output is a list of token causes, the events they explain, and their conditional probability.</p>
+</section>
+</section>
+<section id="case-study" class="level2" data-number="7.4">
+<h2 data-number="7.4" class="anchored" data-anchor-id="case-study"><span class="header-section-number">7.4</span> Case Study</h2>
+<p>In this section, we walk through a detailed example of how to explain observed events in time-series data using type-level causal relationships (Algorithm 1). We also look at how to explain observed events that are <em>not</em> explained by type-level causes and instead explain them with token-level causal relationships (Algorithm 2).</p>
+<section id="dataset" class="level3" data-number="7.4.1">
+<h3 data-number="7.4.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">7.4.1</span> Dataset</h3>
+<p>We use the <a href="https://archive.ics.uci.edu/ml/datasets/Bike+Sharing+Dataset">bike sharing dataset</a> that is in the UC Irvine Machine Learning Repository <span class="citation" data-cites="FanaeeT2013EventLC">(<a href="#ref-FanaeeT2013EventLC" role="doc-biblioref">Fanaee-T and Gama 2013</a>)</span>. This is one of the datasets the algorithms above were applied to in <span class="citation" data-cites="Zheng2017AMF">(<a href="#ref-Zheng2017AMF" role="doc-biblioref">Zheng and Kleinberg 2017</a>)</span>.</p>
+<p>The dataset contains information on the hourly and daily count of rental bikes in the Capital bikeshare system between 2011 and 2012, including weather and seasonal data. It may provide insights into bike usage patterns and their correlation with environmental factors. We’re interested in identifying causes for high bike rental numbers, using the hourly data.</p>
+</section>
+<section id="variables" class="level3" data-number="7.4.2">
+<h3 data-number="7.4.2" class="anchored" data-anchor-id="variables"><span class="header-section-number">7.4.2</span> Variables</h3>
+<p>The Bike Sharing dataset has several columns that we will use as causal variables, and three as possible causal effects. Each type of column is listed below. For more information about this dataset, visit the link above.</p>
+<p><strong>Effect variables</strong></p>
+<ul>
+<li>casual: count of casual users</li>
+<li>registered: count of registered users</li>
+<li>cnt: count of (casual + registered) users</li>
+</ul>
+<p><strong>Causal variables</strong></p>
+<ul>
+<li>season: <code>{1:"winter", 2:"spring", 3:"summer", 4:"fall"}</code></li>
+<li>holiday: 1 if day is holiday else 0</li>
+<li>weekday: day of the week (1-7)</li>
+<li>workingday: 1 if neither weekend nor holiday else 0</li>
+<li>weathersit:
+<ul>
+<li>1: Clear, Few clouds, Partly cloudy, Partly cloudy</li>
+<li>2: Mist + Cloudy, Mist + Broken clouds, Mist + Few clouds, Mist</li>
+<li>3: Light Snow, Light Rain + Thunderstorm + Scattered clouds, Light Rain + Scattered clouds</li>
+<li>4: Heavy Rain + Ice Pallets + Thunderstorm + Mist, Snow + Fog</li>
+</ul></li>
+<li>temp: Normalized temperature in Celsius</li>
+<li>atemp: Normalized feeling temperature in Celsius</li>
+<li>hum: Normalized humidity</li>
+<li>windspeed: Normalized wind speed</li>
+</ul>
+<section id="loading-the-data" class="level4" data-number="7.4.2.1">
+<h4 data-number="7.4.2.1" class="anchored" data-anchor-id="loading-the-data"><span class="header-section-number">7.4.2.1</span> Loading the data</h4>
+<p>We will convert the following column names as follows:</p>
+<ul>
+<li>dteday <span class="math inline">\(\rightarrow\)</span> date</li>
+<li>yr <span class="math inline">\(\rightarrow\)</span> year</li>
+<li>mnth <span class="math inline">\(\rightarrow\)</span> month</li>
+<li>hr <span class="math inline">\(\rightarrow\)</span> hour</li>
+<li>holiday <span class="math inline">\(\rightarrow\)</span> is_holiday</li>
+<li>weekday <span class="math inline">\(\rightarrow\)</span> day_of_week</li>
+<li>workingday <span class="math inline">\(\rightarrow\)</span> is_workingday</li>
+<li>weathersit <span class="math inline">\(\rightarrow\)</span> weather</li>
+<li>hum <span class="math inline">\(\rightarrow\)</span> humidity</li>
+<li>causal <span class="math inline">\(\rightarrow\)</span> num_casual_users</li>
+<li>registered <span class="math inline">\(\rightarrow\)</span> num_registered_users</li>
+<li>cnt <span class="math inline">\(\rightarrow\)</span> num_total_users</li>
+</ul>
+<p>Also, we’ll convert the values in the <code>season</code> column into categorical values using this map: <code>{1:"winter", 2:"spring", 3:"summer", 4:"fall"}</code>. The values in the <code>year</code> column can be converted using this map: <code>{0: 2011, 1:2012}</code>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> load_data(filename):</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a>    df <span class="op">=</span> pd.read_csv(filename)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a>    column_mapping <span class="op">=</span> {</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>        <span class="st">'dteday'</span>: <span class="st">'date'</span>,</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>        <span class="st">'yr'</span>: <span class="st">'year'</span>,</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        <span class="st">'mnth'</span>: <span class="st">'month'</span>,</span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hr'</span>: <span class="st">'hour'</span>,</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a>        <span class="st">'holiday'</span>: <span class="st">'is_holiday'</span>,</span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>        <span class="st">'weekday'</span>: <span class="st">'day_of_week'</span>,</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>        <span class="st">'workingday'</span>: <span class="st">'is_workingday'</span>,</span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>        <span class="st">'weathersit'</span>: <span class="st">'weather'</span>,</span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a>        <span class="st">'hum'</span>: <span class="st">'humidity'</span>,</span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a>        <span class="st">'casual'</span>: <span class="st">'num_casual_users'</span>,</span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>        <span class="st">'registered'</span>: <span class="st">'num_registered_users'</span>,</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>        <span class="st">'cnt'</span>: <span class="st">'num_total_users'</span>,</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a>    }</span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>    df.rename(columns<span class="op">=</span>column_mapping, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'season'</span>] <span class="op">=</span> df[<span class="st">'season'</span>].<span class="bu">map</span>({</span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a>        <span class="dv">1</span>: <span class="st">'winter'</span>,</span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>        <span class="dv">2</span>: <span class="st">'spring'</span>,</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>        <span class="dv">3</span>: <span class="st">'summer'</span>,</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a>        <span class="dv">4</span>: <span class="st">'fall'</span>,</span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a>    }).astype(<span class="st">'category'</span>)</span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'year'</span>] <span class="op">=</span> df[<span class="st">'year'</span>].<span class="bu">map</span>({<span class="dv">0</span>: <span class="dv">2011</span>, <span class="dv">1</span>: <span class="dv">2012</span>})</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>    df[<span class="st">'timestamp'</span>] <span class="op">=</span> pd.to_datetime(</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>        df[<span class="st">'date'</span>] <span class="op">+</span> <span class="st">' '</span> <span class="op">+</span> df[<span class="st">'hour'</span>].astype(<span class="bu">str</span>) <span class="op">+</span> <span class="st">':00:00'</span></span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>    df.drop([<span class="st">'date'</span>, <span class="st">'year'</span>], axis<span class="op">=</span><span class="dv">1</span>, inplace<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We define binary-valued columns in a dataframe for each of the following causal variable:</p>
+<ul>
+<li>is_holiday</li>
+<li>is_workingday</li>
+<li>is_weekend</li>
+<li>is_raining</li>
+<li>is_bad_weather</li>
+<li>is_mild_precipitation</li>
+<li>is_daytime</li>
+<li>is_nighttime</li>
+<li>is_<code>&lt;season&gt;</code> (spring, summer, fall, winter)</li>
+<li>is_high_temp</li>
+<li>is_high_atemp</li>
+<li>is_low_temp</li>
+<li>is_low_atemp</li>
+<li>is_high_humidity</li>
+<li>is_low_humidity</li>
+<li>is_windy</li>
+<li>not_windy</li>
+</ul>
+<p>For non-binary valued variables, we follow the process used in <span class="citation" data-cites="Zheng2017AMF">(<a href="#ref-Zheng2017AMF" role="doc-biblioref">Zheng and Kleinberg 2017</a>)</span> and divide the continuous variables into three bins of equal size.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> convert_to_bins(df, column):</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> pd.qcut(</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a>        df[column],</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a>        <span class="dv">3</span>,</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a>        labels<span class="op">=</span>[<span class="st">'low'</span>, <span class="st">'medium'</span>, <span class="st">'high'</span>],</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the temp column into three bins</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>df_hour[<span class="st">'temp_bin'</span>] <span class="op">=</span> convert_to_bins(df_hour, <span class="st">'temp'</span>)</span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the atemp column into three bins</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>df_hour[<span class="st">'atemp_bin'</span>] <span class="op">=</span> convert_to_bins(df_hour, <span class="st">'atemp'</span>)</span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the humidity column into three bins</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>df_hour[<span class="st">'humidity_bin'</span>] <span class="op">=</span> convert_to_bins(df_hour, <span class="st">'humidity'</span>)</span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># convert the windspeed column into three bins</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>df_hour[<span class="st">'windspeed_bin'</span>] <span class="op">=</span> convert_to_bins(df_hour, <span class="st">'windspeed'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Binary columns are defined as follows:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_holiday(df, t):</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'is_holiday'</span>] <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_workingday(df, t):</span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'is_workingday'</span>] <span class="op">==</span> <span class="dv">1</span>)</span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_weekend(df, t):</span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'day_of_week'</span>] <span class="kw">in</span> [<span class="dv">0</span>, <span class="dv">6</span>])</span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_bad_weather(df, t):</span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'weather'</span>] <span class="kw">in</span> [<span class="dv">3</span>, <span class="dv">4</span>])</span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_mild_precipitation(df, t):</span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'weather'</span>] <span class="op">==</span> <span class="dv">3</span>)</span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_rush_hour(df, t):</span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a>    _tush <span class="op">=</span> [<span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">17</span>, <span class="dv">18</span>, <span class="dv">19</span>]</span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'hour'</span>] <span class="kw">in</span> _rush)</span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_daytime(df, t):</span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a>    _daytime <span class="op">=</span> [<span class="dv">6</span>, <span class="dv">7</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>, <span class="dv">11</span>, <span class="dv">12</span>, <span class="dv">13</span>, <span class="dv">14</span>, <span class="dv">15</span>]</span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'hour'</span>] <span class="kw">in</span> _daytime)</span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_nighttime(df, t):</span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a>    _nighttime <span class="op">=</span> [<span class="dv">0</span>, <span class="dv">1</span>, <span class="dv">2</span>, <span class="dv">3</span>, <span class="dv">4</span>, <span class="dv">5</span>, <span class="dv">20</span>, <span class="dv">21</span>, <span class="dv">22</span>, <span class="dv">23</span>]</span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'hour'</span>] <span class="kw">in</span> _nighttime)</span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_spring(df, t):</span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'season'</span>] <span class="op">==</span> <span class="st">'spring'</span>)</span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_summer(df, t):</span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'season'</span>] <span class="op">==</span> <span class="st">'summer'</span>)</span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_fall(df, t):</span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'season'</span>] <span class="op">==</span> <span class="st">'fall'</span>)</span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_winter(df, t):</span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'season'</span>] <span class="op">==</span> <span class="st">'winter'</span>)</span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_high_temp(df, t):</span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'temp_bin'</span>] <span class="op">==</span> <span class="st">'high'</span>)</span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_low_temp(df, t):</span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'temp_bin'</span>] <span class="op">==</span> <span class="st">'low'</span>)</span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_high_atemp(df, t):</span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'atemp_bin'</span>] <span class="op">==</span> <span class="st">'high'</span>)</span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_low_atemp(df, t):</span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'atemp_bin'</span>] <span class="op">==</span> <span class="st">'low'</span>)</span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_high_humidity(df, t):</span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'humidity_bin'</span>] <span class="op">==</span> <span class="st">'high'</span>)</span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_low_humidity(df, t):</span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'humidity_bin'</span>] <span class="op">==</span> <span class="st">'low'</span>)</span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> is_windy(df, t):</span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'windspeed_bin'</span>] <span class="op">==</span> <span class="st">'high'</span>)</span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> not_windy(df, t):</span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'windspeed_bin'</span>] <span class="op">==</span> <span class="st">'low'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We group these to make it easy to add columns to the dataframe:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>labelers <span class="op">=</span> {</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_holiday'</span>: is_holiday,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_workingday'</span>: is_workingday,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_weekend'</span>: is_weekend,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_bad_weather'</span>: is_bad_weather,</span>
+<span id="cb4-6"><a href="#cb4-6" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_mild_precipitation'</span>: is_mild_precipitation,</span>
+<span id="cb4-7"><a href="#cb4-7" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_rush_hour'</span>: is_rush_hour,</span>
+<span id="cb4-8"><a href="#cb4-8" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_daytime'</span>: is_daytime,</span>
+<span id="cb4-9"><a href="#cb4-9" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_nighttime'</span>: is_nighttime,</span>
+<span id="cb4-10"><a href="#cb4-10" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_spring'</span>: is_spring,</span>
+<span id="cb4-11"><a href="#cb4-11" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_summer'</span>: is_summer,</span>
+<span id="cb4-12"><a href="#cb4-12" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_fall'</span>: is_fall,</span>
+<span id="cb4-13"><a href="#cb4-13" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_winter'</span>: is_winter,</span>
+<span id="cb4-14"><a href="#cb4-14" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_high_temp'</span>: is_high_temp,</span>
+<span id="cb4-15"><a href="#cb4-15" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_low_temp'</span>: is_low_temp,</span>
+<span id="cb4-16"><a href="#cb4-16" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_high_atemp'</span>: is_high_atemp,</span>
+<span id="cb4-17"><a href="#cb4-17" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_low_atemp'</span>: is_low_atemp,</span>
+<span id="cb4-18"><a href="#cb4-18" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_high_humidity'</span>: is_high_humidity,</span>
+<span id="cb4-19"><a href="#cb4-19" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_low_humidity'</span>: is_low_humidity,</span>
+<span id="cb4-20"><a href="#cb4-20" aria-hidden="true" tabindex="-1"></a>    <span class="st">'is_windy'</span>: is_windy,</span>
+<span id="cb4-21"><a href="#cb4-21" aria-hidden="true" tabindex="-1"></a>    <span class="st">'not_windy'</span>: not_windy</span>
+<span id="cb4-22"><a href="#cb4-22" aria-hidden="true" tabindex="-1"></a>}</span>
+<span id="cb4-23"><a href="#cb4-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-24"><a href="#cb4-24" aria-hidden="true" tabindex="-1"></a>idx2labeler <span class="op">=</span> {}</span>
+<span id="cb4-25"><a href="#cb4-25" aria-hidden="true" tabindex="-1"></a>label_fns <span class="op">=</span> []</span>
+<span id="cb4-26"><a href="#cb4-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, feature <span class="kw">in</span> <span class="bu">enumerate</span>(labelers.keys()):</span>
+<span id="cb4-27"><a href="#cb4-27" aria-hidden="true" tabindex="-1"></a>    idx2labeler[i] <span class="op">=</span> feature</span>
+<span id="cb4-28"><a href="#cb4-28" aria-hidden="true" tabindex="-1"></a>    label_fns.append(labelers[key])</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Lastly, we also make the continuous effect variables categorical:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> binning(x, mean, std):</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a><span class="co">    Maps x to a string, based on the mean and standard deviation:</span></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a><span class="co">    low: 1 std dev below the mean</span></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="co">    high: 2 std dev above the mean</span></span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a><span class="co">    medium: everything else</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> x <span class="op">&lt;</span> mean <span class="op">-</span> std:</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"low"</span></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> x <span class="op">&gt;</span> mean <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>std:</span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"high"</span></span>
+<span id="cb5-12"><a href="#cb5-12" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb5-13"><a href="#cb5-13" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"medium"</span></span>
+<span id="cb5-14"><a href="#cb5-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-15"><a href="#cb5-15" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> label_by_std(df, col_name):</span>
+<span id="cb5-16"><a href="#cb5-16" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb5-17"><a href="#cb5-17" aria-hidden="true" tabindex="-1"></a><span class="co">    Labels column entries based on categorical standard deviation</span></span>
+<span id="cb5-18"><a href="#cb5-18" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb5-19"><a href="#cb5-19" aria-hidden="true" tabindex="-1"></a>    std <span class="op">=</span> df[col_name].std()</span>
+<span id="cb5-20"><a href="#cb5-20" aria-hidden="true" tabindex="-1"></a>    mean <span class="op">=</span> df[col_name].mean()</span>
+<span id="cb5-21"><a href="#cb5-21" aria-hidden="true" tabindex="-1"></a>    is_low <span class="op">=</span> <span class="kw">lambda</span> x: x <span class="op">&lt;</span> mean <span class="op">-</span> std</span>
+<span id="cb5-22"><a href="#cb5-22" aria-hidden="true" tabindex="-1"></a>    is_high <span class="op">=</span> <span class="kw">lambda</span> x: x <span class="op">&gt;</span> mean <span class="op">+</span> <span class="dv">2</span><span class="op">*</span>std</span>
+<span id="cb5-23"><a href="#cb5-23" aria-hidden="true" tabindex="-1"></a>    df[<span class="ss">f'</span><span class="sc">{</span>col_name<span class="sc">}</span><span class="ss">_bin'</span>] <span class="op">=</span> df[col_name].<span class="bu">apply</span>(</span>
+<span id="cb5-24"><a href="#cb5-24" aria-hidden="true" tabindex="-1"></a>        <span class="kw">lambda</span> x: binning(x, mean, std)</span>
+<span id="cb5-25"><a href="#cb5-25" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb5-26"><a href="#cb5-26" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="cb5-27"><a href="#cb5-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-28"><a href="#cb5-28" aria-hidden="true" tabindex="-1"></a>df_hour <span class="op">=</span> label_by_std(df_hour, <span class="st">'num_total_users'</span>)</span>
+<span id="cb5-29"><a href="#cb5-29" aria-hidden="true" tabindex="-1"></a>df_hour <span class="op">=</span> label_by_std(df_hour, <span class="st">'num_casual_users'</span>)</span>
+<span id="cb5-30"><a href="#cb5-30" aria-hidden="true" tabindex="-1"></a>df_hour <span class="op">=</span> label_by_std(df_hour, <span class="st">'num_registered_users'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> high_total_users(df, t):</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'num_total_users_bin'</span>] <span class="op">==</span> <span class="st">'high'</span>)</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> low_total_users(df, t):</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'num_total_users_bin'</span>] <span class="op">==</span> <span class="st">'low'</span>)</span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> high_casual_users(df, t):</span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'num_casual_users_bin'</span>] <span class="op">==</span> <span class="st">'high'</span>)</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> low_casual_users(df, t):</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'num_casual_users_bin'</span>] <span class="op">==</span> <span class="st">'low'</span>)</span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> high_registered_users(df, t):</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'num_registered_users_bin'</span>] <span class="op">==</span> <span class="st">'high'</span>)</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> low_registered_users(df, t):</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="bu">int</span>(df.loc[t, <span class="st">'num_registered_users_bin'</span>] <span class="op">==</span> <span class="st">'low'</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="tools-and-library" class="level3" data-number="7.4.3">
+<h3 data-number="7.4.3" class="anchored" data-anchor-id="tools-and-library"><span class="header-section-number">7.4.3</span> Tools and Library</h3>
+<p>We use the Pandas and Numpy libraries.</p>
+</section>
+<section id="procedure" class="level3" data-number="7.4.4">
+<h3 data-number="7.4.4" class="anchored" data-anchor-id="procedure"><span class="header-section-number">7.4.4</span> Procedure</h3>
+<section id="using-type-level-relationships-to-explain-observed-events" class="level4" data-number="7.4.4.1">
+<h4 data-number="7.4.4.1" class="anchored" data-anchor-id="using-type-level-relationships-to-explain-observed-events"><span class="header-section-number">7.4.4.1</span> Using type-level relationships to explain observed events</h4>
+<p>We use part of Algorithm 1 to identify significant type-level relationships from the time-series dataset that explain why bike rentals are high/low.</p>
+<p>Here are the steps in the process:</p>
+<ol type="1">
+<li>Identify the type-level relationships in the dataset</li>
+<li>Compute causal significance of the type-level relationships, <span class="math inline">\(\epsilon_{avg}(c_{r-s},e)\)</span></li>
+</ol>
+<p>We aim to evaluate the significance of each type-level cause for each instance of high bike rentals. For each instance of high bike rentals, we use a significance threshold or only keep the top <span class="math inline">\(k\)</span> relationships to partition the relationships/events into those for which sufficiently significant type-level causes have been found and those for which sufficiently significant type-level causes have <em>not</em> been found. Any instances of high rentals that are not explained by type-level causes would be used as input for Algorithm 2.</p>
+<section id="identify-token-level-relationships" class="level5" data-number="7.4.4.1.1">
+<h5 data-number="7.4.4.1.1" class="anchored" data-anchor-id="identify-token-level-relationships"><span class="header-section-number">7.4.4.1.1</span> Identify token-level relationships</h5>
+<p>We find type-level relationships by aggregating token-level events. We will pass through the dataset, and at each point, we will use the values of the various variables to identify <em>prima facie</em> causes. Recall that a <em>prima facie</em> cause is a type-level relationship of the form <span class="math inline">\(c \leadsto {}^{\geq r, \leq s}_{\geq p} e\)</span></p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a>V <span class="op">=</span> <span class="bu">len</span>(labelers)  <span class="co"># number of variables</span></span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a>T <span class="op">=</span> df_day.shape[<span class="dv">0</span>]  <span class="co"># number of time steps</span></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a>D <span class="op">=</span> np.zeros((T, V), dtype<span class="op">=</span>np.int32)  <span class="co"># time-series</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(T):</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(V):</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>        D[t, i] <span class="op">=</span> label_fns[i](df_day, t)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>variable_names <span class="op">=</span> idx2labeler.values()</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>df_D <span class="op">=</span> pd.DataFrame(D, columns<span class="op">=</span>variable_names)</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a><span class="co"># add effect columns to the dataframe</span></span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a><span class="co"># this makes it easy to filter to compute probabilities</span></span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> add_column(df, f):</span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>    df[f.<span class="va">__name__</span>] <span class="op">=</span> [f(df_hour, t) <span class="cf">for</span> t <span class="kw">in</span> <span class="bu">range</span>(T)]</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> df</span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>df_D <span class="op">=</span> add_column(df_D, high_total_users)</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>df_D <span class="op">=</span> add_column(df_D, low_total_users)</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>df_D <span class="op">=</span> add_column(df_D, high_casual_users)</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>df_D <span class="op">=</span> add_column(df_D, low_casual_users)</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>df_D <span class="op">=</span> add_column(df_D, high_registered_users)</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>df_D <span class="op">=</span> add_column(df_D, low_registered_users)</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>df_D.head()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Here we introduce several data structures that we will use to work with type-level and token-level relationships. First, we have two class that let us store the names of causal variables, so that we don’t have to keep passing around strings.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>VariableIndex <span class="op">=</span> <span class="bu">int</span></span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> BidirectionalDict(<span class="bu">dict</span>):</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, <span class="op">*</span>args, <span class="op">**</span>kwargs):</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__init__</span>(<span class="op">*</span>args, <span class="op">**</span>kwargs)</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._backward <span class="op">=</span> {v: k <span class="cf">for</span> k, v <span class="kw">in</span> <span class="va">self</span>.items()}</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-11"><a href="#cb8-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__setitem__</span>(<span class="va">self</span>, key, value):</span>
+<span id="cb8-12"><a href="#cb8-12" aria-hidden="true" tabindex="-1"></a>        <span class="bu">super</span>().<span class="fu">__setitem__</span>(key, value)</span>
+<span id="cb8-13"><a href="#cb8-13" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>._backward[value] <span class="op">=</span> key</span>
+<span id="cb8-14"><a href="#cb8-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-15"><a href="#cb8-15" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> forward_lookup(<span class="va">self</span>, key):</span>
+<span id="cb8-16"><a href="#cb8-16" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>[key]</span>
+<span id="cb8-17"><a href="#cb8-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-18"><a href="#cb8-18" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> backward_lookup(<span class="va">self</span>, value):</span>
+<span id="cb8-19"><a href="#cb8-19" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>._backward[value]</span>
+<span id="cb8-20"><a href="#cb8-20" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-21"><a href="#cb8-21" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> keys(<span class="va">self</span>):</span>
+<span id="cb8-22"><a href="#cb8-22" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">list</span>(<span class="bu">super</span>().keys())</span>
+<span id="cb8-23"><a href="#cb8-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-24"><a href="#cb8-24" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> values(<span class="va">self</span>):</span>
+<span id="cb8-25"><a href="#cb8-25" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">list</span>(<span class="va">self</span>._backward.keys())</span>
+<span id="cb8-26"><a href="#cb8-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-27"><a href="#cb8-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-28"><a href="#cb8-28" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> VariableStore:</span>
+<span id="cb8-29"><a href="#cb8-29" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>):</span>
+<span id="cb8-30"><a href="#cb8-30" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.storage <span class="op">=</span> BidirectionalDict()</span>
+<span id="cb8-31"><a href="#cb8-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-32"><a href="#cb8-32" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> add(<span class="va">self</span>, variable_name: <span class="bu">str</span>):</span>
+<span id="cb8-33"><a href="#cb8-33" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> variable_name <span class="kw">not</span> <span class="kw">in</span> <span class="va">self</span>.storage:</span>
+<span id="cb8-34"><a href="#cb8-34" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.storage[variable_name] <span class="op">=</span> <span class="bu">len</span>(<span class="va">self</span>.storage)</span>
+<span id="cb8-35"><a href="#cb8-35" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-36"><a href="#cb8-36" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> lookup_by_name(<span class="va">self</span>, name: <span class="bu">str</span>) <span class="op">-&gt;</span> VariableIndex:</span>
+<span id="cb8-37"><a href="#cb8-37" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.storage.forward_lookup(name)</span>
+<span id="cb8-38"><a href="#cb8-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-39"><a href="#cb8-39" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> lookup_by_index(<span class="va">self</span>, index: VariableIndex) <span class="op">-&gt;</span> <span class="bu">str</span>:</span>
+<span id="cb8-40"><a href="#cb8-40" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.storage.backward_lookup(index)</span>
+<span id="cb8-41"><a href="#cb8-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-42"><a href="#cb8-42" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__len__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb8-43"><a href="#cb8-43" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">len</span>(<span class="va">self</span>.storage)</span>
+<span id="cb8-44"><a href="#cb8-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-45"><a href="#cb8-45" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__contains__</span>(<span class="va">self</span>, name) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb8-46"><a href="#cb8-46" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> name <span class="kw">in</span> <span class="va">self</span>.storage</span>
+<span id="cb8-47"><a href="#cb8-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-48"><a href="#cb8-48" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb8-49"><a href="#cb8-49" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> names(<span class="va">self</span>) <span class="op">-&gt;</span> List[<span class="bu">str</span>]:</span>
+<span id="cb8-50"><a href="#cb8-50" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">sorted</span>(<span class="va">self</span>.storage.keys())</span>
+<span id="cb8-51"><a href="#cb8-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb8-52"><a href="#cb8-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb8-53"><a href="#cb8-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> ids(<span class="va">self</span>) <span class="op">-&gt;</span> List[VariableIndex]:</span>
+<span id="cb8-54"><a href="#cb8-54" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">sorted</span>(<span class="va">self</span>.storage.values())</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Next, we have data structures for time window, type-level and token-level causal relationships, and significance scores.</p>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> dataclasses <span class="im">import</span> dataclass</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> typing <span class="im">import</span> List, Optional, Set, Union</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> Window:</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a><span class="co">    A window of time, of the closed interval [start, end]</span></span>
+<span id="cb9-7"><a href="#cb9-7" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-8"><a href="#cb9-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-9"><a href="#cb9-9" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(<span class="va">self</span>, start: <span class="bu">int</span>, end: <span class="bu">int</span>):</span>
+<span id="cb9-10"><a href="#cb9-10" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> start <span class="op">&gt;</span> end:</span>
+<span id="cb9-11"><a href="#cb9-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Window start must be &lt;= than end"</span>)</span>
+<span id="cb9-12"><a href="#cb9-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> start <span class="op">&lt;</span> <span class="dv">0</span> <span class="kw">or</span> end <span class="op">&lt;</span> <span class="dv">0</span>:</span>
+<span id="cb9-13"><a href="#cb9-13" aria-hidden="true" tabindex="-1"></a>            <span class="cf">raise</span> <span class="pp">ValueError</span>(<span class="st">"Window start and end must be &gt;= 0"</span>)</span>
+<span id="cb9-14"><a href="#cb9-14" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.start <span class="op">=</span> start</span>
+<span id="cb9-15"><a href="#cb9-15" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.end <span class="op">=</span> end</span>
+<span id="cb9-16"><a href="#cb9-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-17"><a href="#cb9-17" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb9-18"><a href="#cb9-18" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"Window(</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>start<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>end<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb9-19"><a href="#cb9-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-20"><a href="#cb9-20" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__eq__</span>(<span class="va">self</span>, _value: <span class="bu">object</span>) <span class="op">-&gt;</span> <span class="bu">bool</span>:</span>
+<span id="cb9-21"><a href="#cb9-21" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(_value, Window):</span>
+<span id="cb9-22"><a href="#cb9-22" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> (</span>
+<span id="cb9-23"><a href="#cb9-23" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.start <span class="op">==</span> _value.start</span>
+<span id="cb9-24"><a href="#cb9-24" aria-hidden="true" tabindex="-1"></a>                <span class="kw">and</span> <span class="va">self</span>.end <span class="op">==</span> _value.end</span>
+<span id="cb9-25"><a href="#cb9-25" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb9-26"><a href="#cb9-26" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb9-27"><a href="#cb9-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-28"><a href="#cb9-28" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__hash__</span>(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb9-29"><a href="#cb9-29" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">hash</span>((<span class="va">self</span>.start, <span class="va">self</span>.end))</span>
+<span id="cb9-30"><a href="#cb9-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-31"><a href="#cb9-31" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-32"><a href="#cb9-32" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-33"><a href="#cb9-33" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CausalRelation:</span>
+<span id="cb9-34"><a href="#cb9-34" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-35"><a href="#cb9-35" aria-hidden="true" tabindex="-1"></a><span class="co">    A cause and effect pair</span></span>
+<span id="cb9-36"><a href="#cb9-36" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-37"><a href="#cb9-37" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-38"><a href="#cb9-38" aria-hidden="true" tabindex="-1"></a>    cause: VariableIndex</span>
+<span id="cb9-39"><a href="#cb9-39" aria-hidden="true" tabindex="-1"></a>    effect: VariableIndex</span>
+<span id="cb9-40"><a href="#cb9-40" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-41"><a href="#cb9-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-42"><a href="#cb9-42" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-43"><a href="#cb9-43" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TokenCause:</span>
+<span id="cb9-44"><a href="#cb9-44" aria-hidden="true" tabindex="-1"></a>    <span class="co">"""</span></span>
+<span id="cb9-45"><a href="#cb9-45" aria-hidden="true" tabindex="-1"></a><span class="co">    A token event that supports a potential cause</span></span>
+<span id="cb9-46"><a href="#cb9-46" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-47"><a href="#cb9-47" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-48"><a href="#cb9-48" aria-hidden="true" tabindex="-1"></a>    relation: CausalRelation</span>
+<span id="cb9-49"><a href="#cb9-49" aria-hidden="true" tabindex="-1"></a>    t_cause: <span class="bu">int</span>  <span class="co"># time step where cause is true</span></span>
+<span id="cb9-50"><a href="#cb9-50" aria-hidden="true" tabindex="-1"></a>    t_effect: <span class="bu">int</span>  <span class="co"># time step where effect is true</span></span>
+<span id="cb9-51"><a href="#cb9-51" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-52"><a href="#cb9-52" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb9-53"><a href="#cb9-53" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> lag(<span class="va">self</span>) <span class="op">-&gt;</span> <span class="bu">int</span>:</span>
+<span id="cb9-54"><a href="#cb9-54" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""The lag between the cause and effect"""</span></span>
+<span id="cb9-55"><a href="#cb9-55" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">self</span>.t_effect <span class="op">-</span> <span class="va">self</span>.t_cause</span>
+<span id="cb9-56"><a href="#cb9-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-57"><a href="#cb9-57" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-58"><a href="#cb9-58" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> TypeLevelCause:</span>
+<span id="cb9-59"><a href="#cb9-59" aria-hidden="true" tabindex="-1"></a>    <span class="co">r"""</span></span>
+<span id="cb9-60"><a href="#cb9-60" aria-hidden="true" tabindex="-1"></a><span class="co">    A potential cause of an effect, with a time window, a</span></span>
+<span id="cb9-61"><a href="#cb9-61" aria-hidden="true" tabindex="-1"></a><span class="co">    probability of occurrence, and a list of token events</span></span>
+<span id="cb9-62"><a href="#cb9-62" aria-hidden="true" tabindex="-1"></a><span class="co">    that support this type-level cause. In PCTL language,</span></span>
+<span id="cb9-63"><a href="#cb9-63" aria-hidden="true" tabindex="-1"></a><span class="co">    `c \leadsto {}^{\geq r, \leq s}_{\geq p} e`</span></span>
+<span id="cb9-64"><a href="#cb9-64" aria-hidden="true" tabindex="-1"></a><span class="co">    """</span></span>
+<span id="cb9-65"><a href="#cb9-65" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-66"><a href="#cb9-66" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__init__</span>(</span>
+<span id="cb9-67"><a href="#cb9-67" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>,</span>
+<span id="cb9-68"><a href="#cb9-68" aria-hidden="true" tabindex="-1"></a>        relation: CausalRelation,</span>
+<span id="cb9-69"><a href="#cb9-69" aria-hidden="true" tabindex="-1"></a>        window: Window,</span>
+<span id="cb9-70"><a href="#cb9-70" aria-hidden="true" tabindex="-1"></a>        prob: <span class="bu">float</span>,</span>
+<span id="cb9-71"><a href="#cb9-71" aria-hidden="true" tabindex="-1"></a>        token_events: List[TokenCause],</span>
+<span id="cb9-72"><a href="#cb9-72" aria-hidden="true" tabindex="-1"></a>    ):</span>
+<span id="cb9-73"><a href="#cb9-73" aria-hidden="true" tabindex="-1"></a>        <span class="co">"""</span></span>
+<span id="cb9-74"><a href="#cb9-74" aria-hidden="true" tabindex="-1"></a><span class="co">        Create a type-level cause</span></span>
+<span id="cb9-75"><a href="#cb9-75" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-76"><a href="#cb9-76" aria-hidden="true" tabindex="-1"></a><span class="co">        Parameters</span></span>
+<span id="cb9-77"><a href="#cb9-77" aria-hidden="true" tabindex="-1"></a><span class="co">        ----------</span></span>
+<span id="cb9-78"><a href="#cb9-78" aria-hidden="true" tabindex="-1"></a><span class="co">        relation : CausalRelation, the cause and effect</span></span>
+<span id="cb9-79"><a href="#cb9-79" aria-hidden="true" tabindex="-1"></a><span class="co">        window : Window, the time window in which the effect</span></span>
+<span id="cb9-80"><a href="#cb9-80" aria-hidden="true" tabindex="-1"></a><span class="co">                 occurs after the cause</span></span>
+<span id="cb9-81"><a href="#cb9-81" aria-hidden="true" tabindex="-1"></a><span class="co">        prob : float, the probability of the effect occurring</span></span>
+<span id="cb9-82"><a href="#cb9-82" aria-hidden="true" tabindex="-1"></a><span class="co">               in the window</span></span>
+<span id="cb9-83"><a href="#cb9-83" aria-hidden="true" tabindex="-1"></a><span class="co">        token_events : List[TokenCause], the token events that</span></span>
+<span id="cb9-84"><a href="#cb9-84" aria-hidden="true" tabindex="-1"></a><span class="co">                       support this type-level cause</span></span>
+<span id="cb9-85"><a href="#cb9-85" aria-hidden="true" tabindex="-1"></a><span class="co">        """</span></span>
+<span id="cb9-86"><a href="#cb9-86" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.relation <span class="op">=</span> relation</span>
+<span id="cb9-87"><a href="#cb9-87" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.window <span class="op">=</span> window</span>
+<span id="cb9-88"><a href="#cb9-88" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.prob <span class="op">=</span> prob</span>
+<span id="cb9-89"><a href="#cb9-89" aria-hidden="true" tabindex="-1"></a>        <span class="va">self</span>.token_events <span class="op">=</span> token_events</span>
+<span id="cb9-90"><a href="#cb9-90" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-91"><a href="#cb9-91" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb9-92"><a href="#cb9-92" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"TypeLevelCause(</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>relation<span class="sc">}</span><span class="ss">, </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>window<span class="sc">}</span><span class="ss">, </span><span class="ch">\</span></span>
+<span id="cb9-93"><a href="#cb9-93" aria-hidden="true" tabindex="-1"></a><span class="ss">            </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>prob<span class="sc">}</span><span class="ss">)"</span></span>
+<span id="cb9-94"><a href="#cb9-94" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-95"><a href="#cb9-95" aria-hidden="true" tabindex="-1"></a>    <span class="co"># define equality and hashing based on the relation, window,</span></span>
+<span id="cb9-96"><a href="#cb9-96" aria-hidden="true" tabindex="-1"></a>    <span class="co"># prob, and token events</span></span>
+<span id="cb9-97"><a href="#cb9-97" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__eq__</span>(<span class="va">self</span>, other):</span>
+<span id="cb9-98"><a href="#cb9-98" aria-hidden="true" tabindex="-1"></a>        <span class="cf">if</span> <span class="bu">isinstance</span>(other, TypeLevelCause):</span>
+<span id="cb9-99"><a href="#cb9-99" aria-hidden="true" tabindex="-1"></a>            <span class="cf">return</span> (</span>
+<span id="cb9-100"><a href="#cb9-100" aria-hidden="true" tabindex="-1"></a>                <span class="va">self</span>.relation <span class="op">==</span> other.relation</span>
+<span id="cb9-101"><a href="#cb9-101" aria-hidden="true" tabindex="-1"></a>                <span class="kw">and</span> <span class="va">self</span>.window <span class="op">==</span> other.window</span>
+<span id="cb9-102"><a href="#cb9-102" aria-hidden="true" tabindex="-1"></a>                <span class="kw">and</span> <span class="va">self</span>.prob <span class="op">==</span> other.prob</span>
+<span id="cb9-103"><a href="#cb9-103" aria-hidden="true" tabindex="-1"></a>                <span class="kw">and</span> <span class="va">self</span>.token_events <span class="op">==</span> other.token_events</span>
+<span id="cb9-104"><a href="#cb9-104" aria-hidden="true" tabindex="-1"></a>            )</span>
+<span id="cb9-105"><a href="#cb9-105" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="va">False</span></span>
+<span id="cb9-106"><a href="#cb9-106" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-107"><a href="#cb9-107" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__hash__</span>(<span class="va">self</span>):</span>
+<span id="cb9-108"><a href="#cb9-108" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">hash</span>((</span>
+<span id="cb9-109"><a href="#cb9-109" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.relation,</span>
+<span id="cb9-110"><a href="#cb9-110" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.window,</span>
+<span id="cb9-111"><a href="#cb9-111" aria-hidden="true" tabindex="-1"></a>            <span class="va">self</span>.prob,</span>
+<span id="cb9-112"><a href="#cb9-112" aria-hidden="true" tabindex="-1"></a>            <span class="bu">tuple</span>(<span class="va">self</span>.token_events),</span>
+<span id="cb9-113"><a href="#cb9-113" aria-hidden="true" tabindex="-1"></a>        ))</span>
+<span id="cb9-114"><a href="#cb9-114" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-115"><a href="#cb9-115" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-116"><a href="#cb9-116" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span>(frozen<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb9-117"><a href="#cb9-117" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> CompositeScore:</span>
+<span id="cb9-118"><a href="#cb9-118" aria-hidden="true" tabindex="-1"></a>    lag_scores: np.array</span>
+<span id="cb9-119"><a href="#cb9-119" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb9-120"><a href="#cb9-120" aria-hidden="true" tabindex="-1"></a>    <span class="at">@property</span></span>
+<span id="cb9-121"><a href="#cb9-121" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> score(<span class="va">self</span>):</span>
+<span id="cb9-122"><a href="#cb9-122" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> np.<span class="bu">sum</span>(<span class="va">self</span>.lag_scores)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We also added a class that identifies the causal relationships and computes their relative significance. This makes it easy to compute things with a few simple method calls. The class, <code>CausalTree</code>, is many lines of code and so it can be found in a file <code>cause.py</code> in the same directory as the Jupyter notebook. Now we can identify the type-level relationships and find the most significant ones.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>tree <span class="op">=</span> CausalTree(df_D, <span class="bu">list</span>(variable_names), <span class="st">"high_total_users"</span>)</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>tree.build(<span class="st">"high_total_users"</span>, max_lag<span class="op">=</span><span class="dv">3</span>)</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>tree.compute_significance()</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>tree.prune()</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a><span class="at">@dataclass</span></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a><span class="kw">class</span> ScoredTypeLevelCause:</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    cause: TypeLevelCause</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    score: <span class="bu">float</span></span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__str__</span>(<span class="va">self</span>):</span>
+<span id="cb10-12"><a href="#cb10-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="ss">f"</span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>cause<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span><span class="va">self</span><span class="sc">.</span>score<span class="sc">:.2f}</span><span class="ss">"</span></span>
+<span id="cb10-13"><a href="#cb10-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-14"><a href="#cb10-14" aria-hidden="true" tabindex="-1"></a>    <span class="kw">def</span> <span class="fu">__repr__</span>(<span class="va">self</span>):</span>
+<span id="cb10-15"><a href="#cb10-15" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="bu">str</span>(<span class="va">self</span>)</span>
+<span id="cb10-16"><a href="#cb10-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-17"><a href="#cb10-17" aria-hidden="true" tabindex="-1"></a>scored_causes <span class="op">=</span> []</span>
+<span id="cb10-18"><a href="#cb10-18" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i, cause <span class="kw">in</span> <span class="bu">enumerate</span>(tree.type_level_causes):</span>
+<span id="cb10-19"><a href="#cb10-19" aria-hidden="true" tabindex="-1"></a>    composite_score <span class="op">=</span> tree.type_level_significance_scores[i]</span>
+<span id="cb10-20"><a href="#cb10-20" aria-hidden="true" tabindex="-1"></a>    scored_causes.append(</span>
+<span id="cb10-21"><a href="#cb10-21" aria-hidden="true" tabindex="-1"></a>        ScoredTypeLevelCause(cause, composite_score.score)</span>
+<span id="cb10-22"><a href="#cb10-22" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb10-23"><a href="#cb10-23" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-24"><a href="#cb10-24" aria-hidden="true" tabindex="-1"></a>scored_causes.sort(key<span class="op">=</span><span class="kw">lambda</span> x: x.score, reverse<span class="op">=</span><span class="va">True</span>)</span>
+<span id="cb10-25"><a href="#cb10-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-26"><a href="#cb10-26" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> c <span class="kw">in</span> scored_causes[:<span class="dv">10</span>]:</span>
+<span id="cb10-27"><a href="#cb10-27" aria-hidden="true" tabindex="-1"></a>    cause <span class="op">=</span> tree.get_variable_name(c.cause.relation.cause)</span>
+<span id="cb10-28"><a href="#cb10-28" aria-hidden="true" tabindex="-1"></a>    effect <span class="op">=</span> tree.get_variable_name(c.cause.relation.effect)</span>
+<span id="cb10-29"><a href="#cb10-29" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f"</span><span class="sc">{</span>cause<span class="sc">}</span><span class="ss"> =&gt; </span><span class="sc">{</span>effect<span class="sc">}</span><span class="ss">: </span><span class="sc">{</span>c<span class="sc">.</span>score<span class="sc">:.2f}</span><span class="ss">, </span><span class="ch">\</span></span>
+<span id="cb10-30"><a href="#cb10-30" aria-hidden="true" tabindex="-1"></a><span class="ss">        </span><span class="sc">{</span>c<span class="sc">.</span>cause<span class="sc">.</span>prob<span class="sc">:.2f}</span><span class="ss"> p-value, </span><span class="sc">{</span>c<span class="sc">.</span>cause<span class="sc">.</span>window<span class="sc">}</span><span class="ss"> "</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+</section>
+<section id="discussion" class="level3" data-number="7.4.5">
+<h3 data-number="7.4.5" class="anchored" data-anchor-id="discussion"><span class="header-section-number">7.4.5</span> Discussion</h3>
+<p>The result of the previous command shows which type-level causes contributed the most to high bike rentals, and in which time window.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Clarke1996ModelC" class="csl-entry" role="listitem">
+Clarke, Edmund M., and Holger Schlingloff. 1996. <span>“Model Checking.”</span> <em>Communications of the ACM</em> 52: 74–84.
+</div>
+<div id="ref-WikipediaMontyHallProblem" class="csl-entry" role="listitem">
+contributors, Wikipedia. 2023. <span>“Monty Hall Problem — Wikipedia, the Free Encyclopedia.”</span> <a href="https://en.wikipedia.org/w/index.php?title=Monty_Hall_problem&amp;oldid=1149777144">https://en.wikipedia.org/w/index.php?title=Monty_Hall_problem&amp;oldid=1149777144</a>.
+</div>
+<div id="ref-FanaeeT2013EventLC" class="csl-entry" role="listitem">
+Fanaee-T, Hadi, and João Gama. 2013. <span>“Event Labeling Combining Ensemble Detectors and Background Knowledge.”</span> <em>Progress in Artificial Intelligence</em> 2: 113–27.
+</div>
+<div id="ref-Hansson1990ALF" class="csl-entry" role="listitem">
+Hansson, Hans A., and Bengt Jonsson. 1990. <span>“A Logic for Reasoning about Time and Reliability.”</span> <em>Formal Aspects of Computing</em> 6: 512–35.
+</div>
+<div id="ref-kleinberg_2012" class="csl-entry" role="listitem">
+Kleinberg, Samantha. 2012. <em>Causality, Probability, and Time</em>. Cambridge University Press. <a href="https://doi.org/10.1017/CBO9781139207799">https://doi.org/10.1017/CBO9781139207799</a>.
+</div>
+<div id="ref-Kleinberg2010TheTL" class="csl-entry" role="listitem">
+Kleinberg, Samantha, and Bud Mishra. 2010. <span>“The Temporal Logic of Token Causes.”</span> In <em>International Conference on Principles of Knowledge Representation and Reasoning</em>.
+</div>
+<div id="ref-Zheng2017AMF" class="csl-entry" role="listitem">
+Zheng, Min, and Samantha Kleinberg. 2017. <span>“A Method for Automating Token Causal Explanation and Discovery.”</span> In <em>The Florida AI Research Society</em>.
+</div>
+</div>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./07-computer-vision.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./09-part-3-break.html" class="pagination-link">
+        <span class="nav-page-text">Part 3: Advanced Topics in Causality</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

@@ -1,0 +1,879 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.">
+
+<title>Applied Causal Inference - 1&nbsp; Introduction to Causality</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./02-potential-outcomes-framework.html" rel="next">
+<link href="./index.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./01-intro-to-causality.html"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Applied Causal Inference</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro-to-causality.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-potential-outcomes-framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-causal-estimation-process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-causal-discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-part-2-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 2: Causality in ML Domains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-nlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-computer-vision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-time-dependent-causal-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-part-3-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 3: Advanced Topics in Causality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-fairness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Fairness</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-reinforcement-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reinforcement Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#why-should-i-use-causality" id="toc-why-should-i-use-causality" class="nav-link active" data-scroll-target="#why-should-i-use-causality"><span class="header-section-number">1.1</span> Why Should I Use Causality?</a>
+  <ul class="collapse">
+  <li><a href="#challenge-1-correlation-does-not-imply-causation" id="toc-challenge-1-correlation-does-not-imply-causation" class="nav-link" data-scroll-target="#challenge-1-correlation-does-not-imply-causation"><span class="header-section-number">1.1.1</span> Challenge #1: <em>Correlation Does Not Imply Causation</em></a></li>
+  <li><a href="#challenge-2-simpsons-paradox" id="toc-challenge-2-simpsons-paradox" class="nav-link" data-scroll-target="#challenge-2-simpsons-paradox"><span class="header-section-number">1.1.2</span> Challenge #2: Simpson’s Paradox</a></li>
+  <li><a href="#causality-to-the-rescue" id="toc-causality-to-the-rescue" class="nav-link" data-scroll-target="#causality-to-the-rescue"><span class="header-section-number">1.1.3</span> Causality to the Rescue</a></li>
+  </ul></li>
+  <li><a href="#a-shift-in-perspective" id="toc-a-shift-in-perspective" class="nav-link" data-scroll-target="#a-shift-in-perspective"><span class="header-section-number">1.2</span> A Shift in Perspective</a></li>
+  <li><a href="#causal-inference-a-brief-history" id="toc-causal-inference-a-brief-history" class="nav-link" data-scroll-target="#causal-inference-a-brief-history"><span class="header-section-number">1.3</span> Causal Inference: A Brief History</a>
+  <ul class="collapse">
+  <li><a href="#beginnings" id="toc-beginnings" class="nav-link" data-scroll-target="#beginnings"><span class="header-section-number">1.3.1</span> Beginnings</a></li>
+  <li><a href="#initial-adoption-and-applications" id="toc-initial-adoption-and-applications" class="nav-link" data-scroll-target="#initial-adoption-and-applications"><span class="header-section-number">1.3.2</span> Initial Adoption and Applications</a></li>
+  <li><a href="#recent-applications-in-industry" id="toc-recent-applications-in-industry" class="nav-link" data-scroll-target="#recent-applications-in-industry"><span class="header-section-number">1.3.3</span> Recent Applications in Industry</a></li>
+  </ul></li>
+  <li><a href="#books-and-resources" id="toc-books-and-resources" class="nav-link" data-scroll-target="#books-and-resources"><span class="header-section-number">1.4</span> Books and Resources</a>
+  <ul class="collapse">
+  <li><a href="#books" id="toc-books" class="nav-link" data-scroll-target="#books">Books</a></li>
+  <li><a href="#tools" id="toc-tools" class="nav-link" data-scroll-target="#tools">Tools</a></li>
+  <li><a href="#conferences-and-workshops" id="toc-conferences-and-workshops" class="nav-link" data-scroll-target="#conferences-and-workshops">Conferences and Workshops</a></li>
+  </ul></li>
+  <li><a href="#conclusions-and-looking-ahead" id="toc-conclusions-and-looking-ahead" class="nav-link" data-scroll-target="#conclusions-and-looking-ahead"><span class="header-section-number">1.5</span> Conclusions and Looking Ahead</a></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>Greetings, and welcome to the first chapter of the Causal Machine Learning book! If you’re here, it’s likely that you are a data or machine learning professional who wants to incorporate causality into your toolkit. Alternatively, you might be skeptical about the usefulness of causal inference methods in applied settings. In either case, you’re in the right place!</p>
+<p>In this chapter, we will introduce some high-level concepts about causality and give some motivating examples to set the stage before our dive into causal inference. Specifically, we will answer the question <em>“why should I use causality?,”</em> provide a (brief) historical overview of causality, give a few current examples of causal inference applications in industry settings, and describe the mentality shift compared to a typical ML workflow. After that, the next few chapters will give you everything you need to get up and running in applied causal inference.</p>
+<section id="background-knowledge" class="level4 unnumbered">
+<h4 class="unnumbered anchored" data-anchor-id="background-knowledge">Background Knowledge</h4>
+<p>We assume that readers are familiar with standard statistical methods including correlation and logistic regression. Readers without this prior knowledge are encouraged to consult a resource such as Chapters 3 and 4 of <em>Introduction to Statistical Learning</em><a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a> <span class="citation" data-cites="islr2013">(<a href="#ref-islr2013" role="doc-biblioref">James et al. 2013</a>)</span>.</p>
+</section>
+<section id="why-should-i-use-causality" class="level2" data-number="1.1">
+<h2 data-number="1.1" class="anchored" data-anchor-id="why-should-i-use-causality"><span class="header-section-number">1.1</span> Why Should I Use Causality?</h2>
+<p>The amount of available data has increased dramatically over the last 20 years, and with it, there has been an exponential increase in the questions one might try to answer using data. Many of these questions are fundamentally causal in nature:</p>
+<ul>
+<li>Why did metric <span class="math inline">\(X\)</span> change this month?</li>
+<li>Which of our customers should we target with <span class="math inline">\(Y\)</span> campaign?</li>
+<li>What would happen if we instituted <span class="math inline">\(Z\)</span> policy change?</li>
+</ul>
+<p>Questions like these are commonplace in modern companies, and they all have something in common: they want to understand and quantify causal relationships using data. With large amounts of data and computing power available, it becomes easy to attempt to answer these questions using basic correlational analysis. Standard methods can sufficiently answer the question of <em>what</em> happened, but when the question becomes <em>why</em> or <em>how</em> something occurred, correlation can mislead. Indeed, there are a couple of issues that arise in these settings which can be difficult to overcome without the right set of tools at your disposal. These challenges involve the ability to interpret associations within data as something meaningful, as well as a phenomenon where observed effects appear to reverse. We will see that causal inference provides an attractive solution to both of these problems.</p>
+<p>Judging by trends in machine learning research, it becomes clear that interest in causal methods is growing beyond traditional settings in applied statistics as well. <a href="#fig-neurips-causal">Figure&nbsp;<span>1.1</span></a> shows the increase in causal papers that appear at the popular ML research journal NeurIPS<a href="#fn2" class="footnote-ref" id="fnref2" role="doc-noteref"><sup>2</sup></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-neurips-causal" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/causalpapersNeurIPS.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.1: Causal papers featured at NeurIPS</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Clearly there is growing momentum surrounding causal methods. In the following sections, we will dig deeper into the specific problems that causality can help address.</p>
+<section id="challenge-1-correlation-does-not-imply-causation" class="level3" data-number="1.1.1">
+<h3 data-number="1.1.1" class="anchored" data-anchor-id="challenge-1-correlation-does-not-imply-causation"><span class="header-section-number">1.1.1</span> Challenge #1: <em>Correlation Does Not Imply Causation</em></h3>
+<p>The phrase <em>“correlation does not imply causation”</em> has become somewhat of a cliché; it is a common response to any measured association, and it is often used in response to various analyses in public policy, medicine, economics, and any other scientific or quantitative field. However trite it may be, there is a degree of truth contained within this statement: we cannot just accept associations within data (however strong they may appear to be) as a meaningful relationship.</p>
+<p>One commonly used example of this is the strong correlation between ice cream sales and shark attacks. <a href="#fig-commoncause">Figure&nbsp;<span>1.2</span></a> illustrates what this relationship might look like.<a href="#fn3" class="footnote-ref" id="fnref3" role="doc-noteref"><sup>3</sup></a> Judging by the data alone, one might conclude that eating ice cream causes shark attacks – a horrifying prospect for vacationers with a sweet tooth.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-commoncause" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/CommonCause.png" class="img-fluid figure-img" style="width:75.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.2: A plot of a hypothetical dataset of shark attacks and ice cream sales</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Other associations between variables may not actually be grounded in any common causes or similarities in the data whatsoever. The name for such relationships is <em>spurious correlations</em>, and they can arise anywhere.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Spurious correlation describes an association between two variables that do not actually share a meaningful relationship.</p>
+</div>
+</div>
+<p>For example, consider <a href="#fig-spurious">Figure&nbsp;<span>1.3</span></a>, which illustrates the surprising relationship between the per-capita consumption of margarine in the US and the divorce rate in Maine<a href="#fn4" class="footnote-ref" id="fnref4" role="doc-noteref"><sup>4</sup></a>. There appears to be a very tight association between these annual time series, with a correlation coefficient of greater than 99%! Of course, no one actually believes that the amount of artificial butter produced has any impact on divorces, but blindly trusting the data could easily lead someone astray.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-spurious" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SpuriousCorrelation.png" class="img-fluid figure-img" width="952"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.3: An example of a spurious correlation</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>These examples are somewhat extreme for the purpose of illustrating concepts, but similar challenges analysts encounter in the “real world” will undoubtedly be more nuanced and harder to identify. With the vast amounts of data and computing power available to companies, it is easy to see that these databases are ripe for mining correlations – even those that are entirely spurious in nature. Keen analysts will partner with subject matter experts to learn more about their domain, giving them more of an ability to discern whether a particular association makes sense. However, domain-specific insight does not remove the risk of mistaking a spurious correlation for something more, and confirmation bias is always lurking for even the most seasoned industry veteran or academic researcher.</p>
+</section>
+<section id="challenge-2-simpsons-paradox" class="level3" data-number="1.1.2">
+<h3 data-number="1.1.2" class="anchored" data-anchor-id="challenge-2-simpsons-paradox"><span class="header-section-number">1.1.2</span> Challenge #2: Simpson’s Paradox</h3>
+<p>The other major challenge that arises in the context of data analysis is a phenomenon known as Simpson’s Paradox, which describes a reversal in an apparent relationship between variables when controlling for another variable <span class="citation" data-cites="sep-paradox-simpson">(<a href="#ref-sep-paradox-simpson" role="doc-biblioref">Sprenger and Weinberger 2021</a>)</span>.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Simpson’s Paradox occurs when a relationship between two variables disappears or reverses when taking another factor into account.</p>
+</div>
+</div>
+<p>To illustrate this, we’ll use the standard dataset investigating gender bias in admissions at UC Berkeley in 1973<a href="#fn5" class="footnote-ref" id="fnref5" role="doc-noteref"><sup>5</sup></a>. <a href="#fig-simpson1">Figure&nbsp;<span>1.4</span></a> shows the high-level admission rate for male and female applicants, where there appears to be a significant bias against female students.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-simpson1" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01-intro-to-causality_files/figure-html/fig-simpson1-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.4: Plot of high-level admission rates by gender</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>As we can see, the overall admission rate of male applicants is <em>much</em> higher than for female applicants: a difference of roughly 30% versus 50%! This appears very concerning, however, things become less clear when looking at admission rate within each major separately. <a href="#fig-simpson2">Figure&nbsp;<span>1.5</span></a> shows the male and female admission rates for each major. Surprisingly, the trend actually reverses for most of the majors in the dataset.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-simpson2" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01-intro-to-causality_files/figure-html/fig-simpson2-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.5: Reversal of trend when controlling for major</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p><em>But how can this be?</em> If female admission rates are equal or higher within most departments, shouldn’t the overall female admission rate also be higher? This is a perfect example of Simpson’s Paradox, and it has to do with unequal distribution of applicants between departments. <a href="#fig-simpson3">Figure&nbsp;<span>1.6</span></a> shows one aspect contributing to this phenomenon: the departments with the highest acceptance rates are overwhelmingly male-dominated.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-simpson3" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="01-intro-to-causality_files/figure-html/fig-simpson3-1.png" class="img-fluid figure-img" width="672"></p>
+<figcaption class="figure-caption">Figure&nbsp;1.6: Admission rates and gender distribution by major</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In fact, if we fit a logistic regression model predicting admission from the major and the applicant’s gender, the coefficient for gender is quite near to zero and actually slightly favors female applicants: note the coefficient for <code>GenderM</code> in the following model output, denoting the impact of being male on admission odds.</p>
+<div style="page-break-after: always;"></div>
+<div class="cell">
+<div class="cell-output cell-output-stdout">
+<pre><code>
+Call:
+glm(formula = admission_int ~ Gender + Major, data = admissions)
+
+Coefficients:
+             Estimate Std. Error t value Pr(&gt;|t|)    
+(Intercept)  0.739957   0.018508  39.980  &lt; 2e-16 ***
+GenderM     -0.007018   0.015084  -0.465    0.642    
+MajorB      -0.100760   0.021877  -4.606 4.21e-06 ***
+MajorC      -0.387799   0.020768 -18.673  &lt; 2e-16 ***
+MajorD      -0.396616   0.020668 -19.190  &lt; 2e-16 ***
+MajorE      -0.485950   0.023599 -20.592  &lt; 2e-16 ***
+MajorF      -0.670465   0.021310 -31.462  &lt; 2e-16 ***
+---
+Signif. codes:  0 '***' 0.001 '**' 0.01 '*' 0.05 '.' 0.1 ' ' 1
+
+(Dispersion parameter for gaussian family taken to be 0.1903506)
+
+    Null deviance: 1184.22  on 4838  degrees of freedom
+Residual deviance:  919.77  on 4832  degrees of freedom
+AIC: 5714.1
+
+Number of Fisher Scoring iterations: 2</code></pre>
+</div>
+</div>
+<p>Ultimately, whether any gender bias is actually present in this dataset is not exactly clear, and other questions arise: are female students applying to more competitive departments, or are the male-dominated majors receiving significantly more funding than the others? We cannot know from this dataset, but it does illustrate the behavior of Simpson’s Paradox.</p>
+<p>Simpson’s Paradox can appear in virtually any context, presenting much more nuanced problems which are more difficult to identify and manage than in the admissions example. When these reversals of trends occur “in the wild,” it may not be obvious which variables should be included in an analysis. Given the large amount of data available for analysis, there may be a temptation to throw every available factor into a model (or even just the “usual suspects” from easily accessible databases) and accept whatever it returns. It can be tricky to understand what information is actually useful in answering a particular question, and traditional methods provide little guidance for how to proceed. When a particular coefficient is going to be used as the basis for an important decision, Simpson’s Paradox can make it difficult to know which result to trust.</p>
+</section>
+<section id="causality-to-the-rescue" class="level3" data-number="1.1.3">
+<h3 data-number="1.1.3" class="anchored" data-anchor-id="causality-to-the-rescue"><span class="header-section-number">1.1.3</span> Causality to the Rescue</h3>
+<p>Causal inference provides a solution to both of these problems. We will dive deeper into the specific details in the next chapter, but we will now give a high-level introduction into how causal methods address these issues.</p>
+<p>Causal inference is the name given to a formal process which allows us to measure causal effects from data: even messy observational data! This is made possible by a careful scientific approach which involves outlining assumptions and performing tests to determine whether such an estimate is possible in a given setting. Under the right conditions, this approach allows us to extend our findings from correlational to causal.</p>
+<p>One foundational concept of causal inference is the need to define causal relationships that exist between variables: for example, by saying that <span class="math inline">\(A\)</span> <em>causes</em> <span class="math inline">\(B\)</span>, we are explicitly assuming that <span class="math inline">\(B\)</span> <em>does not cause</em> <span class="math inline">\(A\)</span>. We can enumerate all of the relevant relationships for a specific context, which in turn outlines all of the assumptions that are made about the environment. The process of defining these relationships within a directed acyclic graph (DAG) also provides a benefit of being able to know when variables are independent of each other. We will go into greater detail on <em>d</em>-separation and causal graph construction later, but what’s important for now is that this practice of defining causal relationships provides a strong defense against Simpson’s Paradox – we will only control for a particular variable when necessary, and we will do so in the manner specified by our assumptions and the causal question we are asking.</p>
+<p>This practice also helps us avoid issues from spurious correlations: any relationship between two conditionally independent variables in a causal graph is assumed to be spurious, and will not affect the causal estimation.</p>
+</section>
+</section>
+<section id="a-shift-in-perspective" class="level2" data-number="1.2">
+<h2 data-number="1.2" class="anchored" data-anchor-id="a-shift-in-perspective"><span class="header-section-number">1.2</span> A Shift in Perspective</h2>
+<p>One of the biggest changes when going from a standard analytical workflow to that of causal inference is the difference in mentality. For example, a typical machine learning task will focus on training a model whose predictions perform the best for a particular task, while statistical modeling uses tests of significance and goodness-of-fit to evaluate hypotheses. Causality is different, thanks to a framework which somewhat lines up with the scientific process. To summarize, the causal inference process requires us to:</p>
+<ul>
+<li>Formalize a question (e.g.&nbsp;<em>What if</em> <span class="math inline">\(X\)</span> happened? <em>Why</em> did <span class="math inline">\(Y\)</span> occur?)</li>
+<li>Enumerate assumptions about the environment and how variables relate to one another</li>
+<li>Collect relevant data</li>
+<li>Determine whether causal estimation is possible (meaning that the underlying assumptions hold and the causal quantities can be computed from the available data)</li>
+<li>Estimate the quantities of interest</li>
+</ul>
+<p>In fact, actually producing the <em>causal estimand</em> (i.e.&nbsp;the quantified treatment effect) is a relatively small part of the causal inference process, and the math involved is often quite simple: in many cases, it’s no more complex than logistic regression or calculating the expected values of a distribution. Much more of the effort is spent in the experimental design phase: ensuring you have properly framed the question, consulting with domain experts to validate the causal graph, and determining whether your desired result is actually identifiable from the data you have (and if not, identifying what new sources of data you would need to proceed).</p>
+<p>This process culminates in a causal estimate which is based on the assumptions enumerated in the design phase and the data collected. If the causal model is an accurate reflection of the environment, the estimand can be interpreted as a causal effect. If it is not, more work is needed to make the assumptions match reality. This falsifiability – via objections to the causal graph – is a crucial feature of the causal inference process, as it allows for iterative refinement of the assumptions until it is possible to interpret the effects as something more than simple correlation. This is the beauty (and challenge) of causal inference!</p>
+</section>
+<section id="causal-inference-a-brief-history" class="level2" data-number="1.3">
+<h2 data-number="1.3" class="anchored" data-anchor-id="causal-inference-a-brief-history"><span class="header-section-number">1.3</span> Causal Inference: A Brief History</h2>
+<p>Before we dive into the details of causal inference methods, it might be helpful to have some historical context to understand how these techniques developed. In this final section of the first chapter, we will give a brief overview of causality: starting from the early days and finishing with examples of how modern companies are using causal inference in applied settings.</p>
+<section id="beginnings" class="level3" data-number="1.3.1">
+<h3 data-number="1.3.1" class="anchored" data-anchor-id="beginnings"><span class="header-section-number">1.3.1</span> Beginnings</h3>
+<p>While related work can be traced back to the early 20th century, Donald Rubin’s 1974 entry in the <em>Journal of Educational Psychology</em> entitled “Estimating Causal Effects of Treatments in Randomized and Non-Randomized Studies” introduced what would eventually be known as the <em>potential outcome framework</em>. In Rubin’s words, “The basic conclusion is that randomization should be employed whenever possible but that the use of carefully controlled nonrandomized data to estimate causal effects is a reasonable and necessary procedure in many cases” <span class="citation" data-cites="rubin1974estimating">(<a href="#ref-rubin1974estimating" role="doc-biblioref">Rubin 1974</a>)</span>. Rubin encourages practitioners working with observational data to think carefully about the other variables (aside from the treatment) that may impact the target of an analysis. As we saw earlier in this chapter, the choices we make about whether to control for a factor can significantly impact our results. Rubin’s work represents a major step forward in the ability to interpret estimates from observational data as something more than simple correlation.</p>
+<p>Starting in the late 1980s, Judea Pearl produced a large body of work solidifying causal inference as a scientific practice, culminating in his 2000 textbook <em>Causality</em> <span class="citation" data-cites="pearl2000">(<a href="#ref-pearl2000" role="doc-biblioref">Pearl 2000</a>)</span>. Pearl’s early work focused on the use of directed acyclic graphs (DAGs) to represent causal structure, and he built upon this to develop a robust, thorough language and framework for conducting causal inference. Specifically, Pearl introduced <em>do</em>-calculus, the language of interventional adjustments conducted on observational data – <em>do</em>-calculus was a groundbreaking development because it provides a set of formal definitions for how to perform adjustments in a way to achieve causal understanding.</p>
+<p>Another significant contribution in <span class="citation" data-cites="pearl2000">(<a href="#ref-pearl2000" role="doc-biblioref">Pearl 2000</a>)</span> is the ranking of causal inference problems into tiers, which later became known as the <em>Ladder of Causation</em> (also called the <em>Pearl Causal Hierarchy</em>). The Ladder of Causation places causal queries into the following “rungs:”</p>
+<ol type="1">
+<li><strong>Prediction</strong>: how does knowledge of one variable change our expectation of another variable? For example, how does admission rate differ by gender?</li>
+<li><strong>Intervention</strong>: how does our target respond if we force the treatment to take a certain value? For example, if we randomly assigned male and female students to apply to each major, how does the admission disparity change?</li>
+<li><strong>Counterfactual</strong>: why did a particular outcome occur, and would it have been different under different circumstances? For example, would a particular female student have been accepted had she been male and applied to the same major?</li>
+</ol>
+<p>Following the ladder illustration, as we go from one rung to the next we are asking increasingly causal questions. The first rung represents what is typically done with descriptive statistics or standard statistical modeling: for example, conditional expectations fall on the the first rung on the ladder of causation. These are methods that describe what actually happened within the natural world from which the data originated.</p>
+<p>The second rung on the ladder of causation involves action on the part of the investigator. The questions on this rung are interventional in nature, meaning that a particular variable is fixed (either manually as in the case of a randomized controlled trial, or through an adjustment based on <em>do</em>-calculus). These questions seek to understand <em>what if</em>: for example, if I were to take a particular medication, would it make me feel better? Many of the objectives of predictive modeling are inherently asking similar questions: <em>what if</em> the predictors change in a certain way, based on the patterns identified in the training data?</p>
+<p>The counterfactual questions on the third rung represent the groundbreaking notion of querying <em>why something occurred</em> or <em>what would have happened</em> in a so-called “dream world” made possible by the causal modeling process. Counterfactual reasoning opens a door to questions that are impossible to answer using only “second rung” tooling. These methods allow us to understand what caused particular outcomes, generate treatment effects at the individual level, and explore other hypothetical scenarios within our causal environment.</p>
+<p>Pearl, his students, and his contemporaries have continued developing new methods within causal inference, and this work is beginning to grow in application throughout academic research and in industry.</p>
+<p>The chapters that follow will introduce these techniques in greater detail and provide examples of how to use them. We will provide the relevant theory necessary to use and understand these methods, but readers who are interested in going deeper into the theory of causality are encouraged to explore Pearl’s work, including <em>Causality</em>.</p>
+</section>
+<section id="initial-adoption-and-applications" class="level3" data-number="1.3.2">
+<h3 data-number="1.3.2" class="anchored" data-anchor-id="initial-adoption-and-applications"><span class="header-section-number">1.3.2</span> Initial Adoption and Applications</h3>
+<p>Two areas of early application of causal inference came within the fields of economics and epidemiology. Each field shares the common goal of understanding the effects of policy changes, individual behavior, and other external factors; and each field had standard quantitative methods in place long before the formalization of causality as a scientific practice.</p>
+<p>Prior to Pearl’s work, economists had been using structural equation models (SEMs) to describe cause-and-effect relationships between variables since the 1950s <span class="citation" data-cites="reiss2007structural">(<a href="#ref-reiss2007structural" role="doc-biblioref">Reiss and Wolak 2007</a>)</span>. These SEMs are similar in nature to the structural causal models (SCMs) introduced by Pearl; however, in <em>Causality</em>, Pearl contends that the language of SEMs does not allow for the distinction between causal questions and statistical questions <span class="citation" data-cites="pearl2000">(<a href="#ref-pearl2000" role="doc-biblioref">Pearl 2000</a>)</span>. Pearl’s work on SCMs extends the structural model using the language of causal inference, the benefits of graphical modeling, and the ability to operate within nonlinear settings. In the years after <em>Causality</em>, econometricians began adopting causal inference methods within various contexts including policy evaluation <span class="citation" data-cites="NBERw13934">(<a href="#ref-NBERw13934" role="doc-biblioref">Heckman 2008</a>)</span>.</p>
+<p>Similarly, the field of epidemiology had its own methods of quantifying causal effects. These “classic” methods made important contributions to the quantitative discovery of disease causes, including providing evidence that smoking causes lung cancer. However, a crucial drawback of these methods include their lack of a “formal basis for evaluating causal hypotheses” <span class="citation" data-cites="doi:10.1146/annurev-publhealth-031811-124606">(<a href="#ref-doi:10.1146/annurev-publhealth-031811-124606" role="doc-biblioref">Glass et al. 2013</a>)</span>. Pearl’s methods provide this as a primary feature through the ladder of causation and <em>do</em>-calculus.</p>
+<p>Naturally, debate still exists within both of these fields regarding whether causal inference via Pearl’s methods should be adopted more widely. However, the potential outcomes framework is continuing to find applications within these domains.</p>
+</section>
+<section id="recent-applications-in-industry" class="level3" data-number="1.3.3">
+<h3 data-number="1.3.3" class="anchored" data-anchor-id="recent-applications-in-industry"><span class="header-section-number">1.3.3</span> Recent Applications in Industry</h3>
+<p>In recent years, causal inference has found several applications in industry. In this section, we will provide some examples of how modern companies are using causal methods in real-world settings. Don’t worry if some of these terms are unfamiliar to you — we will provide definitions and examples of the underlying methods in the next few chapters. The goal of this section is to get you excited by showing how these techniques are having an impact in applied settings!</p>
+<p>Personalized marketing is a common tactic used in industry: companies want to target their advertising efforts on the customers who are most likely to respond. One approach to this targeting problem is a method called <em>uplift modeling</em>, which uses counterfactuals to identify the potential effect of an action in order to target the individuals with the most opportunity. Scientists at Uber developed a Python library called <code>CausalML</code> to package the common processes involved in uplift modeling <span class="citation" data-cites="chen2020causalml">(<a href="#ref-chen2020causalml" role="doc-biblioref">Chen et al. 2020</a>)</span>. We’ll talk more about uplift modeling in <a href="03-causal-estimation-process.html"><span>Chapter&nbsp;3</span></a>.</p>
+<p>One company currently using causal inference in a significant way is Netflix: the video streaming giant has published various blog posts and whitepapers (such as <span class="citation" data-cites="https://doi.org/10.48550/arxiv.2007.10979">(<a href="#ref-https://doi.org/10.48550/arxiv.2007.10979" role="doc-biblioref">Wong 2020</a>)</span>) detailing their adoption and development of applied causal inference methods. One such blog post<a href="#fn6" class="footnote-ref" id="fnref6" role="doc-noteref"><sup>6</sup></a> outlines some of the specific uses of causal inference throughout their organization, from gaining understanding about how users respond to different features to developing a general framework for causal ranking within recommender systems.</p>
+<p>Many published applications of causal inference in industry are focused within testing and experimentation: many technology companies run <em>lots</em> of tests to determine the effectiveness of new features, the appeal of new designs, or the impact of changes in processes. Running large-scale A/B tests can be expensive, and in some cases, it may not be feasible to directly test some of the “treatments” that need to be examined. On top of this, A/B tests are inefficient, and it can take a very long time to collect enough data to have trustworthy results. In the blog post, researchers at Netflix describe how they use causal inference in various ways to augment and improve their A/B testing regimes, including the use of double machine learning to match similar observations and extract incremental differences in outcomes.</p>
+</section>
+</section>
+<section id="books-and-resources" class="level2" data-number="1.4">
+<h2 data-number="1.4" class="anchored" data-anchor-id="books-and-resources"><span class="header-section-number">1.4</span> Books and Resources</h2>
+<p>Before closing out the first chapter, we want to leave you with a list of helpful resources: namely books, courses, conferences, and codebases which pertain to causal inference. We use some of these resources and tools throughout the book; others will be helpful for readers with varying degrees of interest in specific applications or focuses in causality.</p>
+<section id="books" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="books">Books</h3>
+<p>No single resource will contain everything about causality – in this book, we make the choice to omit some theoretical detail in favor of practical application. In order to provide guidance to readers embarking on the journey of causal inference, we have compiled a list of other books and online courses that we believe would be beneficial. The list includes resources that cover causality at various levels of depth and complexity, providing readers with the opportunity to explore the topic in a manner that aligns with their needs and experience level.</p>
+<table class="table">
+<colgroup>
+<col style="width: 50%">
+<col style="width: 50%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Causal Inference in Statistics: A Primer</td>
+<td>The book is highly recommended as a primary source of introductory knowledge on the subject for a wide range of individuals.</td>
+</tr>
+<tr class="even">
+<td>Elements of Causal Inference: Foundations and Learning Algorithms</td>
+<td>The book is an excellent resource for readers who have a background in machine learning and understand the connection between causal inference and machine learning. It offers in-depth coverage of various topics, including causal discovery, structural learning, and structural causal models.</td>
+</tr>
+<tr class="odd">
+<td>Data Analysis Using Regression and Multilevel/Hierarchical Models</td>
+<td>The book features two important chapters devoted to the subject of causal inference and its connection to the widely-used machine learning technique of regression analysis. The chapters provide an introductory treatment of the subject and approach it in a practical, hands-on manner that is highly effective for practitioners.</td>
+</tr>
+<tr class="even">
+<td>Fundamentals of Causal Inference (With R)</td>
+<td>This textbook is a good resource for researchers and students who seek to gain an understanding of the principles and techniques involved in causal inference with R background. The book is organized such that each chapter includes an R implementation of the introduced causal concepts and models, as well as accompanying datasets. Also, each chapter provides exercises designed to reinforce the understanding of the subject matter.</td>
+</tr>
+<tr class="odd">
+<td>Observation and Experiment: An Introduction to Causal Inference</td>
+<td>The author of this text employs a practical and accessible approach, requiring minimal mathematical and statistical knowledge, to elucidate crucial concepts and techniques. Drawing on examples from a diverse range of fields, including clinical medicine, economics, public health, epidemiology, clinical psychology, and psychiatry, the author’s use of concrete examples and relatable case studies allows for a better understanding of complex ideas and abstract principles. Specifically, the book provides readers with a clear understanding of how to design and interpret randomized trials, as well as the distinctions between observational studies and randomized trials. The text also covers techniques for identifying, investigating, and evaluating bias in observational studies.</td>
+</tr>
+<tr class="even">
+<td>Causality: Models, Reasoning, and Inference</td>
+<td>The book begins by covering fundamental concepts such as probabilities, graphs, and causal models before delving extensively into advanced causal techniques, including structural equation modeling. Subsequently, complex applications of these techniques in social sciences and economics are discussed at length. This book is particularly beneficial for individuals with prior knowledge of Structural Causal Models (SCMs) who seek to expand their expertise in this area. The book’s comprehensive coverage of theory, particularly bounding effects and counterfactuals, is particularly noteworthy.</td>
+</tr>
+<tr class="odd">
+<td>Explanation in Causal Inference: Methods for Mediation and Interaction</td>
+<td>This book offers a thorough review of the latest advances in the causal inference literature pertaining to the essential areas of mediation, interaction, and spillover effects. Beginning with fundamental concepts and gradually progressing to more complex topics, the book covers recent developments in mediation and interaction research. The chapters extensively incorporate sensitivity analysis techniques to address violations of assumptions, a crucial aspect of the book’s contents. These techniques are of value even to those employing conventional estimation methods.</td>
+</tr>
+<tr class="even">
+<td>Causal Inference: What If</td>
+<td>The book is structured into three progressively challenging parts, beginning with causal inference without models, advancing to causal inference with models, and culminating in the analysis of causal inference from complex longitudinal data. The book strongly emphasizes the precise formulation of the causal question and highlights the need for subject-matter knowledge in observational causal inference. The book includes practical examples, as well as “Fine Points” and “Technical Points,” to elaborate on key topics. The book is intended for researchers in a wide range of disciplines, including epidemiology, statistics, psychology, economics, sociology, political science, and computer science, and has been tested in multiple universities for graduate and advanced undergraduate courses in causal inference.</td>
+</tr>
+<tr class="odd">
+<td>Causal Inference for Statistics, Social, and Biomedical Sciences: An Introduction</td>
+<td>This book provides a thorough and comprehensive exploration of causal inference, employing the “potential outcomes” approach to establish a connection between theoretical underpinnings and real-world analyses that inform evidence-based decision-making across multiple fields, including medicine and public policy. The book presents invaluable guidance for designing research that focuses on causal relationships, and for interpreting research results with appropriate consideration. The authors draw on a broad range of examples using real data from their extensive research portfolios, which effectively elucidate important concepts and practical issues.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="tools" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="tools">Tools</h3>
+<p>In addition to books, it is helpful to have established code bases to serve as a reference and simplify the application process. The following table includes the libraries we used in this book.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://github.com/py-why/dowhy">DoWhy</a></td>
+<td><code>DoWhy</code> is a Python library which makes it easy to estimate causal quantities given a dataset and a causal graph. <code>DoWhy</code> creates dedicated objects for causal models and estimates, allows the specification of a causal graph in graph markup language (GML), and works nicely with standard PyData tooling such as Pandas and NumPy. <code>DoWhy</code> is used for causal inference tasks throughout this book.</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/py-why/EconML">EconML</a></td>
+<td><code>EconML</code> is a library of Python implementations for many causal techniques, mostly centered around estimation of heterogeneous treatment effects. Its meta-learners and double ML techniques are used in the case studies for Chapters 3 (Estimation) and 5 (NLP)</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/uber/causalml">CausalML</a></td>
+<td><code>CausalML</code> is a Python library designed to easily calculate treatment effects from observational data, including uplift modeling and many of the meta-learners introduced in <a href="03-causal-estimation-process.html#sec-estimationprocess"><span>Section&nbsp;3.5</span></a></td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/Minyus/causallift">CausalLift</a></td>
+<td><code>CausalLift</code> is another Python library for uplift modeling</td>
+</tr>
+<tr class="odd">
+<td><a href="https://github.com/py-why/causal-learn">causal-learn</a></td>
+<td><code>causal-learn</code> is a library for causal discovery in Python. <code>causal-learn</code> implements many causal discovery algorithms and allows for extension and implementation of custom methods.</td>
+</tr>
+<tr class="even">
+<td><a href="https://github.com/bambinos/bambi">Bayesian Model-Building Interface (Bambi)</a></td>
+<td><code>Bambi</code> makes it very easy to fit Bayesian mixed-effects models in Python, which is helpful in causal modeling.</td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="conferences-and-workshops" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="conferences-and-workshops">Conferences and Workshops</h3>
+<p>The following is a (non-exhaustive) list of conferences and recurring workshops which focus on causal inference.</p>
+<table class="table">
+<thead>
+<tr class="header">
+<th>Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td><a href="https://sci-info.org/annual-meeting/">American Causal Inference Conference</a></td>
+<td>ACIC is organized annually by the Society for Causal Inference and its topics include theory and application of causal inference</td>
+</tr>
+<tr class="even">
+<td><a href="https://www.cclear.cc">Causal Learning and Reasoning</a></td>
+<td>CLeaR is a relatively new conference whose topics range from fundamental theory of causation to cutting-edge application and adaptation in machine learning contexts</td>
+</tr>
+<tr class="odd">
+<td>Miscellaneous</td>
+<td>Workshops pertaining to causal inference appear often at conferences such as <a href="https://icml.cc/">ICML</a>, <a href="https://neurips.cc/">NeurIPS</a>, and <a href="https://iclr.cc/">ICLR</a> (to name a few)</td>
+</tr>
+</tbody>
+</table>
+</section>
+</section>
+<section id="conclusions-and-looking-ahead" class="level2" data-number="1.5">
+<h2 data-number="1.5" class="anchored" data-anchor-id="conclusions-and-looking-ahead"><span class="header-section-number">1.5</span> Conclusions and Looking Ahead</h2>
+<p>In this chapter, we have illustrated two common challenges that arise when trying to interpret trends within data: Simpson’s Paradox and spurious correlations are pervasive within every domain, and they can wreak havoc on any analysis. We have introduced how causal inference provides a scientific approach to dealing with these challenges, and we explored some of the questions that causal inference seeks to ask and answer. Finally, we gave some historical context along with some examples of how companies are using causal methods to deal with real-world issues.</p>
+<p>Now it’s time to jump into the actual methods! The next few chapters will build a solid foundation of understanding in causal inference concepts, introduce the math necessary to apply these techniques, and walk through the full process of how to actually approach a causal inference problem.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-chen2020causalml" class="csl-entry" role="listitem">
+Chen, Huigang, Totte Harinen, Jeong-Yoon Lee, Mike Yung, and Zhenyu Zhao. 2020. <span>“CausalML: Python Package for Causal Machine Learning.”</span> <a href="https://arxiv.org/abs/2002.11631">https://arxiv.org/abs/2002.11631</a>.
+</div>
+<div id="ref-doi:10.1146/annurev-publhealth-031811-124606" class="csl-entry" role="listitem">
+Glass, Thomas A., Steven N. Goodman, Miguel A. Hernán, and Jonathan M. Samet. 2013. <span>“Causal Inference in Public Health.”</span> <em>Annual Review of Public Health</em> 34 (1): 61–75. <a href="https://doi.org/10.1146/annurev-publhealth-031811-124606">https://doi.org/10.1146/annurev-publhealth-031811-124606</a>.
+</div>
+<div id="ref-NBERw13934" class="csl-entry" role="listitem">
+Heckman, James J. 2008. <span>“Econometric Causality.”</span> Working Paper 13934. Working Paper Series. National Bureau of Economic Research. <a href="https://doi.org/10.3386/w13934">https://doi.org/10.3386/w13934</a>.
+</div>
+<div id="ref-islr2013" class="csl-entry" role="listitem">
+James, Gareth, Daniela Witten, Trevor Hastie, and Robert Tibshirani. 2013. <em>An Introduction to Statistical Learning</em>. Springer. <a href="https://doi.org/10.1007/978-1-4614-7138-7">https://doi.org/10.1007/978-1-4614-7138-7</a>.
+</div>
+<div id="ref-pearl2000" class="csl-entry" role="listitem">
+Pearl, Judea. 2000. <em>Causality: Models, Reasoning, and Inference</em>. USA: Cambridge University Press.
+</div>
+<div id="ref-reiss2007structural" class="csl-entry" role="listitem">
+Reiss, Peter C, and Frank A Wolak. 2007. <span>“Structural Econometric Modeling: Rationales and Examples from Industrial Organization.”</span> <em>Handbook of Econometrics</em> 6: 4277–4415.
+</div>
+<div id="ref-rubin1974estimating" class="csl-entry" role="listitem">
+Rubin, D. B. 1974. <span>“Estimating Causal Effects of Treatments in Randomized and Nonrandomized Studies.”</span> <em>Journal of Educational Psychology</em> 66: 688–701.
+</div>
+<div id="ref-sep-paradox-simpson" class="csl-entry" role="listitem">
+Sprenger, Jan, and Naftali Weinberger. 2021. <span>“<span class="nocase">Simpson’s Paradox</span>.”</span> In <em>The <span>Stanford</span> Encyclopedia of Philosophy</em>, edited by Edward N. Zalta, <span>S</span>ummer 2021. <a href="https://plato.stanford.edu/archives/sum2021/entries/paradox-simpson/" class="uri">https://plato.stanford.edu/archives/sum2021/entries/paradox-simpson/</a>; Metaphysics Research Lab, Stanford University.
+</div>
+<div id="ref-https://doi.org/10.48550/arxiv.2007.10979" class="csl-entry" role="listitem">
+Wong, Jeffrey C. 2020. <span>“Computational Causal Inference.”</span> arXiv. <a href="https://doi.org/10.48550/ARXIV.2007.10979">https://doi.org/10.48550/ARXIV.2007.10979</a>.
+</div>
+</div>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Available at https://www.statlearning.com/<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn2"><p>Source: https://richardjoncarter.com/research/research-into-causal-ai-has-grown-significantly-in-the-last-3-years-if-neurips-is-anything-to-go-by/<a href="#fnref2" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn3"><p>Plot taken from https://www.statology.org/correlation-does-not-imply-causation-examples/<a href="#fnref3" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn4"><p>This plot (along with other equally bizarre examples) can be found at https://www.spuriouscorrelations.com<a href="#fnref4" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn5"><p>Accessed via https://discovery.cs.illinois.edu/dataset/berkeley/<a href="#fnref5" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+<li id="fn6"><p>https://netflixtechblog.com/a-survey-of-causal-inference-applications-at-netflix-b62d25175e6f<a href="#fnref6" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./index.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Preface</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./02-potential-outcomes-framework.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>
