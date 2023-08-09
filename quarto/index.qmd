@@ -88,6 +88,6 @@ The authors especially want to thank Grant Burroughs for producing the cover des
 ```{r include=FALSE}
 # automatically create a bib database for R packages
 knitr::write_bib(c(
-  .packages(), 'bookdown', 'knitr', 'rmarkdown'
+  .packages(), 'knitr', 'rmarkdown'
 ), 'packages.bib')
 ```
