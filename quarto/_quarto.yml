@@ -27,7 +27,7 @@ book:
 
 bibliography: [book.bib, packages.bib]
 link-citations: true
-github-repo: causalmachinelearning/CausalMLBook
+github-repo: appliedcausalinference/aci_book
 
 format:
   html:
@@ -36,3 +36,6 @@ format:
     documentclass: scrreprt
   epub:
     cover-image: img/Book_Cover.png
+
+execute:
+  freeze: auto
