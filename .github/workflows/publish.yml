@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: ubuntu-latest
+    runs-on: macos-latest
 
     permissions:
       contents: write
@@ -22,6 +22,7 @@ jobs:
       - name: Setup R dependencies for Quarto
         uses: r-lib/actions/setup-r-dependencies@v2
         with:
+          upgrade: true
           packages:
             any::knitr
             any::rmarkdown
