@@ -402,6 +402,8 @@ For each grade and city, a small number of schools (10-20) were selected, and wi
 
 To examine the causal impact of the program on the students, we will undertake experiments similar to those conducted by Gelman and Hill.
 
+A version of this Python code is available in [this Colab notebook](https://colab.research.google.com/drive/1zL_bugMw8BHI6Kc3fBoUh-tiQ18kz_17?usp=sharing).
+
 ### Tools and libraries
 We will use BAyesian Model-Building Interface **(Bambi)**, a Python library that works with the probabilistic programming frameworks **PyMC** and is designed to make it extremely easy to fit Bayesian mixed-effects. We will use it to model regression with various variables.
 
@@ -453,14 +455,9 @@ knitr::include_graphics('img/RegressionTreatmentAndPreTest.png')
 
 In @fig-treatmentpretest5095, the regression analysis of post-test scores with treatment and pre-test scores is presented, with $50$% and $95$% uncertainty intervals illustrated through error plots and compared to one with just treatment. The inclusion of pre-test scores in the analysis provides greater clarity regarding the effectiveness of the treatment as compared to just the treatment. The results indicate that the treatment displays average effectiveness for each grade, with relatively more significant effects observed in the lower grades.
 
-::: {#fig-treatmentpretest5095 layout-ncol=2}
-
-![Coefficients of treatment alone](img/Treatment5095.png)
-
-![Coefficients of treatment when including pre-test scores](img/TreatmentPlusPretTest5095.png)
-
-Post Scores with just treatment (left) and treatment plus pre-test scores (right) with 50 and 95 percent uncertainty intervals.
-:::
+```{r fig-treatmentpretest5095, fig.cap='Coefficients of treatment on post scores with just treatment (left) and treatment plus pre-test scores (right), including 50 and 95 percent uncertainty intervals.', echo=FALSE,fig.align='center'}
+knitr::include_graphics('img/TreatmentWithWithoutPretest.png')
+```
 
 
 ### Interactions of Treatment Effect with Pre-Treatment Inputs

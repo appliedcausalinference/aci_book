@@ -98,42 +98,26 @@ A chain is a sequence of nodes such that each node is a parent of the next node 
 There is dependence between $X_1$ and $X_2$ and also between $X_2$ and $X_3$ because of the causal edges assumption. $X_1$ and $X_3$ are dependent as there is a flow of association or statistical dependence from $X_1$ to $X_3$ through $X_2$. Similarly, if we condition on the $X_2$, $X_1$ and $X_3$ are independent of each other. In other words, $X_2$ will block the association flow between $X_1$ and $X_3$ by conditioning.
 
 
-::: {#fig-chains layout-ncol=2}
-
-![Flow without conditioning](img/chain-flow.png)
-
-![Flow with conditioning](img/chain-blocked.png)
-
-Association flow in immoralities without conditioning and with conditioning
-:::
+```{r fig-chains, fig.cap='Association flow in chains without conditioning and with conditioning', echo=FALSE,fig.align='center'}
+knitr::include_graphics('img/ChainFlowVsBlocked.png')
+```
 
 #### Forks
 
 In a fork, two variables have a single parent between them, as shown in @fig-forks. Similar to chains, there is dependence between $X_1$ and $X_2$ and between $X_2$ and $X_3$ because of the causal edges assumption. $X_1$ and $X_3$ are dependent as there is a flow of association or statistical dependence from $X_1$ to $X_3$ through $X_2$. Also, if we condition on the $X_2$, $X_1$ and $X_3$ are independent. In other words, $X_2$ will block the association flow between $X_1$ and $X_3$ by conditioning.
 
-
-::: {#fig-forks layout-ncol=2}
-
-![Flow without conditioning](img/fork-flow.png)
-
-![Flow with conditioning](img/fork-blocked.png)
-
-Association flow in forks without conditioning and with conditioning
-:::
-
+```{r fig-forks, fig.cap='Association flow in forks without conditioning and with conditioning', echo=FALSE,fig.align='center'}
+knitr::include_graphics('img/ForkFlowVsBlocked.png')
+```
 
 #### Immoralities
 
 Immoralities refer to a configuration in a directed acyclic graph where a single node relies on two parents who are not directly connected, as depicted in @fig-immorality. The node $X_2$ in this structure is called a _collider_ and obstructs the flow of association between nodes $X_1$ and $X_3$ without conditioning, unlike in chains or forks. However, unlike chains or forks, by conditioning on the collider $X_2$, the flow of association or dependence persists between $X_1$ and $X_3$.
 
-::: {#fig-immorality layout-ncol=2}
+```{r fig-immorality, fig.cap='Association flow in immoralities without conditioning and with conditioning', echo=FALSE,fig.align='center'}
+knitr::include_graphics('img/ImmoralityFlowVsConditioned.png')
+```
 
-![Flow without conditioning](img/immorality.png)
-
-![Flow with conditioning](img/immorality-cond.png){height=80%}
-
-Association flow in forks without and with conditioning
-:::
 
 
 #### Blocked Path
@@ -946,7 +930,7 @@ knitr::include_graphics('img/SensitivityPlots.png')
 Many researchers, such as Cinelli et al. and Vetich et al., have shown techniques to reduce the constraints (linear assumptions, single variable) and yet be able to perform sensitivity analyses similar to the simple case [@cinelli2020making,veitch2020sense].
 
 ## Case Study
-We will go through different steps and processes of causal inference to demonstrate and give a practical hands-on experience with a real-world dataset. The goal is to take various steps highlighted in the chapter using the tools.
+We will go through different steps and processes of causal inference to demonstrate and give a practical hands-on experience with a real-world dataset. The goal is to take various steps highlighted in the chapter using the tools. A version of the Python code used in this case study can be found in [this Colab notebook](https://colab.research.google.com/drive/1e4Ab5pAyQlKBlS3URBDe9rYIS8Z9yjd-?usp=sharing).
 
 
 ### Dataset
