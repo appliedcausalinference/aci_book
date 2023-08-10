@@ -312,7 +312,7 @@ Tip
 <div class="cell-output-display">
 <div id="fig-spurious" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/SpuriousCorrelation.png" class="img-fluid figure-img" width="952"></p>
+<p><img src="img/SpuriousCorrelation.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;1.3: An example of a spurious correlation</figcaption>
 </figure>
 </div>
@@ -376,6 +376,10 @@ Tip
 <pre><code>
 Call:
 glm(formula = admission_int ~ Gender + Major, data = admissions)
+
+Deviance Residuals: 
+     Min        1Q    Median        3Q       Max  
+-0.73996  -0.34334  -0.06949   0.26706   0.93753  
 
 Coefficients:
              Estimate Std. Error t value Pr(&gt;|t|)    

@@ -424,7 +424,7 @@ Tip
 <div class="cell-output-display">
 <div id="fig-causalgraph" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/CausalGraphs.png" class="img-fluid figure-img" width="773"></p>
+<p><img src="img/CausalGraphs.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;3.4: Causal Graph Assumptions</figcaption>
 </figure>
 </div>
@@ -441,82 +441,43 @@ Tip
 <h4 data-number="3.3.2.1" class="anchored" data-anchor-id="chains"><span class="header-section-number">3.3.2.1</span> Chains</h4>
 <p>A chain is a sequence of nodes such that each node is a parent of the next node in the sequence as shown in <a href="#fig-chains">Figure&nbsp;<span>3.5</span></a>.</p>
 <p>There is dependence between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> and also between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(X_3\)</span> because of the causal edges assumption. <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are dependent as there is a flow of association or statistical dependence from <span class="math inline">\(X_1\)</span> to <span class="math inline">\(X_3\)</span> through <span class="math inline">\(X_2\)</span>. Similarly, if we condition on the <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are independent of each other. In other words, <span class="math inline">\(X_2\)</span> will block the association flow between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> by conditioning.</p>
-<div id="fig-chains" class="quarto-layout-panel">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-chains" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/chain-flow.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Flow without conditioning</figcaption>
+<p><img src="img/ChainFlowVsBlocked.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.5: Association flow in chains without conditioning and with conditioning</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/chain-blocked.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Flow with conditioning</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3.5: Association flow in immoralities without conditioning and with conditioning</figcaption><p></p>
-</figure>
 </div>
 </section>
 <section id="forks" class="level4" data-number="3.3.2.2">
 <h4 data-number="3.3.2.2" class="anchored" data-anchor-id="forks"><span class="header-section-number">3.3.2.2</span> Forks</h4>
 <p>In a fork, two variables have a single parent between them, as shown in <a href="#fig-forks">Figure&nbsp;<span>3.6</span></a>. Similar to chains, there is dependence between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_2\)</span> and between <span class="math inline">\(X_2\)</span> and <span class="math inline">\(X_3\)</span> because of the causal edges assumption. <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are dependent as there is a flow of association or statistical dependence from <span class="math inline">\(X_1\)</span> to <span class="math inline">\(X_3\)</span> through <span class="math inline">\(X_2\)</span>. Also, if we condition on the <span class="math inline">\(X_2\)</span>, <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> are independent. In other words, <span class="math inline">\(X_2\)</span> will block the association flow between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> by conditioning.</p>
-<div id="fig-forks" class="quarto-layout-panel">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-forks" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/fork-flow.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Flow without conditioning</figcaption>
+<p><img src="img/ForkFlowVsBlocked.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.6: Association flow in forks without conditioning and with conditioning</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/fork-blocked.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Flow with conditioning</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3.6: Association flow in forks without conditioning and with conditioning</figcaption><p></p>
-</figure>
 </div>
 </section>
 <section id="immoralities" class="level4" data-number="3.3.2.3">
 <h4 data-number="3.3.2.3" class="anchored" data-anchor-id="immoralities"><span class="header-section-number">3.3.2.3</span> Immoralities</h4>
 <p>Immoralities refer to a configuration in a directed acyclic graph where a single node relies on two parents who are not directly connected, as depicted in <a href="#fig-immorality">Figure&nbsp;<span>3.7</span></a>. The node <span class="math inline">\(X_2\)</span> in this structure is called a <em>collider</em> and obstructs the flow of association between nodes <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span> without conditioning, unlike in chains or forks. However, unlike chains or forks, by conditioning on the collider <span class="math inline">\(X_2\)</span>, the flow of association or dependence persists between <span class="math inline">\(X_1\)</span> and <span class="math inline">\(X_3\)</span>.</p>
-<div id="fig-immorality" class="quarto-layout-panel">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-immorality" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/immorality.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Flow without conditioning</figcaption>
+<p><img src="img/ImmoralityFlowVsConditioned.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;3.7: Association flow in immoralities without conditioning and with conditioning</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/immorality-cond.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Flow with conditioning</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;3.7: Association flow in forks without and with conditioning</figcaption><p></p>
-</figure>
 </div>
 </section>
 <section id="blocked-path" class="level4" data-number="3.3.2.4">
@@ -542,7 +503,7 @@ Tip
 <div class="cell-output-display">
 <div id="fig-intervention" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/Intervention.png" class="img-fluid figure-img" width="804"></p>
+<p><img src="img/Intervention.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;3.8: Structural Interventions</figcaption>
 </figure>
 </div>
@@ -1239,7 +1200,7 @@ Tip
 </section>
 <section id="case-study" class="level2" data-number="3.8">
 <h2 data-number="3.8" class="anchored" data-anchor-id="case-study"><span class="header-section-number">3.8</span> Case Study</h2>
-<p>We will go through different steps and processes of causal inference to demonstrate and give a practical hands-on experience with a real-world dataset. The goal is to take various steps highlighted in the chapter using the tools.</p>
+<p>We will go through different steps and processes of causal inference to demonstrate and give a practical hands-on experience with a real-world dataset. The goal is to take various steps highlighted in the chapter using the tools. A version of the Python code used in this case study can be found in <a href="https://colab.research.google.com/drive/1e4Ab5pAyQlKBlS3URBDe9rYIS8Z9yjd-?usp=sharing">this Colab notebook</a>.</p>
 <section id="dataset" class="level3" data-number="3.8.1">
 <h3 data-number="3.8.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">3.8.1</span> Dataset</h3>
 <p>Economist Jean-Jacques Lalonde collected the Lalonde dataset in the 1970s, and has been widely used in research on the evaluation of social programs. The NSWD program was designed to test the effectiveness of a job training and placement program for disadvantaged individuals. The program provided job training, job placement services, and a wage subsidy to disadvantaged individuals (the treatment group), while a control group received no treatment. The goal of the program was to determine whether the treatment had a positive effect on the employment and earnings of the participants. The dataset includes a variety of variables, including demographic characteristics (such as age, education level, and race), employment status, and income.</p>

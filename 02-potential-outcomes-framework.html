@@ -778,6 +778,7 @@ However, remember that these interpretations assume a perfect linear relationshi
 <p><em>The Electric Company</em> study presents data from an educational experiment conducted in the 1970s on a collection of elementary school classes in two cities, Fresno and Youngstown. The primary objective of this experiment was to assess the impact of The Electric Company, a newly introduced educational television program, on students’ reading ability.</p>
 <p>For each grade and city, a small number of schools (10-20) were selected, and within each school, the two poorest reading classes were randomized into treated and control groups. The classes were randomly divided into treated and control groups, with exposure to the program serving as the treatment. Individual student data is not available for analysis, and as a result, the entire analysis was conducted at the classroom level.</p>
 <p>To examine the causal impact of the program on the students, we will undertake experiments similar to those conducted by Gelman and Hill.</p>
+<p>A version of this Python code is available in <a href="https://colab.research.google.com/drive/1zL_bugMw8BHI6Kc3fBoUh-tiQ18kz_17?usp=sharing">this Colab notebook</a>.</p>
 <section id="tools-and-libraries" class="level3" data-number="2.7.1">
 <h3 data-number="2.7.1" class="anchored" data-anchor-id="tools-and-libraries"><span class="header-section-number">2.7.1</span> Tools and libraries</h3>
 <p>We will use BAyesian Model-Building Interface <strong>(Bambi)</strong>, a Python library that works with the probabilistic programming frameworks <strong>PyMC</strong> and is designed to make it extremely easy to fit Bayesian mixed-effects. We will use it to model regression with various variables.</p>
@@ -804,7 +805,7 @@ Intercept:  94.32083333333335</code></pre>
 <div class="cell-output-display">
 <div id="fig-pergradedist" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/DistributionPerGrade.png" class="img-fluid figure-img" width="742"></p>
+<p><img src="img/DistributionPerGrade.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;2.3: Scores Per Grade Distribution for Treated and Control</figcaption>
 </figure>
 </div>
@@ -816,7 +817,7 @@ Intercept:  94.32083333333335</code></pre>
 <div class="cell-output-display">
 <div id="fig-regressiontreatment5095" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/Treatment5095.png" class="img-fluid figure-img" width="778"></p>
+<p><img src="img/Treatment5095.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;2.4: Regression on treatment indicator with 50 and 95 percent uncertainty intervals</figcaption>
 </figure>
 </div>
@@ -831,35 +832,22 @@ Intercept:  94.32083333333335</code></pre>
 <div class="cell-output-display">
 <div id="fig-regressiontreatmentandpretest" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/RegressionTreatmentAndPreTest.png" class="img-fluid figure-img" width="990"></p>
+<p><img src="img/RegressionTreatmentAndPreTest.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;2.5: Regression with treatment and pretest scores per grade</figcaption>
 </figure>
 </div>
 </div>
 </div>
 <p>In <a href="#fig-treatmentpretest5095">Figure&nbsp;<span>2.6</span></a>, the regression analysis of post-test scores with treatment and pre-test scores is presented, with <span class="math inline">\(50\)</span>% and <span class="math inline">\(95\)</span>% uncertainty intervals illustrated through error plots and compared to one with just treatment. The inclusion of pre-test scores in the analysis provides greater clarity regarding the effectiveness of the treatment as compared to just the treatment. The results indicate that the treatment displays average effectiveness for each grade, with relatively more significant effects observed in the lower grades.</p>
-<div id="fig-treatmentpretest5095" class="quarto-layout-panel">
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-treatmentpretest5095" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<div class="quarto-layout-row quarto-layout-valign-top">
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/Treatment5095.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Coefficients of treatment alone</figcaption>
+<p><img src="img/TreatmentWithWithoutPretest.png" class="img-fluid figure-img"></p>
+<figcaption class="figure-caption">Figure&nbsp;2.6: Coefficients of treatment on post scores with just treatment (left) and treatment plus pre-test scores (right), including 50 and 95 percent uncertainty intervals.</figcaption>
 </figure>
 </div>
 </div>
-<div class="quarto-layout-cell" style="flex-basis: 50.0%;justify-content: center;">
-<div class="quarto-figure quarto-figure-center">
-<figure class="figure">
-<p><img src="img/TreatmentPlusPretTest5095.png" class="img-fluid figure-img"></p>
-<figcaption class="figure-caption">Coefficients of treatment when including pre-test scores</figcaption>
-</figure>
-</div>
-</div>
-</div>
-<p></p><figcaption class="figure-caption">Figure&nbsp;2.6: Post Scores with just treatment (left) and treatment plus pre-test scores (right) with 50 and 95 percent uncertainty intervals.</figcaption><p></p>
-</figure>
 </div>
 </section>
 <section id="interactions-of-treatment-effect-with-pre-treatment-inputs" class="level3" data-number="2.7.5">
@@ -869,7 +857,7 @@ Intercept:  94.32083333333335</code></pre>
 <div class="cell-output-display">
 <div id="fig-regressiontreatmentpretestandinteraction" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/RegressionTreatmentPreTestAndInteraction.png" class="img-fluid figure-img" width="742"></p>
+<p><img src="img/RegressionTreatmentPreTestAndInteraction.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;2.7: Regression with treatment and pre-test and their interactions on scores per grade</figcaption>
 </figure>
 </div>
@@ -889,7 +877,7 @@ pre-test    0.7           0</code></pre>
 <div class="cell-output-display">
 <div id="fig-uncertaintyplot" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/UncertaintyPlot.png" class="img-fluid figure-img" width="633"></p>
+<p><img src="img/UncertaintyPlot.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;2.8: Treatment effect in grade with 50 and 90 perent uncertainty intervals for Grade 4 with interactions</figcaption>
 </figure>
 </div>
@@ -905,7 +893,7 @@ pre-test    0.7           0</code></pre>
 <div class="cell-output-display">
 <div id="fig-withsupplement" class="quarto-figure quarto-figure-center anchored">
 <figure class="figure">
-<p><img src="img/SupplementEffect.png" class="img-fluid figure-img" width="662"></p>
+<p><img src="img/SupplementEffect.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Figure&nbsp;2.9: Estimated effect of supplement compared to replacement with 50 and 95 percent uncertainty intervals</figcaption>
 </figure>
 </div>
@@ -1091,7 +1079,7 @@ pre-test    0.7           0</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/NoTreatment.png" class="img-fluid figure-img" width="192"></p>
+<p><img src="img/NoTreatment.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">No Treatmentment Effect</figcaption>
 </figure>
 </div>
@@ -1131,7 +1119,7 @@ pre-test    0.7           0</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/ConstantTreatmentEffect.png" class="img-fluid figure-img" width="197"></p>
+<p><img src="img/ConstantTreatmentEffect.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Constant Treatmentment Effect</figcaption>
 </figure>
 </div>
@@ -1171,7 +1159,7 @@ pre-test    0.7           0</code></pre>
 <div class="cell-output-display">
 <div class="quarto-figure quarto-figure-center">
 <figure class="figure">
-<p><img src="img/IncreaseTreatmentEffect.png" class="img-fluid figure-img" width="196"></p>
+<p><img src="img/IncreaseTreatmentEffect.png" class="img-fluid figure-img"></p>
 <figcaption class="figure-caption">Increasing Treatmentment Effect</figcaption>
 </figure>
 </div>
