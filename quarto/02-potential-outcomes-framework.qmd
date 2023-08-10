@@ -402,6 +402,8 @@ For each grade and city, a small number of schools (10-20) were selected, and wi
 
 To examine the causal impact of the program on the students, we will undertake experiments similar to those conducted by Gelman and Hill.
 
+A version of this Python code is available in [this Colab notebook](https://colab.research.google.com/drive/1zL_bugMw8BHI6Kc3fBoUh-tiQ18kz_17?usp=sharing).
+
 ### Tools and libraries
 We will use BAyesian Model-Building Interface **(Bambi)**, a Python library that works with the probabilistic programming frameworks **PyMC** and is designed to make it extremely easy to fit Bayesian mixed-effects. We will use it to model regression with various variables.
 

@@ -930,7 +930,7 @@ knitr::include_graphics('img/SensitivityPlots.png')
 Many researchers, such as Cinelli et al. and Vetich et al., have shown techniques to reduce the constraints (linear assumptions, single variable) and yet be able to perform sensitivity analyses similar to the simple case [@cinelli2020making,veitch2020sense].
 
 ## Case Study
-We will go through different steps and processes of causal inference to demonstrate and give a practical hands-on experience with a real-world dataset. The goal is to take various steps highlighted in the chapter using the tools.
+We will go through different steps and processes of causal inference to demonstrate and give a practical hands-on experience with a real-world dataset. The goal is to take various steps highlighted in the chapter using the tools. A version of the Python code used in this case study can be found in [this Colab notebook](https://colab.research.google.com/drive/1e4Ab5pAyQlKBlS3URBDe9rYIS8Z9yjd-?usp=sharing).
 
 
 ### Dataset

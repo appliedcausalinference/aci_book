@@ -153,7 +153,7 @@ In our case study, we plan to utilize the dataset from Sachs et al.'s seminal pa
 
 The effectiveness of the study can be attributed to several factors, such as the variables being unaffected by any known latent confounders and a combination of observations and perturbations being employed to facilitate the correct orientation of the recovered edges.
 
-We will compare different algorithms with the true causal graphs to understand the relative merits of each.
+We will compare different algorithms with the true causal graphs to understand the relative merits of each. The code used in this case study can be found in [this Colab notebook](https://colab.research.google.com/drive/1Vb-GISvjprqYDwSoHxcgfq_Y1hP0c4bM?usp=sharing).
 
 ### Dataset 
 
