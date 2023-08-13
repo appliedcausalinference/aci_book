@@ -201,7 +201,7 @@ There are several popular meta-learning algorithms for causal inference:
 
 This case study demonstrates one way of applying causal inference methods to a real-world dataset that includes text. We make the ignorability assumption, which says that, after conditioning on a set of observed covariates, the treatment assignment is independent of the potential outcomes. In other words, it assumes that there are no unmeasured confounders that simultaneously influence the treatment assignment and the potential outcomes. See @sec-ignorability for more on this assumption.
 
-This case study follows the [Metalearners Examples notebook](https://github.com/py-why/EconML/blob/main/notebooks/Metalearners%20Examples.ipynb) that is in the **EconML** Github repository.
+This case study follows the [Metalearners Examples notebook](https://github.com/py-why/EconML/blob/main/notebooks/Metalearners%20Examples.ipynb) that is in the **EconML** Github repository and can be [viewed on Google Colab](https://colab.research.google.com/drive/1E_4D2pjtEn0A2lD9tXEeux6Ewar0SzMA).
 
 ### Dataset
 

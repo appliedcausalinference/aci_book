@@ -276,7 +276,7 @@ The output is a list of token causes, the events they explain, and their conditi
 
 ## Case Study
 
-In this section, we walk through a detailed example of how to explain observed events in time-series data using type-level causal relationships (Algorithm 1). We also look at how to explain observed events that are *not* explained by type-level  causes and instead explain them with token-level causal relationships (Algorithm 2).
+In this section, we walk through a detailed example of how to explain observed events in time-series data using type-level causal relationships (Algorithm 1). We also look at how to explain observed events that are *not* explained by type-level  causes and instead explain them with token-level causal relationships (Algorithm 2). This case study can also be [viewed on Google Colab](https://colab.research.google.com/drive/1Lsa5DYGvxuiHfuVILNYggMWv3HHsMhCZ).
 
 ### Dataset
 
