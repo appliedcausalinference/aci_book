@@ -7,7 +7,7 @@ on:
 
 jobs:
   build-deploy:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-latest
 
     permissions:
       contents: write
@@ -19,19 +19,11 @@ jobs:
       - name: Set up Quarto
         uses: quarto-dev/quarto-actions/setup@v2
 
-      - name: Setup R dependencies for Quarto
-        uses: r-lib/actions/setup-r-dependencies@v2
-        with:
-          extra-packages: |
-            any::knitr
-            any::rmarkdown
-            any::tidyverse
-            any::gridExtra
-
-      - name: Render and Publish
+      - name: Publish
         uses: quarto-dev/quarto-actions/publish@v2
         with:
           target: gh-pages
           path: quarto
+          render: false
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
