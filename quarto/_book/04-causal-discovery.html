@@ -1,0 +1,981 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.">
+
+<title>Applied Causal Inference - 4&nbsp; Causal Discovery</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./05-part-2-break.html" rel="next">
+<link href="./03-causal-estimation-process.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./04-causal-discovery.html"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Applied Causal Inference</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro-to-causality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-potential-outcomes-framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-causal-estimation-process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-causal-discovery.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-part-2-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 2: Causality in ML Domains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-nlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-computer-vision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-time-dependent-causal-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-part-3-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 3: Advanced Topics in Causality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-fairness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Fairness</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-reinforcement-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reinforcement Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#assumptions-of-causal-discovery" id="toc-assumptions-of-causal-discovery" class="nav-link active" data-scroll-target="#assumptions-of-causal-discovery"><span class="header-section-number">4.1</span> Assumptions of Causal Discovery</a>
+  <ul class="collapse">
+  <li><a href="#markov-assumption" id="toc-markov-assumption" class="nav-link" data-scroll-target="#markov-assumption"><span class="header-section-number">4.1.1</span> Markov Assumption</a></li>
+  <li><a href="#faithfulness-assumptions" id="toc-faithfulness-assumptions" class="nav-link" data-scroll-target="#faithfulness-assumptions"><span class="header-section-number">4.1.2</span> Faithfulness Assumptions</a></li>
+  <li><a href="#causal-sufficiency" id="toc-causal-sufficiency" class="nav-link" data-scroll-target="#causal-sufficiency"><span class="header-section-number">4.1.3</span> Causal Sufficiency</a></li>
+  <li><a href="#acyclicity" id="toc-acyclicity" class="nav-link" data-scroll-target="#acyclicity"><span class="header-section-number">4.1.4</span> Acyclicity</a></li>
+  </ul></li>
+  <li><a href="#from-assumptions-to-structures" id="toc-from-assumptions-to-structures" class="nav-link" data-scroll-target="#from-assumptions-to-structures"><span class="header-section-number">4.2</span> From Assumptions to Structures</a></li>
+  <li><a href="#causal-discovery-algorithms" id="toc-causal-discovery-algorithms" class="nav-link" data-scroll-target="#causal-discovery-algorithms"><span class="header-section-number">4.3</span> Causal Discovery Algorithms</a>
+  <ul class="collapse">
+  <li><a href="#constraint-based-algorithms" id="toc-constraint-based-algorithms" class="nav-link" data-scroll-target="#constraint-based-algorithms"><span class="header-section-number">4.3.1</span> Constraint-Based Algorithms</a></li>
+  <li><a href="#score-based-algorithms" id="toc-score-based-algorithms" class="nav-link" data-scroll-target="#score-based-algorithms"><span class="header-section-number">4.3.2</span> Score-Based Algorithms</a></li>
+  <li><a href="#semi-parametric-algorithms" id="toc-semi-parametric-algorithms" class="nav-link" data-scroll-target="#semi-parametric-algorithms"><span class="header-section-number">4.3.3</span> Semi-Parametric Algorithms</a></li>
+  </ul></li>
+  <li><a href="#case-study" id="toc-case-study" class="nav-link" data-scroll-target="#case-study"><span class="header-section-number">4.4</span> Case Study</a>
+  <ul class="collapse">
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">4.4.1</span> Dataset</a></li>
+  <li><a href="#tools-and-libraries" id="toc-tools-and-libraries" class="nav-link" data-scroll-target="#tools-and-libraries"><span class="header-section-number">4.4.2</span> Tools and Libraries</a></li>
+  <li><a href="#analysis" id="toc-analysis" class="nav-link" data-scroll-target="#analysis"><span class="header-section-number">4.4.3</span> Analysis</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span id="sec-causaldiscovery" class="quarto-section-identifier"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>The fundamental assumption in causal inference using causal graphs has been the requirement of an established causal model for estimating the causal effect. However, constructing such models <em>a priori</em> is often challenging or unfeasible in practice. As an alternative, causal discovery or causal structure search, based on the analysis of statistical properties of purely observational data, has emerged as a crucial process for uncovering causal relationships.</p>
+<p>This chapter provides an introduction and review of the computational techniques for causal discovery that have been developed for this purpose.A diverse set of assumptions are introduced that engender various types of causal discovery algorithms. These algorithms are subsequently explicated, and directed explicitly toward assessing their relative strengths and weaknesses. Finally, a case study is conducted in which the algorithms are applied to a real-world problem, demonstrating their utility in the realm of causal discovery.</p>
+<section id="assumptions-of-causal-discovery" class="level2" data-number="4.1">
+<h2 data-number="4.1" class="anchored" data-anchor-id="assumptions-of-causal-discovery"><span class="header-section-number">4.1</span> Assumptions of Causal Discovery</h2>
+<p>In the realm of modeling and inference, a forward problem entails forecasting the outcome or response of a system or process based on a given set of inputs or parameters. For example, estimating the causal effect from the causal model is an example of a forward problem. In contrast, an inverse problem is the process of determining the inputs or parameters of a system or model based on a set of observed outcomes or responses. This involves working backward from the data to identify the underlying causes or inputs that led to the observed outcomes. One example of an inverse problem is discovering the causal model and structure based on observational data. Solving inverse problems is significantly more challenging since multiple causal models can be constructed from the same observational data <span class="citation" data-cites="maclaren2019can">(<a href="#ref-maclaren2019can" role="doc-biblioref">Maclaren and Nicholson 2019</a>)</span>.</p>
+<p>In the context of solving inverse problems, it is typical to rely on certain assumptions regarding the target of inquiry to narrow down the potential solutions and increase the likelihood of success. Four common assumptions are frequently utilized across causal discovery algorithms <span class="citation" data-cites="verma2022equivalence frydenberg1990chain">(<a href="#ref-verma2022equivalence" role="doc-biblioref">Verma and Pearl 2022</a>; <a href="#ref-frydenberg1990chain" role="doc-biblioref">Frydenberg 1990</a>)</span>.</p>
+<section id="markov-assumption" class="level3" data-number="4.1.1">
+<h3 data-number="4.1.1" class="anchored" data-anchor-id="markov-assumption"><span class="header-section-number">4.1.1</span> Markov Assumption</h3>
+<p>The Markov assumption in causal graphical models assumes that each node is conditionally independent of its non-descendants given its parent nodes. In other words, the Markov assumption states that once the parent nodes of a node are known, information about any other variables in the system is irrelevant in determining the value of that node. This assumption allows for simplifying complex causal structures into a set of conditional independence statements, which can be represented in a graphical model.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Thus, according to the Markov assumption, If the variables are d-separated in the graphical model <span class="math inline">\(G\)</span>, they are statistically independent in the observed data distribution <span class="math inline">\(P\)</span>.</p>
+</div>
+</div>
+<p><span class="math display">\[ X \perp_{G} Y |Z \implies X \perp_{P} Y | Z \]</span></p>
+</section>
+<section id="faithfulness-assumptions" class="level3" data-number="4.1.2">
+<h3 data-number="4.1.2" class="anchored" data-anchor-id="faithfulness-assumptions"><span class="header-section-number">4.1.2</span> Faithfulness Assumptions</h3>
+<p>The faithfulness assumption is the reverse of the Markov assumption, which means that based on the statistical independencies in the distribution <span class="math inline">\(P\)</span>, one can deduce d-separations in the graph <span class="math inline">\(G\)</span>.</p>
+<p><span class="math display">\[ X \perp_{G} Y |Z     \Longleftarrow X \perp_{P} Y | Z\]</span> Violations in faithfulness assumption occur when statistical dependencies in the observed data do not correspond to d-separations in the underlying causal graph. An example of violating the faithfulness assumption occurs when two causal pathways between the nodes cancel each other. Consequently, the nodes may seem statistically independent from the observed data, but they are not d-separated.</p>
+</section>
+<section id="causal-sufficiency" class="level3" data-number="4.1.3">
+<h3 data-number="4.1.3" class="anchored" data-anchor-id="causal-sufficiency"><span class="header-section-number">4.1.3</span> Causal Sufficiency</h3>
+<p>The causal sufficiency assumption in causal discovery is the assumption that all variables that have a causal effect on the outcome of interest are included in the analysis. In other words, the causal sufficiency assumption requires that no unmeasured or unobserved variables are causally related to both the exposure and the outcome.</p>
+</section>
+<section id="acyclicity" class="level3" data-number="4.1.4">
+<h3 data-number="4.1.4" class="anchored" data-anchor-id="acyclicity"><span class="header-section-number">4.1.4</span> Acyclicity</h3>
+<p>The acyclicity assumption in causal discovery assumes there should be no directed cycles (i.e., no feedback loops) in the causal graph.</p>
+</section>
+</section>
+<section id="from-assumptions-to-structures" class="level2" data-number="4.2">
+<h2 data-number="4.2" class="anchored" data-anchor-id="from-assumptions-to-structures"><span class="header-section-number">4.2</span> From Assumptions to Structures</h2>
+<p>How do these assumptions help one to narrow the search in structural space? In causal graphical models, the concept of Markov equivalence is crucial as it pertains to the set of graphs that encode the same conditional independencies.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Specifically, two graphs are considered <strong>Markov equivalent</strong> if they correspond to the same set of conditional independencies. By understanding the Markov equivalence of different graph structures, one can simplify complex causal structures and identify equivalent graphical models with the same conditional independence properties.</p>
+</div>
+</div>
+<p>It is worth noting that specific basic structures, such as <strong>chains</strong> and <strong>forks</strong> (discussed in Chapter 3), belong to the same Markov equivalence class. However, the basic immorality structure is distinct and constitutes its own Markov equivalence class. Applying the Markov and faithful assumptions to the data lets us deduce that all chains and forks have a standard <strong>skeleton</strong>. The skeleton of a graph is obtained by replacing all its directed edges with undirected edges.</p>
+<p>Thus two important graph qualities that one can use to distinguish the structures are (1) Immoralities and (2) Skeleton, leading to an important theorem.</p>
+<p><em>Two graphs are Markov equivalent if and only if they have the same skeleton and immoralities</em></p>
+<p>Thus, we can discover a partially directed graph by using the observed data and analyzing the conditional dependencies to construct a skeleton and then apply the direction using the immoralities.</p>
+</section>
+<section id="causal-discovery-algorithms" class="level2" data-number="4.3">
+<h2 data-number="4.3" class="anchored" data-anchor-id="causal-discovery-algorithms"><span class="header-section-number">4.3</span> Causal Discovery Algorithms</h2>
+<p>In the forthcoming section, we will explore the realm of causal discovery algorithms’ role in uncovering causal relationships from observational or experimental data.</p>
+<section id="constraint-based-algorithms" class="level3" data-number="4.3.1">
+<h3 data-number="4.3.1" class="anchored" data-anchor-id="constraint-based-algorithms"><span class="header-section-number">4.3.1</span> Constraint-Based Algorithms</h3>
+<p>Causal discovery through constraint-based methods typically involves the use of conditional independence tests. However, performing these tests can be challenging when the dependence between variables is still being determined. Despite this challenge, the constraint-based approach is generally applicable across a wide range of domains. The approach’s effectiveness depends heavily on the sample size, with larger sample sizes often necessary to achieve accurate conditional independence tests. A major disadvantage of the constraint-based approach is the reliance on the faithfulness assumption, which may be a strong assumption difficult to satisfy in practice.</p>
+<section id="pc-algorithm" class="level4" data-number="4.3.1.1">
+<h4 data-number="4.3.1.1" class="anchored" data-anchor-id="pc-algorithm"><span class="header-section-number">4.3.1.1</span> PC Algorithm</h4>
+<p>The PC algorithm, proposed by Spirtes et al., is considered one of the oldest causal discovery algorithms whose foundation lies in the causal Markov condition and the faithfulness assumption and that there are no latent confounders <span class="citation" data-cites="spirtes2000causation">(<a href="#ref-spirtes2000causation" role="doc-biblioref">Spirtes et al. 2000</a>)</span>.</p>
+<p>Let us consider an example with a known causal structure and then follow the steps of the PC algorithm to uncover the same structure. <a href="#fig-pc">Figure&nbsp;<span>4.1</span></a> shows the original causal graph and the steps followed in the PC algorithm.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-pc" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/PC-AlgorithmSteps.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.1: PC algorithms and steps</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Following are the steps in the PC algorithm:</p>
+<ol type="1">
+<li>Form a complete undirected, fully connected graph with all the variables.</li>
+<li>Remove all the unconditionally independent edges from the observational data. In the example, we remove the edge <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span> because <span class="math inline">\(X \perp Y\)</span>.</li>
+<li>For every pair <span class="math inline">\((A,B)\)</span>, eliminate the edge between variables <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> if they have an edge between them and there exists a variable <span class="math inline">\(C\)</span> with an edge connected to either <span class="math inline">\(A\)</span> or <span class="math inline">\(B\)</span> such that <span class="math inline">\(A/\)</span> is conditionally independent of <span class="math inline">\(B\)</span> given <span class="math inline">\(C\)</span>. In the example we remove the edges between <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> and also between <span class="math inline">\(Y\)</span> and <span class="math inline">\(W\)</span> because <span class="math inline">\(X \perp W|Y\)</span> and <span class="math inline">\(Y \perp W|Z\)</span></li>
+<li>For every triple of variables <span class="math inline">\((A, B, C)\)</span> where <span class="math inline">\(A\)</span> and <span class="math inline">\(B\)</span> are connected, <span class="math inline">\(B\)</span> and <span class="math inline">\(C\)</span> are connected, and <span class="math inline">\(A\)</span> and <span class="math inline">\(C\)</span> are not connected, establish the edges <span class="math inline">\(A → B ← C,\)</span>, provided that <span class="math inline">\(B\)</span> was not included in the condition set that made <span class="math inline">\(A\)</span> and <span class="math inline">\(C\)</span> independent, and the edge between them was subsequently removed. Such a triple of variables is referred to as a v-structure. In the given example, the <span class="math inline">\(X-Y\)</span> edge was eliminated without conditioning on <span class="math inline">\(Z\)</span>. Thus, we can orient the <span class="math inline">\(X-Z-Y\)</span> edge as <span class="math inline">\(X → Z ← Y\)</span>.</li>
+<li>The process of orientation propagation involves orienting the edge <span class="math inline">\(B-C\)</span> as <span class="math inline">\(B → C\)</span> for every triple of variables where <span class="math inline">\(A → B-C\)</span> and <span class="math inline">\(A\)</span> and <span class="math inline">\(C\)</span> are not adjacent. The orientation of <span class="math inline">\(Y → Z-W\)</span> is determined as <span class="math inline">\(Y → Z → W\)</span>, resulting in the unique recovery of the true structure in this particular example.</li>
+</ol>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>The PC algorithm is designed to converge to the true Markov Equivalence Class if the conditional independence decisions are accurate in the limit of a large sample size.</p>
+</div>
+</div>
+</section>
+<section id="fci-algorithm" class="level4" data-number="4.3.1.2">
+<h4 data-number="4.3.1.2" class="anchored" data-anchor-id="fci-algorithm"><span class="header-section-number">4.3.1.2</span> FCI Algorithm</h4>
+<p>The Fast Causal Inference (FCI) is a constraint-based algorithm considered a more efficient and scalable version of the PC algorithm <span class="citation" data-cites="spirtes2000causation">(<a href="#ref-spirtes2000causation" role="doc-biblioref">Spirtes et al. 2000</a>)</span>. The FCI algorithm is the more general form of the PC algorithm as it enables the identification of unknown confounding variables.</p>
+<p>The FCI algorithm bears several similarities to the PC algorithm in terms of the steps involved in detecting the relationships or edges between variables. Like the PC algorithm, the FCI algorithm generates a causal graph by initially creating a fully connected undirected graph and subsequently eliminating edges linking conditionally independent variables.</p>
+<p>Once the algorithm eliminates edges based on conditional independence, it proceeds to identify directions for the remaining edges wherever possible, leaving edges without directions when the direction is unknown. The graph in <a href="#fig-fci">Figure&nbsp;<span>4.2</span></a> illustrates a true causal model with relationships and an observed confounding variable <span class="math inline">\(U\)</span>. After eliminating the edges based on conditional independence, it examines for colliders. For instance, when <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span> are unconditionally independent in a causal model, the <span class="math inline">\(X - Z\)</span> edge can be eliminated without conditioning on <span class="math inline">\(Y\)</span>. In this scenario, the <span class="math inline">\(X - Y - Z\)</span> triple is treated as a collider and oriented as <span class="math inline">\(X \rightarrow Y \leftarrow Z\)</span> signifying that <span class="math inline">\(Y\)</span> is a common effect of <span class="math inline">\(X\)</span> and <span class="math inline">\(Z\)</span>. The bidirectional edge linking nodes <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span> denotes the presence of an indeterminate confounding variable affecting the observed relationship between <span class="math inline">\(Y\)</span> and <span class="math inline">\(Z\)</span>. The presence of circle symbols at nodes <span class="math inline">\(X\)</span> and <span class="math inline">\(W\)</span> signifies that the algorithm is unable to discern the directionality of the relationship between <span class="math inline">\(X\)</span> and <span class="math inline">\(Y\)</span>, whether it is a directed edge from <span class="math inline">\(X\)</span> to <span class="math inline">\(Y\)</span>, an unobserved confounder, or a combination thereof. This also holds true for the relationship between <span class="math inline">\(Y\)</span>, <span class="math inline">\(Z\)</span> and <span class="math inline">\(W\)</span> in a similar way.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-fci" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/FCI.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.2: FCI Algorithm</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Spirtes et al., introduced an adapted form of the FCI algorithm, the Anytime FCI <span class="citation" data-cites="spirtes2001anytime">(<a href="#ref-spirtes2001anytime" role="doc-biblioref">Spirtes 2001</a>)</span>. Anytime FCI employs conditional independence tests involving conditioning sets smaller than a predetermined <em>K</em> threshold.</p>
+<p>The Really Fast Causal Inference (RFCI) algorithm is characterized by its utilization of a reduced number of conditional independence tests when compared to the FCI algorithm <span class="citation" data-cites="colombo2012learning">(<a href="#ref-colombo2012learning" role="doc-biblioref">Colombo et al. 2012</a>)</span>. Furthermore, RFCI tests condition on a smaller subset of variables. These optimizations confer a notable speed advantage to RFCI over FCI. Additionally, RFCI’s outcomes are inclined to be more reliable in the context of small samples, as high-order conditional independence tests exhibit diminished statistical power. However, the trade-off of these optimizations is that RFCI’s results may need to be more informative.</p>
+<p>Additional extensions exist to current causal discovery algorithms, such as the CCD algorithm that operates without the requirement of acyclicity <span class="citation" data-cites="richardson1996feedback">(<a href="#ref-richardson1996feedback" role="doc-biblioref">Richardson 1996</a>)</span>. Moreover, several methods based on SAT-based causal discovery are available, enabling us to dispense with the assumptions of causal sufficiency and acyclicity <span class="citation" data-cites="hyttinen2013discovering">(<a href="#ref-hyttinen2013discovering" role="doc-biblioref">Hyttinen et al. 2013</a>)</span>.</p>
+</section>
+</section>
+<section id="score-based-algorithms" class="level3" data-number="4.3.2">
+<h3 data-number="4.3.2" class="anchored" data-anchor-id="score-based-algorithms"><span class="header-section-number">4.3.2</span> Score-Based Algorithms</h3>
+<p>Score-based algorithms begin by creating a completely undirected graph, representing the conditional independence relationships inherent in the data. These algorithms iteratively modify this initial structure by adding and removing edges while simultaneously computing the corresponding scores. The goal is to select the structure that yields the highest score value. The selection of the score function is dependent on the specific algorithm and may include Bayesian Information Criterion (BIC), Akaike Information Criterion (AIC), and Maximum Likelihood (ML), among others. These functions balance the model complexity and goodness of fit to avoid overfitting, which could lead to unreliable causal inferences.</p>
+<section id="greedy-equivalence-search-algorithm" class="level4" data-number="4.3.2.1">
+<h4 data-number="4.3.2.1" class="anchored" data-anchor-id="greedy-equivalence-search-algorithm"><span class="header-section-number">4.3.2.1</span> Greedy Equivalence Search Algorithm</h4>
+<p>The Greedy Equivalence Search (GES) is an algorithmic architecture for causal structure discovery <span class="citation" data-cites="chickering2002optimal">(<a href="#ref-chickering2002optimal" role="doc-biblioref">Chickering 2002</a>)</span>. It is grounded on the principle of iteratively constructing a partially directed acyclic graph (PDAG) that represents the conditional independence relationships inherent in the data. The algorithm operates by initially creating an empty graph and iteratively adding edges based on score functions such as Bayes Information Score (BIC) or the Z-score that evaluate the goodness of fit between the data and the causal structure. GES incorporates a greedy search strategy, prioritizing the addition of edges that lead to the maximum increase in the score functions. Additionally, GES employs a backtracking mechanism to rectify incorrect edge directions.</p>
+<p>A novel approach to causal discovery, introduced by Ogarrio et al.&nbsp;in 2016, is the GFCI algorithm, which combines the strengths of both GES and FCI <span class="citation" data-cites="ogarrio2016hybrid">(<a href="#ref-ogarrio2016hybrid" role="doc-biblioref">Ogarrio, Spirtes, and Ramsey 2016</a>)</span>. GES is utilized to generate a supergraph of the skeleton, while FCI is employed to prune the supergraph and determine the correct orientations of the edges.</p>
+<p>The Fast Greedy Equivalence Search (FGES) algorithm integrates the Greedy Equivalence Search (GES) and the Fast Causal Inference (FCI) algorithm differently <span class="citation" data-cites="bernaola2020learning">(<a href="#ref-bernaola2020learning" role="doc-biblioref">Bernaola et al. 2020</a>)</span>. FGES utilizes a rapid, parallelized variant of GES, and similarly to FCI, it depends on “V” structures to establish edge directionality.</p>
+</section>
+</section>
+<section id="semi-parametric-algorithms" class="level3" data-number="4.3.3">
+<h3 data-number="4.3.3" class="anchored" data-anchor-id="semi-parametric-algorithms"><span class="header-section-number">4.3.3</span> Semi-Parametric Algorithms</h3>
+<p>The causal inference techniques previously discussed have several limitations. Firstly, these methods rely on the faithfulness assumption, which posits that the observed conditional independence relationships in the data reflect the underlying causal structure. However, this assumption may not hold in specific scenarios, leading to inaccurate inferences. Secondly, many of these techniques require a large number of samples to accurately perform conditional independence tests, which can be a challenging constraint in specific applications. Finally, another limitation of these methods is that they can only identify Markov equivalent classes in the causal structures. This means that these techniques cannot always distinguish between different causal structures that yield the same conditional independence relationships, potentially leading to ambiguity in the resulting causal models.</p>
+<p>Based on the works of Geiger and Pearl, and Meek, it was shown that in the case of multinomial distributions or linear Gaussian structural equations, it is possible to identify a graph only up to its Markov equivalence class <span class="citation" data-cites="geiger1990logic meek2013strong">(<a href="#ref-geiger1990logic" role="doc-biblioref">Geiger and Pearl 1990</a>; <a href="#ref-meek2013strong" role="doc-biblioref">Meek 2013</a>)</span>. By relaxing constraints to encompass <strong>linear non-Gaussian noise settings</strong> and the <strong>nonlinear additive noise setting</strong>, <strong>semi-parametric assumptions</strong> are introduced. It has been demonstrated that the causal graph can be identified under both of these settings.</p>
+<section id="linear-non-gaussian-noise-lingam" class="level4" data-number="4.3.3.1">
+<h4 data-number="4.3.3.1" class="anchored" data-anchor-id="linear-non-gaussian-noise-lingam"><span class="header-section-number">4.3.3.1</span> Linear Non-Gaussian Noise (LiNGAM)</h4>
+<p>In the linear non-Gaussian noise setting, all structural equations (the causal mechanisms responsible for producing the data) take the following form:</p>
+<p><span class="math display">\[Y := f(X) + U\]</span> where <span class="math inline">\(f(X)\)</span> is a linear function, <span class="math inline">\(X \perp U\)</span> and <span class="math inline">\(U\)</span> is the unobserved non-Gaussian random distribution <span class="citation" data-cites="shimizu2006linear">(<a href="#ref-shimizu2006linear" role="doc-biblioref">Shimizu et al. 2006</a>)</span>.</p>
+<p>Based on the research of Darmois and Skitovich, it is possible to demonstrate identifiability in a linear non-Gaussian context <span class="citation" data-cites="darmois1953analyse skitovich1954linear">(<a href="#ref-darmois1953analyse" role="doc-biblioref">Darmois 1953</a>; <a href="#ref-skitovich1954linear" role="doc-biblioref">Skitovich 1954</a>)</span>. Formally, in the linear non-Gaussian setting, if the true SCM is <span class="math display">\[ Y := f(X) + U, X \perp U\]</span> then, there does not exist an SCM in the reverse direction <span class="math display">\[X := f(Y) + \tilde{U}, Y\perp \tilde{U}\]</span> that can generate data consistent with <span class="math inline">\(P(X,Y)\)</span>.</p>
+<p>Thus, in non-linear Gaussian setting, one can identify if the structure with two variables is either <span class="math inline">\(X \rightarrow Y\)</span> or <span class="math inline">\(X \leftarrow Y\)</span>. The statistical way of interpreting this is: when fitting the data in the causal direction, the residuals obtained are independent of the input variable. However, when fitting the data in the anti-causal direction, the residuals become dependent on the input variable.</p>
+<p>There have been a few extensions with based on various assumptions being relaxed, such as the multivariate one as presented by Shimizu et al., relaxing the causal sufficiency assumptions by Hoyer et al., and dropping the acyclicity assumptions by Lacerda et al. <span class="citation" data-cites="skitovich1954linear">Lacerda et al. (<a href="#ref-lacerda2012discovering" role="doc-biblioref">2012</a>)</span>.</p>
+</section>
+<section id="nonlinear-additive-noise" class="level4" data-number="4.3.3.2">
+<h4 data-number="4.3.3.2" class="anchored" data-anchor-id="nonlinear-additive-noise"><span class="header-section-number">4.3.3.2</span> Nonlinear Additive Noise</h4>
+<p>Another approach to attain identifiability in the causal graph is through the nonlinear additive noise setting, which is predicated on the assumption that all causal mechanisms are non-linear where the noise enters the system additively <span class="citation" data-cites="hoyer2008nonlinear">(<a href="#ref-hoyer2008nonlinear" role="doc-biblioref">P. Hoyer et al. 2008</a>)</span>. Mathematically, this assumption can be expressed as:</p>
+<p><span class="math display">\[\forall_i\ X_i := f(pa_i) +U_i\]</span> where <span class="math inline">\(f\)</span> is nonlinear and <span class="math inline">\(pa_i\)</span> denotes the parents of <span class="math inline">\(X\)</span>.</p>
+<p>Zhang and Hayvarinen proposed an extension where instead of nonlinear additive noise, there can be a post-nonlinear transformation after adding the noise <span class="citation" data-cites="zhang2012identifiability">(<a href="#ref-zhang2012identifiability" role="doc-biblioref">Zhang and Hyvarinen 2012</a>)</span>. This can be expressed as:</p>
+<p><span class="math display">\[\forall_i\ X_i := g(f(pa_i) +U_i). \ X\perp U\]</span></p>
+</section>
+</section>
+</section>
+<section id="case-study" class="level2" data-number="4.4">
+<h2 data-number="4.4" class="anchored" data-anchor-id="case-study"><span class="header-section-number">4.4</span> Case Study</h2>
+<p>In our case study, we plan to utilize the dataset from Sachs et al.’s seminal paper, demonstrating the feasibility of causal discovery in biological systems <span class="citation" data-cites="sachs2005causal">(<a href="#ref-sachs2005causal" role="doc-biblioref">Sachs et al. 2005</a>)</span>. The study successfully reconstructed a known causal signaling pathway from a combination of experimental and observational flow cytometry measurements with near-perfect accuracy.</p>
+<p>The effectiveness of the study can be attributed to several factors, such as the variables being unaffected by any known latent confounders and a combination of observations and perturbations being employed to facilitate the correct orientation of the recovered edges.</p>
+<p>We will compare different algorithms with the true causal graphs to understand the relative merits of each. The code used in this case study can be found in <a href="https://colab.research.google.com/drive/1Vb-GISvjprqYDwSoHxcgfq_Y1hP0c4bM?usp=sharing">this Colab notebook</a>.</p>
+<section id="dataset" class="level3" data-number="4.4.1">
+<h3 data-number="4.4.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">4.4.1</span> Dataset</h3>
+<p>The study measured 11 phosphorylated proteins and phospholipids using flow cytometry, including Raf (S259), MAPKs Erk1 and Erk2 (T202 and Y204), p38 MAPK (T180 and Y182), Jnk (T183 and Y185), AKT (S473), Mek1 and Mek2 (S217 and S221), PKA substrates (CREB, PKA, CaMKII, caspase-10, caspase-2), PLC-g (Y783), PKC (S660), PIP2, and PIP3.</p>
+<table class="table">
+<colgroup>
+<col style="width: 23%">
+<col style="width: 16%">
+<col style="width: 59%">
+</colgroup>
+<thead>
+<tr class="header">
+<th>Phosphorylated Proteins / Phospholipids</th>
+<th>Variable Name</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td>Raf</td>
+<td>praf</td>
+<td>Phosphorylation at S259</td>
+</tr>
+<tr class="even">
+<td>Erk1 and Erk2</td>
+<td>p44/p42</td>
+<td>Phosphorylation at T202 and Y204</td>
+</tr>
+<tr class="odd">
+<td>p38</td>
+<td>p38</td>
+<td>Phosphorylation at T180 and Y182</td>
+</tr>
+<tr class="even">
+<td>Jnk</td>
+<td>pjnk</td>
+<td>Phosphorylation at T183 and Y185</td>
+</tr>
+<tr class="odd">
+<td>AKT</td>
+<td>pakts473</td>
+<td>Phosphorylation at S473</td>
+</tr>
+<tr class="even">
+<td>Mek1 and Mek2</td>
+<td>pmek</td>
+<td>Phosphorylation at S217 and S221</td>
+</tr>
+<tr class="odd">
+<td>PKA substrates</td>
+<td>pka</td>
+<td>Detects proteins and peptides containing a phospho-Ser/Thr residue with arginine at the –3 position</td>
+</tr>
+<tr class="even">
+<td>PKC</td>
+<td>PKC</td>
+<td>Detects phosphorylated PKC-<span class="math inline">\(\alpha\)</span>, -<span class="math inline">\(\beta\)</span>I, -<span class="math inline">\(\beta\)</span>II, -<span class="math inline">\(\delta\)</span>, -<span class="math inline">\(\epsilon\)</span>, -<span class="math inline">\(\eta\)</span>, and -<span class="math inline">\(\theta\)</span> isoforms only at C-terminal residue homologous to S660 of PKC-<span class="math inline">\(\beta\)</span>II</td>
+</tr>
+<tr class="odd">
+<td>PLC-g</td>
+<td>plcg</td>
+<td>Phosphorylation at Y783</td>
+</tr>
+<tr class="even">
+<td>PIP2</td>
+<td>PIP2</td>
+<td>Detects PIP2</td>
+</tr>
+<tr class="odd">
+<td>PIP3</td>
+<td>PIP3</td>
+<td>Detects PIP3</td>
+</tr>
+</tbody>
+</table>
+<p>We use the raw dataset provided by the <a href="https://github.com/FenTechSolutions/CausalDiscoveryToolbox/tree/master/cdt/data/resources">Casual Discovery toolbox</a></p>
+</section>
+<section id="tools-and-libraries" class="level3" data-number="4.4.2">
+<h3 data-number="4.4.2" class="anchored" data-anchor-id="tools-and-libraries"><span class="header-section-number">4.4.2</span> Tools and Libraries</h3>
+<p>We employed the <code>causal-learn</code> Python package in this case study to conduct a comprehensive causal analysis. For the visualization and management of graphs, we utilized the <code>networkx</code> library, <code>pandas</code> for correlation-based analysis, while the <code>numpy</code> library was employed for performing fundamental data handling tasks.</p>
+</section>
+<section id="analysis" class="level3" data-number="4.4.3">
+<h3 data-number="4.4.3" class="anchored" data-anchor-id="analysis"><span class="header-section-number">4.4.3</span> Analysis</h3>
+<p>To conduct our analysis, we will begin by performing a basic statistical data analysis to understand the correlations present and the distribution of the data.</p>
+<p>From there, we will perform causal discovery using various algorithms. We will carefully analyze the results, looking for any missing edges, inaccurately directed causal relationships and incorrect relationships introduced by the algorithms.</p>
+<p>Through this process, we aim to identify and summarize our observations based on the true causal graph. We will also compare the results obtained from each algorithm better to understand the strengths and weaknesses of each method.</p>
+<section id="exploratory-data-analysis" class="level4" data-number="4.4.3.1">
+<h4 data-number="4.4.3.1" class="anchored" data-anchor-id="exploratory-data-analysis"><span class="header-section-number">4.4.3.1</span> Exploratory Data Analysis</h4>
+<p><a href="#fig-describe">Figure&nbsp;<span>4.3</span></a> shows that the dataset consists of 7466 observations for each of the 11 variables. The mean values of the variables vary significantly, with the smallest mean being 27.03 for PIP3 and the largest mean being 625.76 for PKA. The standard deviation (std) values also show considerable variation among the variables, indicating differing levels of dispersion around the mean for each variable. The smallest standard deviation is 43.05 for PIP3, while the largest is 644.46 for PKA. The 25th percentile (25%), 50th percentile (median or 50%), and 75th percentile (75%) values for each variable also show a wide range of values. The analysis indicates that the distributions of the variables are likely to be different and may have various degrees of skewness.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-describe" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Sachs-Stats.png" class="img-fluid figure-img" style="width:90.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.3: Basic Statistics for the Cytometry Dataset</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The scatter plot Fig.@fig-scatter shows some correlations that need to be analyzed for causal relationships, for example, between <strong>pmek</strong> and <strong>praf</strong>, <strong>plcg</strong> and <strong>PIP2</strong>, <strong>PKC</strong> and <strong>p38</strong>, etc.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-scatter" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Sachs-Scatter.png" class="img-fluid figure-img" style="width:70.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.4: Scatter Plot</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="true-causal-graph" class="level4" data-number="4.4.3.2">
+<h4 data-number="4.4.3.2" class="anchored" data-anchor-id="true-causal-graph"><span class="header-section-number">4.4.3.2</span> True Causal Graph</h4>
+<p><a href="#fig-sachstrue">Figure&nbsp;<span>4.5</span></a> shows the actual causal model as a DAG that we will use to compare and contrast with the algorithm-generated structures.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-sachstrue" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Sachs-truecausal.png" class="img-fluid figure-img" style="width:50.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.5: True Causal Graph</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="pc-algorithm-1" class="level4" data-number="4.4.3.3">
+<h4 data-number="4.4.3.3" class="anchored" data-anchor-id="pc-algorithm-1"><span class="header-section-number">4.4.3.3</span> PC Algorithm</h4>
+<p>As shown in the code, causal-learn package provides a simple mechanism to run the algorithms with default parameters. We will not be optimizing the results for parameters in this case study.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> causallearn.search.ConstraintBased.PC <span class="im">import</span> pc</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> causallearn.utils.GraphUtils <span class="im">import</span> GraphUtils</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> IPython.display <span class="im">import</span> Image</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="co"># default parameters</span></span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>cg <span class="op">=</span> pc(data)</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>pd_pc_graph <span class="op">=</span> GraphUtils.to_pydot(cg.G)</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a><span class="co"># change the node labels</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>update_node_labels(pd_pc_graph,label_mapping)</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a><span class="co"># visualization using pydot</span></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a>img <span class="op">=</span> Image(pd_pc_graph.create_png())</span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>display(img)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-trueandpc" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SachsTrueVsPC.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.6: True causal diagram (left) vs.&nbsp;the structure learned by the PC algorithm (right)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>Upon comparing the true causal graph with the one generated by the PC algorithm, several observations can be made:</p>
+<ul>
+<li><p>Many missing edges are present, such as PKA-&gt;pakts473, pmek-&gt;p44/42, and PIP3-&gt;pakts473.</p></li>
+<li><p>Some edges exhibit incorrect directions, such as PIP3-&gt;PIP2.</p></li>
+<li><p>The PC algorithm introduces erroneous edges, such as plcg-&gt;pmek.</p></li>
+</ul>
+</section>
+<section id="fci-algorithm-1" class="level4" data-number="4.4.3.4">
+<h4 data-number="4.4.3.4" class="anchored" data-anchor-id="fci-algorithm-1"><span class="header-section-number">4.4.3.4</span> FCI Algorithm</h4>
+<p>Upon comparing the true causal graph with the one generated by the FCI algorithm, as shown in <a href="#fig-trueandfci">Figure&nbsp;<span>4.7</span></a>, several noteworthy observations can be made:</p>
+<ul>
+<li><p>Numerous missing edges are present, such as PKA-&gt;pakts473, pmek-&gt;p44/42, and PIP3-&gt;pakts473, akin to the PC algorithm.</p></li>
+<li><p>Some edges exhibit incorrect directions, such as PIP3-&gt;PIP2.</p></li>
+<li><p>The FCI algorithm introduces a greater number of erroneous edges compared to the PC algorithm.</p></li>
+<li><p>The FCI algorithm uniquely contributes bidirectional edges and circles (unknown). For instance, the PKA to p44/42 edge, which was correctly directed in the PC algorithm, has become bidirectional in the FCI algorithm. Similarly, the praf to pmek edge, which was accurately directed in the PC algorithm, appears bidirectionally open in the FCI algorithm.</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-trueandfci" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SachsTrueVsFCI.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.7: True causal diagram (left) vs.&nbsp;the structure learned by the FCI algorithm (right)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="ges-algorithm" class="level4" data-number="4.4.3.5">
+<h4 data-number="4.4.3.5" class="anchored" data-anchor-id="ges-algorithm"><span class="header-section-number">4.4.3.5</span> GES Algorithm</h4>
+<p>Upon comparing the true causal graph with the one generated by the GES algorithm, as shown in <a href="#fig-trueandges">Figure&nbsp;<span>4.8</span></a>, several noteworthy observations can be made:</p>
+<ul>
+<li><p>Similar to PC and FCI, the edges PKA-&gt;pakts473 and pmek-&gt;p44/42, are missing but PIP3-&gt;pakts473 has been discovered.</p></li>
+<li><p>Some edges exhibit incorrect directions similar to PC and FCI, such as PIP3-&gt;PIP2.</p></li>
+<li><p>Some new edges following the right direction in PC and FCI have been incorrect in GES, such as PKC-&gt;pjnk.</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-trueandges" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SachsTrueVsGES.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.8: True causal diagram (left) vs.&nbsp;the structure learned by the GES algorithm (right)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="lingam-algorithm" class="level4" data-number="4.4.3.6">
+<h4 data-number="4.4.3.6" class="anchored" data-anchor-id="lingam-algorithm"><span class="header-section-number">4.4.3.6</span> LiNGAM Algorithm</h4>
+<p>Comparing the true causal graph with the one generated by the LiNGAM algorithm, as shown in <a href="#fig-trueandlingam">Figure&nbsp;<span>4.9</span></a>, several interesting observations can be made:</p>
+<ul>
+<li><p>Compared to PC and FCI, the edge pmek-&gt;p44/42 is the only missing, but the other two, i.e., PKA-&gt;pakts473 and PIP3-&gt;pakts473, have been discovered.</p></li>
+<li><p>Some edges exhibit incorrect directions similar to PC, FCI, and GES, such as PIP3-&gt;PIP2.</p></li>
+<li><p>Some new edges following the right direction in PC and FCI have been incorrect similar to GES, such as PKC-&gt;pjnk.</p></li>
+</ul>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-trueandlingam" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/SachsTrueVsLiNGAM.png" class="img-fluid figure-img" width="960"></p>
+<figcaption class="figure-caption">Figure&nbsp;4.9: True causal diagram (left) vs.&nbsp;the structure learned by the LiNGAM algorithm (right)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>The present case study concludes that each algorithm possesses unique strengths and weaknesses, the selection of which should be predicated on the specific problem under consideration.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-bernaola2020learning" class="csl-entry" role="listitem">
+Bernaola, Nikolas, Mario Michiels, Pedro Larranaga, and Concha Bielza. 2020. <span>“Learning Massive Interpretable Gene Regulatory Networks of the Human Brain by Merging Bayesian Networks.”</span> <em>bioRxiv</em>, 2020–02.
+</div>
+<div id="ref-chickering2002optimal" class="csl-entry" role="listitem">
+Chickering, David Maxwell. 2002. <span>“Optimal Structure Identification with Greedy Search.”</span> <em>Journal of Machine Learning Research</em> 3 (Nov): 507–54.
+</div>
+<div id="ref-colombo2012learning" class="csl-entry" role="listitem">
+Colombo, Diego, Marloes H Maathuis, Markus Kalisch, and Thomas S Richardson. 2012. <span>“Learning High-Dimensional Directed Acyclic Graphs with Latent and Selection Variables.”</span> <em>The Annals of Statistics</em>, 294–321.
+</div>
+<div id="ref-darmois1953analyse" class="csl-entry" role="listitem">
+Darmois, George. 1953. <span>“Analyse g<span>é</span>n<span>é</span>rale Des Liaisons Stochastiques: Etude Particuli<span>è</span>re de l’analyse Factorielle Lin<span>é</span>aire.”</span> <em>Revue de l’Institut International de Statistique</em>, 2–8.
+</div>
+<div id="ref-frydenberg1990chain" class="csl-entry" role="listitem">
+Frydenberg, Morten. 1990. <span>“The Chain Graph Markov Property.”</span> <em>Scandinavian Journal of Statistics</em>, 333–53.
+</div>
+<div id="ref-geiger1990logic" class="csl-entry" role="listitem">
+Geiger, Dan, and Judea Pearl. 1990. <span>“On the Logic of Causal Models.”</span> In <em>Machine Intelligence and Pattern Recognition</em>, 9:3–14. Elsevier.
+</div>
+<div id="ref-hoyer2008estimation" class="csl-entry" role="listitem">
+Hoyer, Patrik O, Shohei Shimizu, Antti J Kerminen, and Markus Palviainen. 2008. <span>“Estimation of Causal Effects Using Linear Non-Gaussian Causal Models with Hidden Variables.”</span> <em>International Journal of Approximate Reasoning</em> 49 (2): 362–78.
+</div>
+<div id="ref-hoyer2008nonlinear" class="csl-entry" role="listitem">
+Hoyer, Patrik, Dominik Janzing, Joris M Mooij, Jonas Peters, and Bernhard Schölkopf. 2008. <span>“Nonlinear Causal Discovery with Additive Noise Models.”</span> <em>Advances in Neural Information Processing Systems</em> 21.
+</div>
+<div id="ref-hyttinen2013discovering" class="csl-entry" role="listitem">
+Hyttinen, Antti, Patrik O Hoyer, Frederick Eberhardt, and Matti Jarvisalo. 2013. <span>“Discovering Cyclic Causal Models with Latent Variables: A General SAT-Based Procedure.”</span> <em>arXiv Preprint arXiv:1309.6836</em>.
+</div>
+<div id="ref-lacerda2012discovering" class="csl-entry" role="listitem">
+Lacerda, Gustavo, Peter L Spirtes, Joseph Ramsey, and Patrik O Hoyer. 2012. <span>“Discovering Cyclic Causal Models by Independent Components Analysis.”</span> <em>arXiv Preprint arXiv:1206.3273</em>.
+</div>
+<div id="ref-maclaren2019can" class="csl-entry" role="listitem">
+Maclaren, Oliver J, and Ruanui Nicholson. 2019. <span>“What Can Be Estimated? Identifiability, Estimability, Causal Inference and Ill-Posed Inverse Problems.”</span> <em>arXiv Preprint arXiv:1904.02826</em>.
+</div>
+<div id="ref-meek2013strong" class="csl-entry" role="listitem">
+Meek, Christopher. 2013. <span>“Strong Completeness and Faithfulness in Bayesian Networks.”</span> <em>arXiv Preprint arXiv:1302.4973</em>.
+</div>
+<div id="ref-ogarrio2016hybrid" class="csl-entry" role="listitem">
+Ogarrio, Juan Miguel, Peter Spirtes, and Joe Ramsey. 2016. <span>“A Hybrid Causal Search Algorithm for Latent Variable Models.”</span> In <em>Conference on Probabilistic Graphical Models</em>, 368–79. PMLR.
+</div>
+<div id="ref-richardson1996feedback" class="csl-entry" role="listitem">
+Richardson, Thomas. 1996. <span>“Feedback Models: Interpretation and Discovery.”</span> PhD thesis, Ph. D. thesis, Carnegie Mellon.
+</div>
+<div id="ref-sachs2005causal" class="csl-entry" role="listitem">
+Sachs, Karen, Omar Perez, Dana Pe’er, Douglas A Lauffenburger, and Garry P Nolan. 2005. <span>“Causal Protein-Signaling Networks Derived from Multiparameter Single-Cell Data.”</span> <em>Science</em> 308 (5721): 523–29.
+</div>
+<div id="ref-shimizu2006linear" class="csl-entry" role="listitem">
+Shimizu, Shohei, Patrik O Hoyer, Aapo Hyvärinen, Antti Kerminen, and Michael Jordan. 2006. <span>“A Linear Non-Gaussian Acyclic Model for Causal Discovery.”</span> <em>Journal of Machine Learning Research</em> 7 (10).
+</div>
+<div id="ref-skitovich1954linear" class="csl-entry" role="listitem">
+Skitovich, Viktor Pavlovich. 1954. <span>“Linear Forms of Independent Random Variables and the Normal Distribution Law.”</span> <em>Izvestiya Rossiiskoi Akademii Nauk. Seriya Matematicheskaya</em> 18 (2): 185–200.
+</div>
+<div id="ref-spirtes2001anytime" class="csl-entry" role="listitem">
+Spirtes, Peter. 2001. <span>“An Anytime Algorithm for Causal Inference.”</span> In <em>International Workshop on Artificial Intelligence and Statistics</em>, 278–85. PMLR.
+</div>
+<div id="ref-spirtes2000causation" class="csl-entry" role="listitem">
+Spirtes, Peter, Clark N Glymour, Richard Scheines, and David Heckerman. 2000. <em>Causation, Prediction, and Search</em>. MIT press.
+</div>
+<div id="ref-verma2022equivalence" class="csl-entry" role="listitem">
+Verma, Thomas S, and Judea Pearl. 2022. <span>“Equivalence and Synthesis of Causal Models.”</span> In <em>Probabilistic and Causal Inference: The Works of Judea Pearl</em>, 221–36.
+</div>
+<div id="ref-zhang2012identifiability" class="csl-entry" role="listitem">
+Zhang, Kun, and Aapo Hyvarinen. 2012. <span>“On the Identifiability of the Post-Nonlinear Causal Model.”</span> <em>arXiv Preprint arXiv:1205.2599</em>.
+</div>
+</div>
+</section>
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./03-causal-estimation-process.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./05-part-2-break.html" class="pagination-link">
+        <span class="nav-page-text">Part 2: Causality in ML Domains</span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

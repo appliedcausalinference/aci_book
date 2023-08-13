@@ -1,0 +1,1291 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="description" content="This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.">
+
+<title>Applied Causal Inference - 5&nbsp; NLP</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+/* CSS for syntax highlighting */
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+  }
+pre.numberSource { margin-left: 3em;  padding-left: 4px; }
+div.sourceCode
+  {   }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+/* CSS for citations */
+div.csl-bib-body { }
+div.csl-entry {
+  clear: both;
+}
+.hanging-indent div.csl-entry {
+  margin-left:2em;
+  text-indent:-2em;
+}
+div.csl-left-margin {
+  min-width:2em;
+  float:left;
+}
+div.csl-right-inline {
+  margin-left:2em;
+  padding-left:1em;
+}
+div.csl-indent {
+  margin-left: 2em;
+}</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./07-computer-vision.html" rel="next">
+<link href="./05-part-2-break.html" rel="prev">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+  <script src="https://polyfill.io/v3/polyfill.min.js?features=es6"></script>
+  <script src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml-full.js" type="text/javascript"></script>
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./06-nlp.html"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Applied Causal Inference</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro-to-causality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-potential-outcomes-framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-causal-estimation-process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-causal-discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-part-2-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 2: Causality in ML Domains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-nlp.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-computer-vision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-time-dependent-causal-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-part-3-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 3: Advanced Topics in Causality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-fairness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Fairness</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-reinforcement-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reinforcement Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#causal-concepts-in-text-data" id="toc-causal-concepts-in-text-data" class="nav-link active" data-scroll-target="#causal-concepts-in-text-data"><span class="header-section-number">5.1</span> Causal Concepts in Text Data</a>
+  <ul class="collapse">
+  <li><a href="#roles-of-text-in-causal-inference" id="toc-roles-of-text-in-causal-inference" class="nav-link" data-scroll-target="#roles-of-text-in-causal-inference"><span class="header-section-number">5.1.1</span> Roles of Text in Causal Inference</a></li>
+  <li><a href="#definitions" id="toc-definitions" class="nav-link" data-scroll-target="#definitions"><span class="header-section-number">5.1.2</span> Definitions</a></li>
+  </ul></li>
+  <li><a href="#sec-encodingtext" id="toc-sec-encodingtext" class="nav-link" data-scroll-target="#sec-encodingtext"><span class="header-section-number">5.2</span> Encoding Text</a>
+  <ul class="collapse">
+  <li><a href="#example-bag-of-words-text-encoding" id="toc-example-bag-of-words-text-encoding" class="nav-link" data-scroll-target="#example-bag-of-words-text-encoding"><span class="header-section-number">5.2.1</span> Example: Bag-of-words text encoding</a></li>
+  <li><a href="#binary-encodings" id="toc-binary-encodings" class="nav-link" data-scroll-target="#binary-encodings"><span class="header-section-number">5.2.2</span> Binary encodings</a></li>
+  <li><a href="#multidimensional-encodings" id="toc-multidimensional-encodings" class="nav-link" data-scroll-target="#multidimensional-encodings"><span class="header-section-number">5.2.3</span> Multidimensional encodings</a></li>
+  <li><a href="#encoding-confounders" id="toc-encoding-confounders" class="nav-link" data-scroll-target="#encoding-confounders"><span class="header-section-number">5.2.4</span> Encoding confounders</a></li>
+  <li><a href="#sec-training_g" id="toc-sec-training_g" class="nav-link" data-scroll-target="#sec-training_g"><span class="header-section-number">5.2.5</span> Training <span class="math inline">\(g\)</span></a></li>
+  </ul></li>
+  <li><a href="#making-estimates-with-metalearners" id="toc-making-estimates-with-metalearners" class="nav-link" data-scroll-target="#making-estimates-with-metalearners"><span class="header-section-number">5.3</span> Making Estimates with Metalearners</a>
+  <ul class="collapse">
+  <li><a href="#types-of-meta-learners" id="toc-types-of-meta-learners" class="nav-link" data-scroll-target="#types-of-meta-learners"><span class="header-section-number">5.3.1</span> Types of meta-learners</a></li>
+  </ul></li>
+  <li><a href="#case-study" id="toc-case-study" class="nav-link" data-scroll-target="#case-study"><span class="header-section-number">5.4</span> Case Study</a>
+  <ul class="collapse">
+  <li><a href="#dataset" id="toc-dataset" class="nav-link" data-scroll-target="#dataset"><span class="header-section-number">5.4.1</span> Dataset</a></li>
+  <li><a href="#tools-and-library" id="toc-tools-and-library" class="nav-link" data-scroll-target="#tools-and-library"><span class="header-section-number">5.4.2</span> Tools and Library</a></li>
+  <li><a href="#generating-topics-with-bertopic" id="toc-generating-topics-with-bertopic" class="nav-link" data-scroll-target="#generating-topics-with-bertopic"><span class="header-section-number">5.4.3</span> Generating Topics with BERTopic</a></li>
+  <li><a href="#covariates" id="toc-covariates" class="nav-link" data-scroll-target="#covariates"><span class="header-section-number">5.4.4</span> Covariates</a></li>
+  <li><a href="#train-metalearner-causal-estimators" id="toc-train-metalearner-causal-estimators" class="nav-link" data-scroll-target="#train-metalearner-causal-estimators"><span class="header-section-number">5.4.5</span> Train metalearner causal estimators</a></li>
+  <li><a href="#comparing-treatment-effects" id="toc-comparing-treatment-effects" class="nav-link" data-scroll-target="#comparing-treatment-effects"><span class="header-section-number">5.4.6</span> Comparing treatment effects</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></h1>
+</div>
+
+
+
+<div class="quarto-title-meta">
+
+    
+  
+    
+  </div>
+  
+
+</header>
+
+<p>There are many possible applications of causal inference in machine learning. In this chapter, we focus on applying causal methods to datasets that include text. Causal inference with text data can be challenging because text data is high-dimensional <a href="#fn1" class="footnote-ref" id="fnref1" role="doc-noteref"><sup>1</sup></a>, unstructured, and often has complex dependencies among words.</p>
+<section id="causal-concepts-in-text-data" class="level2" data-number="5.1">
+<h2 data-number="5.1" class="anchored" data-anchor-id="causal-concepts-in-text-data"><span class="header-section-number">5.1</span> Causal Concepts in Text Data</h2>
+<section id="roles-of-text-in-causal-inference" class="level3" data-number="5.1.1">
+<h3 data-number="5.1.1" class="anchored" data-anchor-id="roles-of-text-in-causal-inference"><span class="header-section-number">5.1.1</span> Roles of Text in Causal Inference</h3>
+<p>There are four roles that text can play in causal inference problems: treatment/intervention, outcome, confounder, or mediator. The role that text plays depends on the question being asked and the relationships between the variables of interest <span class="citation" data-cites="Weld2022AdjustingFC Keith2020TextAC">(<a href="#ref-Weld2022AdjustingFC" role="doc-biblioref">Weld et al. 2022</a>; <a href="#ref-Keith2020TextAC" role="doc-biblioref">Keith, Jensen, and O’Connor 2020</a>)</span>. See examples of each role text can play in the list below:</p>
+<ul>
+<li><p><strong>Text as treatment</strong>: Text can be a treatment when a specific aspect of the text, such as the presence or absence of certain words, phrases, or linguistic features, is used as a treatment <span class="citation" data-cites="Egami2022HowTM">(<a href="#ref-Egami2022HowTM" role="doc-biblioref">Egami et al. 2022</a>)</span>. For example, what effect does using positive or negative language in an advertisement have on consumers’ purchase decisions?</p></li>
+<li><p><strong>Text as outcome</strong>: Text can be an outcome when the goal is to understand how a certain treatment or intervention influences the characteristics of text data. For example, measuring the effect of a social media platform’s algorithm change on user-generated content.</p></li>
+<li><p><strong>Text as confounder</strong>: Text can be a confounder when it is related to both the treatment and the outcome. For example, when analyzing the impact of online reviews on product sales, the sentiment of the review text could be a confounder if it affects both the likelihood of the review being featured prominently and the likelihood of potential customers making a purchase.</p></li>
+<li><p><strong>Text as mediator</strong>: Text can be a mediator when it serves as an intermediate variable in the causal pathway between the treatment and the outcome. For example, if you are studying the effect of political campaign messages on voter behavior, the way the message is framed (e.g., positive or negative tone) might be a mediator, as it could explain how the message influences voter behavior.</p></li>
+</ul>
+</section>
+<section id="definitions" class="level3" data-number="5.1.2">
+<h3 data-number="5.1.2" class="anchored" data-anchor-id="definitions"><span class="header-section-number">5.1.2</span> Definitions</h3>
+<p>In this section, we recap some of the terminology from <a href="02-potential-outcomes-framework.html#sec-basicTerminology"><span>Section&nbsp;2.2.1</span></a> to discuss what they mean when applied to text data.</p>
+<ul>
+<li><p><strong>Explanatory variables</strong>: These variables, also known as independent or predictor variables, are the factors that may influence or explain the outcome variable. In text data, explanatory variables can include textual features (such as specific words, phrases, or topics), linguistic characteristics (like sentiment, readability, or syntactic complexity), or contextual variables (e.g., the author’s background, the publication date, or the platform on which the text appears). These variables can be used to model and estimate the effect of the treatment or intervention on the outcome of interest.</p></li>
+<li><p><strong>Outcome variables</strong>: These variables, also known as dependent or response variables, are the outcomes of interest that may be influenced by the explanatory variables or treatment. In text data, outcome variables can be quantitative measures derived from the text (e.g., sentiment scores, topic prevalence, or engagement metrics like shares or likes) or qualitative aspects of the text (e.g., the presence of specific themes or the adoption of particular language styles). The outcome variables are the focus of the causal analysis, as researchers aim to estimate the causal effect of the explanatory variables or treatment on these outcomes.</p></li>
+<li><p><strong>Unobserved variables</strong>: These are variables that are not directly measured or included in the dataset but may still influence the relationships between the explanatory and outcome variables. In text data, unobserved variables can include latent factors (e.g., the author’s intent, the target audience’s preferences, or the influence of cultural context) or omitted variables (e.g., important covariates that were not collected or measured). Unobserved variables can introduce confounding or bias in the estimation of causal effects, as they may be associated with both the explanatory variables and the outcome variables, leading to spurious correlations or endogeneity issues. Note that unobserved variables are common when dealing with text data.</p></li>
+<li><p><strong>Unit</strong>: When the treatment or outcome is text data, the unit/sample/individual refers to the specific instance of text data that is subjected to the treatment and on which the effect or outcome is observed. In this context, the atomic research object represents the smallest unit of text data that can be meaningfully analyzed in the study. This can vary depending on the research question and the nature of the text data being analyzed. For example, the unit can be an entire document, such as a news article, a review, or an essay. It could also be a single sentence, an individual user who generates text data, such as social media posts or comments, or a thread of messages, such as an online forum discussion or a series of text messages between individuals.</p></li>
+</ul>
+</section>
+</section>
+<section id="sec-encodingtext" class="level2" data-number="5.2">
+<h2 data-number="5.2" class="anchored" data-anchor-id="sec-encodingtext"><span class="header-section-number">5.2</span> Encoding Text</h2>
+<p>In this section, we focus on the estimation portion of the causal inference process, in particular, how to estimate the causal effect when there is text data.</p>
+<p><span class="citation" data-cites="Egami2022HowTM">(<a href="#ref-Egami2022HowTM" role="doc-biblioref">Egami et al. 2022</a>)</span> describes the importance of transforming high-dimensional text into a lower-dimensional variable because causal inference is easier when the data is not high-dimensional. They describe an encoder function <span class="math inline">\(g\)</span> that maps text, <span class="math inline">\(\mathbf{T}\)</span>, into a variable relevant to the causal question, <span class="math inline">\(\mathbf{Z} = g(\mathbf{T})\)</span>. To estimate causal effects sizes with text we need to find the encoding function, <span class="math inline">\(g\)</span>.</p>
+<section id="example-bag-of-words-text-encoding" class="level3" data-number="5.2.1">
+<h3 data-number="5.2.1" class="anchored" data-anchor-id="example-bag-of-words-text-encoding"><span class="header-section-number">5.2.1</span> Example: Bag-of-words text encoding</h3>
+<p>It is easy to see why text data is considered high-dimensional by considering what is likely the simplest nontrival example: a “bag-of-words” (BoW) representation of text. In a BoW representation each unique word is a feature, the feature weight is often the number of times a word it appears in the document, and the order in which words appear in the text is ignored. So, if the document contained 10,000 unique words (this is often called the “vocabulary”), then we could describe any sentence in the document as a highly sparse vector of length 10,000, one entry for each word in the vocabulary.</p>
+<p>The following code snippet shows an example of the BoW encoding with two sentences. Each sentence is represented as a vector with length equal to the vocabulary size, with a 1 for each word it contains. The BoW representation generated by the snippet is shown in <a href="#fig-BoWvectors">Figure&nbsp;<span>5.1</span></a>.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="co"># Encoder function to map sentence to bag-of-words vector</span></span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> sentence_to_bow(sentence, vocab):</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a>    bow_vec <span class="op">=</span> np.zeros(<span class="bu">len</span>(vocab))</span>
+<span id="cb1-7"><a href="#cb1-7" aria-hidden="true" tabindex="-1"></a>    <span class="cf">for</span> word <span class="kw">in</span> sentence.split():</span>
+<span id="cb1-8"><a href="#cb1-8" aria-hidden="true" tabindex="-1"></a>        bow_vec[<span class="bu">list</span>(vocab).index(word)] <span class="op">=</span> <span class="dv">1</span></span>
+<span id="cb1-9"><a href="#cb1-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> bow_vec</span>
+<span id="cb1-10"><a href="#cb1-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-11"><a href="#cb1-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Create sample text data</span></span>
+<span id="cb1-12"><a href="#cb1-12" aria-hidden="true" tabindex="-1"></a>sentence1 <span class="op">=</span> <span class="st">"The cat sat on the mat"</span></span>
+<span id="cb1-13"><a href="#cb1-13" aria-hidden="true" tabindex="-1"></a>sentence2 <span class="op">=</span> <span class="st">"The dog played in the yard"</span></span>
+<span id="cb1-14"><a href="#cb1-14" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-15"><a href="#cb1-15" aria-hidden="true" tabindex="-1"></a><span class="co"># Tokenize the sentence into words</span></span>
+<span id="cb1-16"><a href="#cb1-16" aria-hidden="true" tabindex="-1"></a>words1 <span class="op">=</span> sentence1.split()</span>
+<span id="cb1-17"><a href="#cb1-17" aria-hidden="true" tabindex="-1"></a>words2 <span class="op">=</span> sentence2.split()</span>
+<span id="cb1-18"><a href="#cb1-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-19"><a href="#cb1-19" aria-hidden="true" tabindex="-1"></a><span class="co"># Create a vocabulary of unique words</span></span>
+<span id="cb1-20"><a href="#cb1-20" aria-hidden="true" tabindex="-1"></a>vocab <span class="op">=</span> <span class="bu">set</span>(words1 <span class="op">+</span> words2)</span>
+<span id="cb1-21"><a href="#cb1-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-22"><a href="#cb1-22" aria-hidden="true" tabindex="-1"></a><span class="co"># Map sentences to BoW vectors</span></span>
+<span id="cb1-23"><a href="#cb1-23" aria-hidden="true" tabindex="-1"></a>vec1 <span class="op">=</span> sentence_to_bow(sentence1, vocab)</span>
+<span id="cb1-24"><a href="#cb1-24" aria-hidden="true" tabindex="-1"></a>vec2 <span class="op">=</span> sentence_to_bow(sentence2, vocab)</span>
+<span id="cb1-25"><a href="#cb1-25" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb1-26"><a href="#cb1-26" aria-hidden="true" tabindex="-1"></a><span class="co"># Plot the sentence vectors</span></span>
+<span id="cb1-27"><a href="#cb1-27" aria-hidden="true" tabindex="-1"></a>fig, ax <span class="op">=</span> plt.subplots()</span>
+<span id="cb1-28"><a href="#cb1-28" aria-hidden="true" tabindex="-1"></a>ax.imshow([vec1, vec2], cmap<span class="op">=</span><span class="st">'Greys'</span>)</span>
+<span id="cb1-29"><a href="#cb1-29" aria-hidden="true" tabindex="-1"></a>ax.set_xticks(np.arange(<span class="bu">len</span>(vocab)))</span>
+<span id="cb1-30"><a href="#cb1-30" aria-hidden="true" tabindex="-1"></a>ax.set_xticklabels(<span class="bu">list</span>(vocab), rotation<span class="op">=</span><span class="dv">90</span>)</span>
+<span id="cb1-31"><a href="#cb1-31" aria-hidden="true" tabindex="-1"></a>ax.set_title(<span class="st">'Text Vector Representations'</span>)</span>
+<span id="cb1-32"><a href="#cb1-32" aria-hidden="true" tabindex="-1"></a>plt.tight_layout()</span>
+<span id="cb1-33"><a href="#cb1-33" aria-hidden="true" tabindex="-1"></a>plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-BoWvectors" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/bow_vectors.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.1: Bag-of-words text representation showing how sentences can be represented as sparse, high-dimensional vectors. As the vocabulary grows, these vectors become very high-dimensional and even more sparse.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+<section id="binary-encodings" class="level3" data-number="5.2.2">
+<h3 data-number="5.2.2" class="anchored" data-anchor-id="binary-encodings"><span class="header-section-number">5.2.2</span> Binary encodings</h3>
+<p>If we consider binary text treatments, then <span class="math inline">\(g\)</span> simply returns 1 if the treatment is present in the text and 0 if the feature is absent. For binary outcomes, then <span class="math inline">\(g\)</span> behaves identically. Note that this type of encoding is similar to the bag-of-words encoding, except we are encoding the presence or absence of a given treatment rather than the presence or absence of a given word.</p>
+</section>
+<section id="multidimensional-encodings" class="level3" data-number="5.2.3">
+<h3 data-number="5.2.3" class="anchored" data-anchor-id="multidimensional-encodings"><span class="header-section-number">5.2.3</span> Multidimensional encodings</h3>
+<p>In both cases, treatment or outcome is a one-dimensional variable. If, however, you’re considering multidimensional treatments, where (<span class="math inline">\(\mathbf{T} \rightarrow \mathbf{T}_i\)</span>), or multidimensional outcomes, (<span class="math inline">\(\mathbf{Y} \rightarrow \mathbf{Y}_i\)</span>), then the situation is more complicated. To deal with these more complicated situations, <span class="citation" data-cites="Egami2022HowTM">(<a href="#ref-Egami2022HowTM" role="doc-biblioref">Egami et al. 2022</a>)</span> extends the potential outcomes framework to cover high-dimensional source text by producing low-dimensional representations of text from the encoder <span class="math inline">\(g\)</span>. In such cases, <span class="math inline">\(g\)</span> will be a machine learning model. When using such models, be aware that incorrect predictions can bias downstream calculations.</p>
+<section id="multidimensional-outcomes" class="level4" data-number="5.2.3.1">
+<h4 data-number="5.2.3.1" class="anchored" data-anchor-id="multidimensional-outcomes"><span class="header-section-number">5.2.3.1</span> Multidimensional outcomes</h4>
+<p>When the outcome variable is text (like in a text classifier), then <span class="math inline">\(g\)</span> maps the outcome variable (e.g.&nbsp;a class label) to a low-dimensional value: <span class="math inline">\(g: \mathcal{Y} \rightarrow \mathcal{Z}_Y\)</span> and <span class="math inline">\(g(\mathbf{Y}_i)=\mathbf{z}_i\)</span>. Note that this also applies if the outcome was a set of several class labels, like in a multilabel classifier.</p>
+<p><span class="citation" data-cites="Egami2022HowTM">(<a href="#ref-Egami2022HowTM" role="doc-biblioref">Egami et al. 2022</a>)</span> gives a few examples of <span class="math inline">\(\mathcal{Z}\)</span>: when text is the outcome and there are <span class="math inline">\(K\)</span> possible, mutually exclusive values (e.g.&nbsp;multiclass classification), then <span class="math inline">\(\mathcal{Z}=\{0,1,\ldots,K-1\}\)</span>. If the outcome has <span class="math inline">\(K\)</span> dimensions, such as with a multilabel classification problem, <span class="math inline">\(\mathcal{Z}\)</span> is a <span class="math inline">\(K - 1\)</span> dimensional <a href="https://simple.wikipedia.org/wiki/Simplex">simplex</a>.</p>
+</section>
+<section id="multidimensional-treatments" class="level4" data-number="5.2.3.2">
+<h4 data-number="5.2.3.2" class="anchored" data-anchor-id="multidimensional-treatments"><span class="header-section-number">5.2.3.2</span> Multidimensional treatments</h4>
+<p>When the treatment variable is text, then we have <span class="math inline">\(g: \mathcal{T} \rightarrow \mathcal{Z}_T\)</span> and <span class="math inline">\(g(\mathbf{T}_i)=\mathbf{z}_i\)</span>.</p>
+<p>When text is a treatment, <span class="citation" data-cites="Egami2022HowTM">(<a href="#ref-Egami2022HowTM" role="doc-biblioref">Egami et al. 2022</a>)</span> recommends letting <span class="math inline">\(\mathcal{Z}\)</span> be a set of <span class="math inline">\(K\)</span> one-hot encoded vectors, each vector denoting the presence of the <span class="math inline">\(kth\)</span> treatment and absence of all others. They recommend using one-hot vectors instead of continuous vectors, because many methods that result in continuous feature vectors include information about the text, but not the outcomes. Note that more recent methods that learn embeddings for text by training a large language model is able to encode some information about the outcomes.</p>
+</section>
+</section>
+<section id="encoding-confounders" class="level3" data-number="5.2.4">
+<h3 data-number="5.2.4" class="anchored" data-anchor-id="encoding-confounders"><span class="header-section-number">5.2.4</span> Encoding confounders</h3>
+<p>As in <a href="03-causal-estimation-process.html"><span>Chapter&nbsp;3</span></a>, confounders can bias causal estimates. For text data, latent confounders are common and care must be taken to ensure that the text used as a proxy for confounders is actually related to the confounder in question. For example, if a study were examining the causal effect of a certain drug on a particular health outcome, and the researchers suspect that a certain lifestyle factor (such as diet or exercise) may be a confounder, they may use text data (such as tweets or forum posts) to infer information about the participants’ diets or exercise habits and just the calculation of causal estimates to account for the confounders.</p>
+<section id="text-representations" class="level4" data-number="5.2.4.1">
+<h4 data-number="5.2.4.1" class="anchored" data-anchor-id="text-representations"><span class="header-section-number">5.2.4.1</span> Text representations</h4>
+<p>This section has focused on a function <span class="math inline">\(g\)</span> that converts raw text into a lower-dimensional text representation. It is important that <span class="math inline">\(g\)</span> also encode assumptions and knowledge about which text is confounding. There are many commonly used text feature vector generation methods that can be used for this purpose. <span class="citation" data-cites="Keith2020TextAC">(<a href="#ref-Keith2020TextAC" role="doc-biblioref">Keith, Jensen, and O’Connor 2020</a>)</span> and <span class="citation" data-cites="Weld2022AdjustingFC">(<a href="#ref-Weld2022AdjustingFC" role="doc-biblioref">Weld et al. 2022</a>)</span> mention several, including lexicon matches, word and sentence embeddings, n-gram count features, and tf-idf weighted features. The <a href="https://github.com/amaiya/causalnlp">causalnlp</a> library introduced in <span class="citation" data-cites="Maiya2021CausalNLPAP">(<a href="#ref-Maiya2021CausalNLPAP" role="doc-biblioref">Maiya 2021</a>)</span> includes a variety of text encoding methods, including those mentioned above. Text representations with confounders can be generally broken into two classes, based on how the confounders are defined, which the options being pre-specified or learned confounders. Note that one of the reasons the dimensionality matters when text is a confounder is because <span class="citation" data-cites="DAmour2017OverlapIO">(<a href="#ref-DAmour2017OverlapIO" role="doc-biblioref">D’Amour et al. 2017</a>)</span> showed that <span class="math inline">\(P(T=t \vert X=x)\)</span> goes to zero as the dimensionality of <span class="math inline">\(x\)</span> increases. This is a consequence of the curse of dimensionality.</p>
+<section id="pre-specified-confounders" class="level5" data-number="5.2.4.1.1">
+<h5 data-number="5.2.4.1.1" class="anchored" data-anchor-id="pre-specified-confounders"><span class="header-section-number">5.2.4.1.1</span> Pre-specified confounders</h5>
+<p>Pre-specifying confounders amounts to treating for specific words or patterns as confounders, using lexicons or spans of annotated text. Using lexicons reduces identifying confounders to matching or a lookup. Using text annotations requires the additional step of training a text classifier. Both of these options begin with text that is predetermined to be confounding. For example, a lexicon of words associated with diet or exercise can be used to identify mentions of these confounders in text data. Similarly, by training a text classifier from annotations mentioning a confounder, such confounders can be identified in the future. For example, <span class="citation" data-cites="Choudhury2016DiscoveringST">(<a href="#ref-Choudhury2016DiscoveringST" role="doc-biblioref">Choudhury et al. 2016</a>)</span> and <span class="citation" data-cites="Choudhury2017TheLO">(<a href="#ref-Choudhury2017TheLO" role="doc-biblioref">Choudhury and Kıcıman 2017</a>)</span> trained a machine learning model to predict likelihood of social support based on input text using a dataset of social media posts that had been manually labeled with information about the users’ social support. In each of these cases <span class="citation" data-cites="Keith2020TextAC">(<a href="#ref-Keith2020TextAC" role="doc-biblioref">Keith, Jensen, and O’Connor 2020</a>)</span> reminds us that using approximate confounders, or their proxies, can lead to errors when computing causal estimates.</p>
+</section>
+<section id="learned-confounders" class="level5" data-number="5.2.4.1.2">
+<h5 data-number="5.2.4.1.2" class="anchored" data-anchor-id="learned-confounders"><span class="header-section-number">5.2.4.1.2</span> Learned Confounders</h5>
+<p>Methods of the second type are generally unsupervised/self-supervised. They discover confounding content of the text by encoding the text in representations common in NLP and condition on the discovered aspects when making causal estimates. Common methods include encoding text into bag-of-words features, embeddings (word/sentence/document), topics, sentiment analysis, and aspect extraction. The purpose here is to encode the semantic content in the text so that it can be used in place of the confounder when computing causal estimates. <span class="citation" data-cites="Keith2020TextAC">(<a href="#ref-Keith2020TextAC" role="doc-biblioref">Keith, Jensen, and O’Connor 2020</a>)</span> describes this category as identifying the “language” and gives the example of an article’s topics being a likely confounder of the author’s gender and the number of citations the article will get. The primary challenge with these methods is that different methods and choice of hyperparameters provide different results. A different set of choices leads to a different set of variables used for conditioning and hence to different causal estimates.</p>
+<p>As an example, consider a <em>fictional</em> study examining the causal effect of a <em>fictional</em> new drug called “Wunderdrug” on risk of death from heart disease, where diet, weight, or exercise may be a confounder. We made up a list of 68 sentences describing fictional outcomes for fictional treatment with Wunderdrug, computed sentence embeddings with the <a href="https://www.sbert.net/"><strong>sentence-transformers</strong></a> library, and clustered them into eight clusters with the <a href="https://scikit-learn.org/stable/modules/clustering.html#k-means">k-means clustering implementation</a> in the <strong>scikit-learn</strong> library. The code can also be seen in the snippet below. The contents of the clusters are shown in <a href="#fig-wunderdrug">Figure&nbsp;<span>5.2</span></a>. Cluster 0 mostly contains sentences about cholesterol and cardiac health. Cluster 1 is about weight loss and exercise. Cluster 2 describes some negative outcomes of treatment with Wunderdrug. Cluster 3 mostly mentions heart disease, high blood pressure, and obesity. Cluster 4 is about diet and exercise. Cluster 5 is about diet, Cluster 6 is about atherosclerosis, and Cluster 7 is about exercise and a plant-based diet. This example illustrates how learned representations of text data, specifically sentence embeddings, are able to encode a variety of relevant semantic content, making them suitable representations for capturing features of the text that could be a source of confounding associations.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a><span class="co"># run `pip install sentence-transformers umap-learn scikit-learn datasets`</span></span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> platform</span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> umap</span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_device():</span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a>    device <span class="op">=</span> <span class="va">None</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> platform.system() <span class="op">==</span> <span class="st">'Darwin'</span> <span class="kw">and</span> <span class="op">\</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a>        torch.backends.mps.is_available():</span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">'mps'</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> torch.cuda.is_available():</span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">'cuda'</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> <span class="st">'cpu'</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co"># load dataset</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> load_dataset(<span class="st">"klogram/wunderdrug"</span>, split<span class="op">=</span><span class="st">"train"</span>)</span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Embed sentences</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a>model <span class="op">=</span> SentenceTransformer(</span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a>    <span class="st">'all-MiniLM-L6-v2'</span>,</span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a>    device<span class="op">=</span>get_device(),</span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a>embeddings <span class="op">=</span> model.encode(</span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a>    ds[<span class="st">"text"</span>],</span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a>    show_progress_bar<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a>    convert_to_numpy<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.cluster <span class="im">import</span> KMeans</span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co"># Cluster with KMeans</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a>num_clusters <span class="op">=</span> <span class="dv">8</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a>kmeans <span class="op">=</span> KMeans(n_clusters<span class="op">=</span>num_clusters)</span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a>clusters <span class="op">=</span> kmeans.fit_predict(embeddings)</span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co"># Create dataframe</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a>df <span class="op">=</span> pd.DataFrame({</span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a>    <span class="st">'sentence'</span>: ds[<span class="st">"text"</span>],</span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a>    <span class="st">'cluster'</span>: clusters,</span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a>})</span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co"># Inspect clusters</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(num_clusters):</span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a>    cluster_sentences <span class="op">=</span> df[df[<span class="st">'cluster'</span>] <span class="op">==</span> i][<span class="st">'sentence'</span>]</span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="ss">f'Cluster </span><span class="sc">{</span>i<span class="sc">}</span><span class="ss">'</span>)</span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(cluster_sentences.values)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-wunderdrug" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/Wunderdrug_clusters.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.2: Cluster contents of fictional Wunderdrug treatment data.</figcaption>
+</figure>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+<section id="sec-training_g" class="level3" data-number="5.2.5">
+<h3 data-number="5.2.5" class="anchored" data-anchor-id="sec-training_g"><span class="header-section-number">5.2.5</span> Training <span class="math inline">\(g\)</span></h3>
+<p>When training <span class="math inline">\(g\)</span>, <span class="citation" data-cites="Egami2022HowTM">(<a href="#ref-Egami2022HowTM" role="doc-biblioref">Egami et al. 2022</a>)</span> pointed out that one must take care to prevent a violation of the Stable Unit Treatment Value Assumption (SUTVA), which was covered in <a href="02-potential-outcomes-framework.html#sec-sutva"><span>Section&nbsp;2.5.1.6</span></a>, the data must be split into train and test subsets. A validation split may also be useful. Recall that SUTVA assumes that the potential outcome of a given unit is independent of the treatments applied to any other unit, or <span class="math inline">\(Y_i(T) = Y_i(T_i)\)</span>. If <span class="math inline">\(g\)</span> is trained on a dataset and then used to encode that same dataset, then any given outcome will have a dependency on the treatments made to all the other units. That is a clear SUTVA violation. This problem is eliminated by learning <span class="math inline">\(g\)</span> on the training set and then using the test set to estimate causal effects. If your problem and data are such that <span class="math inline">\(g\)</span> does not change when the data changes, then you do not need to be concerned about breaking SUTVA.</p>
+</section>
+</section>
+<section id="making-estimates-with-metalearners" class="level2" data-number="5.3">
+<h2 data-number="5.3" class="anchored" data-anchor-id="making-estimates-with-metalearners"><span class="header-section-number">5.3</span> Making Estimates with Metalearners</h2>
+<p>In this section, we focus on computing causal estimates using the meta-learner covariate adjustment methods discussed in <a href="03-causal-estimation-process.html#sec-estimationprocess"><span>Section&nbsp;3.5</span></a>. Meta-learners were introduced in <span class="citation" data-cites="kunzel2019metalearners">(<a href="#ref-kunzel2019metalearners" role="doc-biblioref">Künzel et al. 2019</a>)</span> and are a class of machine learning algorithm designed to estimate causal effects in the presence of treatment and control groups, while adjusting for covariates/confounders. They are called “meta-learners” because they build upon multiple base learners (machine learning models) to estimate treatment effects, taking advantage of the machine learning algorithms ability to predict counterfactual outcomes while adjusting for confounding variables.</p>
+<p>For cases where there are no covariates, we can compute the average treatment effect (ATE), but when there are confounders, we are instead computing the conditional average treatment effect (CATE) <a href="03-causal-estimation-process.html#sec-slearner"><span>Section&nbsp;3.5.0.1</span></a>. The CATE is a measure of the average causal effect of a treatment on the outcome variable for a specific subgroup of the population defined by a set of covariates. In other words, it estimates the treatment effect while taking into account the heterogeneity in the treatment effect across different subgroups in the population. Note that meta-learners are just one way of estimating causal effects in the presence of covariates. <a href="03-causal-estimation-process.html"><span>Chapter&nbsp;3</span></a> discusses several other methods.</p>
+<section id="types-of-meta-learners" class="level3" data-number="5.3.1">
+<h3 data-number="5.3.1" class="anchored" data-anchor-id="types-of-meta-learners"><span class="header-section-number">5.3.1</span> Types of meta-learners</h3>
+<p>There are several popular meta-learning algorithms for causal inference:</p>
+<ul>
+<li><p><strong>S-Learner</strong>: This method trains a single predictive model on the entire dataset, including both treatment and control groups. The treatment variable is treated like any other feature since the entire dataset is being used. S-Learner assumes that the treatment effect is homogeneous across the population. It was introduced in <span class="citation" data-cites="kunzel2019metalearners">(<a href="#ref-kunzel2019metalearners" role="doc-biblioref">Künzel et al. 2019</a>)</span> and is discussed in <a href="03-causal-estimation-process.html#sec-slearner"><span>Section&nbsp;3.5.0.1</span></a>.</p></li>
+<li><p><strong>T-learner</strong>: This method trains two separate base learners, for the treatment group and one for the control group. The causal effect for each observation is then estimated as the difference in predicted outcomes from the treatment model and the control model. T-Learner allows for heterogeneous treatment effects across the population. The treatment variable is not used as a feature when training the models because it is instead used to partition the dataset into treated and untreated subsets. It was introduced in <span class="citation" data-cites="Athey2015MachineLF">(<a href="#ref-Athey2015MachineLF" role="doc-biblioref">Athey and Imbens 2015</a>)</span> and <span class="citation" data-cites="kunzel2019metalearners">(<a href="#ref-kunzel2019metalearners" role="doc-biblioref">Künzel et al. 2019</a>)</span>.</p></li>
+<li><p><strong>X-Learner</strong>: This method extends the T-Learner by training separate models for the treatment and control groups, but it also cross-fits the predictions to reduce potential bias due to overfitting. The reduction is because, while separate models are being trained for treated and untreated groups, each uses data from the other treatment group. In addition, X-Learner can leverage the information from the estimated propensity scores to re-weight the samples and improve the estimation of the conditional average treatment effect (CATE). Also, the X-Learner was designed to be efficient to use in cases where the size of one treatment group (usually the control group) is much larger than the other group. It was introduced in <span class="citation" data-cites="kunzel2019metalearners">(<a href="#ref-kunzel2019metalearners" role="doc-biblioref">Künzel et al. 2019</a>)</span> and is discussed in <a href="03-causal-estimation-process.html#sec-xlearner"><span>Section&nbsp;3.5.3</span></a>.</p></li>
+<li><p><strong>R-Learner</strong>: The R-Learner focuses on learning the relationship between the treatment variable and the residuals (R is for residual) of the outcome variable. First, separate models are fitted to predict the treatment and outcome variables based on the covariates. Then, the residuals from these models are used to train another model that predicts the outcome residual given the treatment residual. The causal effect for each observation is estimated using this model, which is trained to specifically capture the relationship between the treatment and outcome after accounting for the covariates. R-Learner attempts to directly model the treatment effect, allowing for heterogeneous treatment effects across the population. It was introduced in <span class="citation" data-cites="Nie2017QuasioracleEO">(<a href="#ref-Nie2017QuasioracleEO" role="doc-biblioref">Nie and Wager 2017</a>)</span>.</p></li>
+</ul>
+</section>
+</section>
+<section id="case-study" class="level2" data-number="5.4">
+<h2 data-number="5.4" class="anchored" data-anchor-id="case-study"><span class="header-section-number">5.4</span> Case Study</h2>
+<p>This case study demonstrates one way of applying causal inference methods to a real-world dataset that includes text. We make the ignorability assumption, which says that, after conditioning on a set of observed covariates, the treatment assignment is independent of the potential outcomes. In other words, it assumes that there are no unmeasured confounders that simultaneously influence the treatment assignment and the potential outcomes. See <a href="02-potential-outcomes-framework.html#sec-ignorability"><span>Section&nbsp;2.5.1.1</span></a> for more on this assumption.</p>
+<p>This case study follows the <a href="https://github.com/py-why/EconML/blob/main/notebooks/Metalearners%20Examples.ipynb">Metalearners Examples notebook</a> that is in the <strong>EconML</strong> Github repository.</p>
+<section id="dataset" class="level3" data-number="5.4.1">
+<h3 data-number="5.4.1" class="anchored" data-anchor-id="dataset"><span class="header-section-number">5.4.1</span> Dataset</h3>
+<p>We’ll analyze the <a href="https://ai.stanford.edu/~amaas/data/sentiment/">IMDB large movie reviews dataset</a>, which was introduced in <span class="citation" data-cites="Maas2011LearningWV">(<a href="#ref-Maas2011LearningWV" role="doc-biblioref">Maas et al. 2011</a>)</span>. This case study used the version available from Huggingface Datasets: https://huggingface.co/datasets/imdb.</p>
+<p>In this case study, we ask the following question: “What influence do specific topics have on the sentiment of a movie review?”. The treatment variable will be one of several possible topics in the movie review text. The outcome variable will be the binary sentiment label: 1 (positive) or 0 (negative). We estimate covariates by computing text embeddings with a pre-trained Transformer model.</p>
+</section>
+<section id="tools-and-library" class="level3" data-number="5.4.2">
+<h3 data-number="5.4.2" class="anchored" data-anchor-id="tools-and-library"><span class="header-section-number">5.4.2</span> Tools and Library</h3>
+<p>We use the <a href="https://github.com/py-why/EconML"><strong>EconML</strong></a> library <span class="citation" data-cites="econml">(<a href="#ref-econml" role="doc-biblioref">Keith Battocchi 2019</a>)</span> for computing CATE with meta-learners. The text encoding, discussed as the function <span class="math inline">\(g\)</span> in <a href="#sec-encodingtext"><span>Section&nbsp;5.2</span></a>, is provided by two libraries: <a href="https://github.com/MaartenGr/BERTopic"><strong>BERTopic</strong></a> <span class="citation" data-cites="grootendorst2022bertopic">(<a href="#ref-grootendorst2022bertopic" role="doc-biblioref">Grootendorst 2022</a>)</span> for topic modeling and <a href="https://github.com/UKPLab/sentence-transformers/tree/master"><strong>sentence-transformers</strong></a> <span class="citation" data-cites="reimers-2019-sentence-bert">(<a href="#ref-reimers-2019-sentence-bert" role="doc-biblioref">Reimers and Gurevych 2019</a>)</span> for text embeddings. We use the Huggingface <strong>datasets</strong> and <strong>pandas</strong> libraries for loading and working with the dataset, <strong>matplotlib</strong> for data visualization, and <strong>scikit-learn</strong> to create the train/test split, as described in <a href="#sec-training_g"><span>Section&nbsp;5.2.5</span></a>. We also use the <a href="https://github.com/lmcinnes/umap"><strong>UMAP</strong></a> library for dimensionality reduction. You can install these by running the following command:</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="co"># umap and sentence-transformers are installed with bertopic</span></span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a>pip install bertopic<span class="op">==</span><span class="fl">0.14.1</span><span class="op">\</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a>    dowhy<span class="op">==</span><span class="fl">0.9.1</span><span class="op">\</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a>    numba<span class="op">==</span><span class="fl">0.56.4</span><span class="op">\</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a>    numpy<span class="op">==</span><span class="fl">1.23.5</span><span class="op">\</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a>    datasets</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="generating-topics-with-bertopic" class="level3" data-number="5.4.3">
+<h3 data-number="5.4.3" class="anchored" data-anchor-id="generating-topics-with-bertopic"><span class="header-section-number">5.4.3</span> Generating Topics with BERTopic</h3>
+<p>Since the treatment of interest is the presence of a given topic in the movie description, we will start with topic modeling. The first step is to load the data:</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> datasets <span class="im">import</span> load_dataset</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a><span class="co"># downloads train and test sets, and also an unlabeled set</span></span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>ds <span class="op">=</span> load_dataset(<span class="st">"imdb"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We also need to remove line break characters from the review text:</p>
+<div class="sourceCode" id="cb5"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> re</span>
+<span id="cb5-2"><a href="#cb5-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> string</span>
+<span id="cb5-3"><a href="#cb5-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-4"><a href="#cb5-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-5"><a href="#cb5-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> clean(text):</span>
+<span id="cb5-6"><a href="#cb5-6" aria-hidden="true" tabindex="-1"></a>    <span class="co"># Remove line breaks</span></span>
+<span id="cb5-7"><a href="#cb5-7" aria-hidden="true" tabindex="-1"></a>    text <span class="op">=</span> re.sub(<span class="vs">r"&lt;br /&gt;"</span>, <span class="st">""</span>, text)</span>
+<span id="cb5-8"><a href="#cb5-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> text</span>
+<span id="cb5-9"><a href="#cb5-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb5-10"><a href="#cb5-10" aria-hidden="true" tabindex="-1"></a><span class="co"># Huggingface datasets lets up map over all three</span></span>
+<span id="cb5-11"><a href="#cb5-11" aria-hidden="true" tabindex="-1"></a>clean_ds <span class="op">=</span> ds.<span class="bu">map</span>(<span class="kw">lambda</span> example: {<span class="st">"text"</span>: clean(example[<span class="st">"text"</span>])})</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="text-embeddings" class="level4" data-number="5.4.3.1">
+<h4 data-number="5.4.3.1" class="anchored" data-anchor-id="text-embeddings"><span class="header-section-number">5.4.3.1</span> Text Embeddings</h4>
+<p>Since BERTopic uses pre-trained transformer models in the topic generation process, we next compute embeddings for the movie overviews.</p>
+<div class="sourceCode" id="cb6"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb6-1"><a href="#cb6-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sentence_transformers <span class="im">import</span> SentenceTransformer</span>
+<span id="cb6-2"><a href="#cb6-2" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> torch</span>
+<span id="cb6-3"><a href="#cb6-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-4"><a href="#cb6-4" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_torch_device():</span>
+<span id="cb6-5"><a href="#cb6-5" aria-hidden="true" tabindex="-1"></a>    <span class="co"># This will the appropriate torch backend</span></span>
+<span id="cb6-6"><a href="#cb6-6" aria-hidden="true" tabindex="-1"></a>    <span class="cf">if</span> torch.cuda.is_available():</span>
+<span id="cb6-7"><a href="#cb6-7" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"cuda"</span></span>
+<span id="cb6-8"><a href="#cb6-8" aria-hidden="true" tabindex="-1"></a>    <span class="cf">elif</span> torch.backends.mps.is_available():</span>
+<span id="cb6-9"><a href="#cb6-9" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"mps"</span></span>
+<span id="cb6-10"><a href="#cb6-10" aria-hidden="true" tabindex="-1"></a>    <span class="cf">else</span>:</span>
+<span id="cb6-11"><a href="#cb6-11" aria-hidden="true" tabindex="-1"></a>        <span class="cf">return</span> <span class="st">"cpu"</span></span>
+<span id="cb6-12"><a href="#cb6-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb6-13"><a href="#cb6-13" aria-hidden="true" tabindex="-1"></a>device <span class="op">=</span> get_torch_device()</span>
+<span id="cb6-14"><a href="#cb6-14" aria-hidden="true" tabindex="-1"></a>sentence_model <span class="op">=</span> SentenceTransformer(<span class="st">"all-MiniLM-L6-v2"</span>,</span>
+<span id="cb6-15"><a href="#cb6-15" aria-hidden="true" tabindex="-1"></a>                                     device<span class="op">=</span>device)</span>
+<span id="cb6-16"><a href="#cb6-16" aria-hidden="true" tabindex="-1"></a>embeddings <span class="op">=</span> sentence_model.encode(docs,</span>
+<span id="cb6-17"><a href="#cb6-17" aria-hidden="true" tabindex="-1"></a>                                   show_progress_bar<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb6-18"><a href="#cb6-18" aria-hidden="true" tabindex="-1"></a>                                   device<span class="op">=</span>device)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="topics" class="level4" data-number="5.4.3.2">
+<h4 data-number="5.4.3.2" class="anchored" data-anchor-id="topics"><span class="header-section-number">5.4.3.2</span> Topics</h4>
+<p>Next, generate topics. We have chosen to use BERTopic here because you do not need to carefully tune parameters to get useful results.</p>
+<div class="sourceCode" id="cb7"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> bertopic <span class="im">import</span> BERTopic</span>
+<span id="cb7-2"><a href="#cb7-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.feature_extraction.text <span class="im">import</span> CountVectorizer</span>
+<span id="cb7-3"><a href="#cb7-3" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> umap <span class="im">import</span> UMAP</span>
+<span id="cb7-4"><a href="#cb7-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-5"><a href="#cb7-5" aria-hidden="true" tabindex="-1"></a><span class="co"># use word unigrams, bigrams, trigrams</span></span>
+<span id="cb7-6"><a href="#cb7-6" aria-hidden="true" tabindex="-1"></a>vectorizer_model <span class="op">=</span> CountVectorizer(</span>
+<span id="cb7-7"><a href="#cb7-7" aria-hidden="true" tabindex="-1"></a>    stop_words<span class="op">=</span><span class="st">"english"</span>,</span>
+<span id="cb7-8"><a href="#cb7-8" aria-hidden="true" tabindex="-1"></a>    ngram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>)</span>
+<span id="cb7-9"><a href="#cb7-9" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-10"><a href="#cb7-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-11"><a href="#cb7-11" aria-hidden="true" tabindex="-1"></a>umap_model <span class="op">=</span> UMAP(</span>
+<span id="cb7-12"><a href="#cb7-12" aria-hidden="true" tabindex="-1"></a>    n_neighbors<span class="op">=</span><span class="dv">15</span>,</span>
+<span id="cb7-13"><a href="#cb7-13" aria-hidden="true" tabindex="-1"></a>    n_components<span class="op">=</span><span class="dv">5</span>,</span>
+<span id="cb7-14"><a href="#cb7-14" aria-hidden="true" tabindex="-1"></a>    min_dist<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb7-15"><a href="#cb7-15" aria-hidden="true" tabindex="-1"></a>    metric<span class="op">=</span><span class="st">'cosine'</span>,</span>
+<span id="cb7-16"><a href="#cb7-16" aria-hidden="true" tabindex="-1"></a>    random_state<span class="op">=</span><span class="dv">42</span></span>
+<span id="cb7-17"><a href="#cb7-17" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-18"><a href="#cb7-18" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-19"><a href="#cb7-19" aria-hidden="true" tabindex="-1"></a>NUM_TOPICS <span class="op">=</span> <span class="dv">50</span></span>
+<span id="cb7-20"><a href="#cb7-20" aria-hidden="true" tabindex="-1"></a>topic_model <span class="op">=</span> BERTopic(</span>
+<span id="cb7-21"><a href="#cb7-21" aria-hidden="true" tabindex="-1"></a>    embedding_model<span class="op">=</span>sentence_model,</span>
+<span id="cb7-22"><a href="#cb7-22" aria-hidden="true" tabindex="-1"></a>    umap_model<span class="op">=</span>umap_model,</span>
+<span id="cb7-23"><a href="#cb7-23" aria-hidden="true" tabindex="-1"></a>    vectorizer_model<span class="op">=</span>vectorizer_model,</span>
+<span id="cb7-24"><a href="#cb7-24" aria-hidden="true" tabindex="-1"></a>    calculate_probabilities<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb7-25"><a href="#cb7-25" aria-hidden="true" tabindex="-1"></a>    nr_topics<span class="op">=</span>NUM_TOPICS,</span>
+<span id="cb7-26"><a href="#cb7-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb7-27"><a href="#cb7-27" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-28"><a href="#cb7-28" aria-hidden="true" tabindex="-1"></a>train_docs <span class="op">=</span> <span class="bu">list</span>(clean_ds[<span class="st">"train"</span>][<span class="st">"text"</span>])</span>
+<span id="cb7-29"><a href="#cb7-29" aria-hidden="true" tabindex="-1"></a>test_docs <span class="op">=</span> <span class="bu">list</span>(clean_ds[<span class="st">"test"</span>][<span class="st">"text"</span>])</span>
+<span id="cb7-30"><a href="#cb7-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-31"><a href="#cb7-31" aria-hidden="true" tabindex="-1"></a>topics, probs <span class="op">=</span> topic_model.fit_transform(train_docs, train_embeddings)</span>
+<span id="cb7-32"><a href="#cb7-32" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb7-33"><a href="#cb7-33" aria-hidden="true" tabindex="-1"></a><span class="co"># fine-tune topic representation</span></span>
+<span id="cb7-34"><a href="#cb7-34" aria-hidden="true" tabindex="-1"></a>vectorizer_model_1 <span class="op">=</span> CountVectorizer(stop_words<span class="op">=</span><span class="st">"english"</span>, ngram_range<span class="op">=</span>(<span class="dv">1</span>, <span class="dv">3</span>), min_df<span class="op">=</span><span class="dv">10</span>)</span>
+<span id="cb7-35"><a href="#cb7-35" aria-hidden="true" tabindex="-1"></a>topic_model.update_topics(train_docs, vectorizer_model<span class="op">=</span>vectorizer_model_1)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>The distribution of topics is shown in <a href="#fig-imdbtopics">Figure&nbsp;<span>5.3</span></a>. Each dot represents a movie and each color represents a topic. There are two separate sections because there are positive and negative sentiment labels. We use embeddings reduced to 2D for plotting.</p>
+<div class="sourceCode" id="cb8"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb8-1"><a href="#cb8-1" aria-hidden="true" tabindex="-1"></a>umap_2d <span class="op">=</span> UMAP(</span>
+<span id="cb8-2"><a href="#cb8-2" aria-hidden="true" tabindex="-1"></a>    n_neighbors<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb8-3"><a href="#cb8-3" aria-hidden="true" tabindex="-1"></a>    n_components<span class="op">=</span><span class="dv">2</span>,</span>
+<span id="cb8-4"><a href="#cb8-4" aria-hidden="true" tabindex="-1"></a>    min_dist<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb8-5"><a href="#cb8-5" aria-hidden="true" tabindex="-1"></a>    metric<span class="op">=</span><span class="st">'cosine'</span>,</span>
+<span id="cb8-6"><a href="#cb8-6" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb8-7"><a href="#cb8-7" aria-hidden="true" tabindex="-1"></a>train_embeddings_2d <span class="op">=</span> umap_2d.fit_transform(</span>
+<span id="cb8-8"><a href="#cb8-8" aria-hidden="true" tabindex="-1"></a>    train_embeddings,</span>
+<span id="cb8-9"><a href="#cb8-9" aria-hidden="true" tabindex="-1"></a>    clean_ds[<span class="st">"train"</span>][<span class="st">"label"</span>],</span>
+<span id="cb8-10"><a href="#cb8-10" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="sourceCode" id="cb9"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>topic_model.visualize_documents(</span>
+<span id="cb9-2"><a href="#cb9-2" aria-hidden="true" tabindex="-1"></a>    train_docs,</span>
+<span id="cb9-3"><a href="#cb9-3" aria-hidden="true" tabindex="-1"></a>    reduced_embeddings<span class="op">=</span>train_embeddings_2d,</span>
+<span id="cb9-4"><a href="#cb9-4" aria-hidden="true" tabindex="-1"></a>    hide_document_hover<span class="op">=</span><span class="va">False</span>,</span>
+<span id="cb9-5"><a href="#cb9-5" aria-hidden="true" tabindex="-1"></a>    hide_annotations<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb9-6"><a href="#cb9-6" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-imdbtopics" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/imdbtopics.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.3: Topic Distribution</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>You may have noticed that only one topic is assigned to each movie review, which is counter to what we want, since a movie review can have more than one topic. To address this, we can assign more than one topic to each review by using soft assignments.</p>
+<div class="sourceCode" id="cb10"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb10-1"><a href="#cb10-1" aria-hidden="true" tabindex="-1"></a>topic_distr, topic_token_distr <span class="op">=</span> topic_model.approximate_distribution(</span>
+<span id="cb10-2"><a href="#cb10-2" aria-hidden="true" tabindex="-1"></a>    train_docs,</span>
+<span id="cb10-3"><a href="#cb10-3" aria-hidden="true" tabindex="-1"></a>    calculate_tokens<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb10-4"><a href="#cb10-4" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb10-5"><a href="#cb10-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb10-6"><a href="#cb10-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb10-7"><a href="#cb10-7" aria-hidden="true" tabindex="-1"></a>test_topic_distr, test_topic_token_distr <span class="op">=</span> topic_model.approximate_distribution(</span>
+<span id="cb10-8"><a href="#cb10-8" aria-hidden="true" tabindex="-1"></a>    test_docs,</span>
+<span id="cb10-9"><a href="#cb10-9" aria-hidden="true" tabindex="-1"></a>    calculate_tokens<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb10-10"><a href="#cb10-10" aria-hidden="true" tabindex="-1"></a>    window<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb10-11"><a href="#cb10-11" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>In the previous code snippet, you may have noticed <code>calculate_tokens=True</code>. This lets us see how much each token in the text contributes to that texts’s topic assignments. <a href="#fig-tokentext">Figure&nbsp;<span>5.4</span></a> shows a portion of the token topic distribution for the text of one movie review.</p>
+<div class="sourceCode" id="cb11"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a>topic_model.visualize_approximate_distribution(</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a>    train_docs[<span class="dv">134</span>],</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a>    topic_token_distr[<span class="dv">134</span>]</span>
+<span id="cb11-4"><a href="#cb11-4" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-tokentext" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/token_topic_dist.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.4: Token-Topics Distribution</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="adding-topics-to-the-dataframe" class="level5" data-number="5.4.3.2.1">
+<h5 data-number="5.4.3.2.1" class="anchored" data-anchor-id="adding-topics-to-the-dataframe"><span class="header-section-number">5.4.3.2.1</span> Adding topics to the dataframe</h5>
+<p>Lastly, we are going to add the topics to the dataframe. We’re also going to use the topic labels used by <strong>BERTopic</strong> as the dataframe column names. We will add one column to the dataframe for each topic.</p>
+<div class="sourceCode" id="cb12"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> pandas <span class="im">as</span> pd</span>
+<span id="cb12-2"><a href="#cb12-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-3"><a href="#cb12-3" aria-hidden="true" tabindex="-1"></a>topic_labels <span class="op">=</span> topic_model.generate_topic_labels(</span>
+<span id="cb12-4"><a href="#cb12-4" aria-hidden="true" tabindex="-1"></a>    nr_words<span class="op">=</span><span class="dv">4</span>,</span>
+<span id="cb12-5"><a href="#cb12-5" aria-hidden="true" tabindex="-1"></a>    topic_prefix<span class="op">=</span><span class="va">True</span>,</span>
+<span id="cb12-6"><a href="#cb12-6" aria-hidden="true" tabindex="-1"></a>    word_length<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb12-7"><a href="#cb12-7" aria-hidden="true" tabindex="-1"></a>    separator<span class="op">=</span><span class="st">"_"</span>,</span>
+<span id="cb12-8"><a href="#cb12-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-9"><a href="#cb12-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-10"><a href="#cb12-10" aria-hidden="true" tabindex="-1"></a>id2topic <span class="op">=</span> {i<span class="op">-</span><span class="dv">1</span>: <span class="ss">f"t_</span><span class="sc">{</span>label<span class="sc">}</span><span class="ss">"</span></span>
+<span id="cb12-11"><a href="#cb12-11" aria-hidden="true" tabindex="-1"></a>            <span class="cf">for</span> i, label <span class="kw">in</span> <span class="bu">enumerate</span>(topic_labels)}</span>
+<span id="cb12-12"><a href="#cb12-12" aria-hidden="true" tabindex="-1"></a><span class="kw">del</span> id2topic[<span class="op">-</span><span class="dv">1</span>] <span class="co"># drop outlier topic</span></span>
+<span id="cb12-13"><a href="#cb12-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-14"><a href="#cb12-14" aria-hidden="true" tabindex="-1"></a>ntopics <span class="op">=</span> topic_distr.shape[<span class="dv">1</span>]</span>
+<span id="cb12-15"><a href="#cb12-15" aria-hidden="true" tabindex="-1"></a>topic_names <span class="op">=</span> [id2topic[i] <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(ntopics)]</span>
+<span id="cb12-16"><a href="#cb12-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-17"><a href="#cb12-17" aria-hidden="true" tabindex="-1"></a>train_topics_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb12-18"><a href="#cb12-18" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>topic_distr,</span>
+<span id="cb12-19"><a href="#cb12-19" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>topic_names,</span>
+<span id="cb12-20"><a href="#cb12-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-21"><a href="#cb12-21" aria-hidden="true" tabindex="-1"></a>train_df <span class="op">=</span> clean_ds[<span class="st">"train"</span>].to_pandas()</span>
+<span id="cb12-22"><a href="#cb12-22" aria-hidden="true" tabindex="-1"></a>train_df_full <span class="op">=</span> pd.concat(</span>
+<span id="cb12-23"><a href="#cb12-23" aria-hidden="true" tabindex="-1"></a>    [train_df, train_topics_df],</span>
+<span id="cb12-24"><a href="#cb12-24" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb12-25"><a href="#cb12-25" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-26"><a href="#cb12-26" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb12-27"><a href="#cb12-27" aria-hidden="true" tabindex="-1"></a>test_topics_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb12-28"><a href="#cb12-28" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>test_topic_distr,</span>
+<span id="cb12-29"><a href="#cb12-29" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>topic_names,</span>
+<span id="cb12-30"><a href="#cb12-30" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb12-31"><a href="#cb12-31" aria-hidden="true" tabindex="-1"></a>test_df <span class="op">=</span> clean_ds[<span class="st">"test"</span>].to_pandas()</span>
+<span id="cb12-32"><a href="#cb12-32" aria-hidden="true" tabindex="-1"></a>test_df_full <span class="op">=</span> pd.concat(</span>
+<span id="cb12-33"><a href="#cb12-33" aria-hidden="true" tabindex="-1"></a>    [test_df, test_topics_df],</span>
+<span id="cb12-34"><a href="#cb12-34" aria-hidden="true" tabindex="-1"></a>    axis<span class="op">=</span><span class="dv">1</span>,</span>
+<span id="cb12-35"><a href="#cb12-35" aria-hidden="true" tabindex="-1"></a>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+</section>
+<section id="covariates" class="level3" data-number="5.4.4">
+<h3 data-number="5.4.4" class="anchored" data-anchor-id="covariates"><span class="header-section-number">5.4.4</span> Covariates</h3>
+<p>We’ll use the sentence embeddings computed above. The embedding dimension is 384, which is rather high, so we will use UMAP to reduce the dimension to 20. As with the topics, we will add the embeddings to the dataframe. There will be one column for each embedding dimension.</p>
+<div class="sourceCode" id="cb13"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb13-1"><a href="#cb13-1" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Embeddings: </span><span class="sc">{</span>train_embeddings<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb13-2"><a href="#cb13-2" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-3"><a href="#cb13-3" aria-hidden="true" tabindex="-1"></a>n_covariates <span class="op">=</span> <span class="dv">20</span></span>
+<span id="cb13-4"><a href="#cb13-4" aria-hidden="true" tabindex="-1"></a>col_names <span class="op">=</span> [<span class="ss">f"e_</span><span class="sc">{</span>i<span class="sc">:04d}</span><span class="ss">"</span> <span class="cf">for</span> i <span class="kw">in</span> <span class="bu">range</span>(n_covariates)]</span>
+<span id="cb13-5"><a href="#cb13-5" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-6"><a href="#cb13-6" aria-hidden="true" tabindex="-1"></a>umap_cov <span class="op">=</span> UMAP(</span>
+<span id="cb13-7"><a href="#cb13-7" aria-hidden="true" tabindex="-1"></a>    n_neighbors<span class="op">=</span><span class="dv">10</span>,</span>
+<span id="cb13-8"><a href="#cb13-8" aria-hidden="true" tabindex="-1"></a>    n_components<span class="op">=</span>n_covariates,</span>
+<span id="cb13-9"><a href="#cb13-9" aria-hidden="true" tabindex="-1"></a>    min_dist<span class="op">=</span><span class="fl">0.0</span>,</span>
+<span id="cb13-10"><a href="#cb13-10" aria-hidden="true" tabindex="-1"></a>    metric<span class="op">=</span><span class="st">'cosine'</span>,</span>
+<span id="cb13-11"><a href="#cb13-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-12"><a href="#cb13-12" aria-hidden="true" tabindex="-1"></a>train_covariates <span class="op">=</span> umap_cov.fit_transform(train_embeddings)</span>
+<span id="cb13-13"><a href="#cb13-13" aria-hidden="true" tabindex="-1"></a>test_covariates <span class="op">=</span> umap_cov.transform(test_embeddings)</span>
+<span id="cb13-14"><a href="#cb13-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(train_covariates.shape)</span>
+<span id="cb13-15"><a href="#cb13-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(test_covariates.shape)</span>
+<span id="cb13-16"><a href="#cb13-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-17"><a href="#cb13-17" aria-hidden="true" tabindex="-1"></a>X_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb13-18"><a href="#cb13-18" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>train_covariates,</span>
+<span id="cb13-19"><a href="#cb13-19" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>col_names,</span>
+<span id="cb13-20"><a href="#cb13-20" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-21"><a href="#cb13-21" aria-hidden="true" tabindex="-1"></a>train_df_all <span class="op">=</span> pd.concat([train_df_full, X_df], axis<span class="op">=</span><span class="dv">1</span>)</span>
+<span id="cb13-22"><a href="#cb13-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb13-23"><a href="#cb13-23" aria-hidden="true" tabindex="-1"></a>X_df <span class="op">=</span> pd.DataFrame(</span>
+<span id="cb13-24"><a href="#cb13-24" aria-hidden="true" tabindex="-1"></a>    data<span class="op">=</span>test_covariates,</span>
+<span id="cb13-25"><a href="#cb13-25" aria-hidden="true" tabindex="-1"></a>    columns<span class="op">=</span>col_names,</span>
+<span id="cb13-26"><a href="#cb13-26" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb13-27"><a href="#cb13-27" aria-hidden="true" tabindex="-1"></a>test_df_all <span class="op">=</span> pd.concat([test_df_full, X_df], axis<span class="op">=</span><span class="dv">1</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Our outcome variable is the sentiment label. Positive sentiment is label = 1, negative sentiment is label = 0, so we need not binarize the labels. We are adding a simple method to grab the label column and similar methods for selecting a specific topic column from the dataframe, and then convert it to a binary-valued column according to a probability threshold. There is also a method that grabs the covariate columns.</p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_outcome_values(df):</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>    Y <span class="op">=</span> df[<span class="st">"label"</span>].to_numpy()</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> Y</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_treatment_values(df, topic_id, threshold<span class="op">=</span><span class="fl">0.5</span>):</span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>    topic <span class="op">=</span> id2topic[topic_id]</span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>    t <span class="op">=</span> threshold</span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>    T <span class="op">=</span> df[topic].<span class="bu">apply</span>(<span class="kw">lambda</span> x: x <span class="op">&gt;=</span> t).astype(<span class="bu">int</span>).to_numpy()</span>
+<span id="cb14-9"><a href="#cb14-9" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> T</span>
+<span id="cb14-10"><a href="#cb14-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb14-11"><a href="#cb14-11" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> get_covariate_values(df):</span>
+<span id="cb14-12"><a href="#cb14-12" aria-hidden="true" tabindex="-1"></a>    X <span class="op">=</span> df[col_names].to_numpy()</span>
+<span id="cb14-13"><a href="#cb14-13" aria-hidden="true" tabindex="-1"></a>    <span class="cf">return</span> X</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>Now we can grab the train/test values for treatment, outcome, and covariates and move on to the causal analysis. Note: Due to some inherent randomness, the ids of a topic may shift when this code is run at a later date. The overall distribution will be somewhat stable though. In this first example, we will use <code>topic_id=27</code>, which corresponds to several terms related to the “Star Wars” films.</p>
+<div class="sourceCode" id="cb15"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a><span class="co"># treatment</span></span>
+<span id="cb15-2"><a href="#cb15-2" aria-hidden="true" tabindex="-1"></a>topic_id <span class="op">=</span> <span class="dv">27</span>  <span class="co"># star wars</span></span>
+<span id="cb15-3"><a href="#cb15-3" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-4"><a href="#cb15-4" aria-hidden="true" tabindex="-1"></a>T_train <span class="op">=</span> get_treatment_values(</span>
+<span id="cb15-5"><a href="#cb15-5" aria-hidden="true" tabindex="-1"></a>    train_df_all,</span>
+<span id="cb15-6"><a href="#cb15-6" aria-hidden="true" tabindex="-1"></a>    topic_id,</span>
+<span id="cb15-7"><a href="#cb15-7" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb15-8"><a href="#cb15-8" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-9"><a href="#cb15-9" aria-hidden="true" tabindex="-1"></a>T_test <span class="op">=</span> get_treatment_values(</span>
+<span id="cb15-10"><a href="#cb15-10" aria-hidden="true" tabindex="-1"></a>    test_df_all,</span>
+<span id="cb15-11"><a href="#cb15-11" aria-hidden="true" tabindex="-1"></a>    topic_id,</span>
+<span id="cb15-12"><a href="#cb15-12" aria-hidden="true" tabindex="-1"></a>    threshold<span class="op">=</span><span class="fl">0.1</span>,</span>
+<span id="cb15-13"><a href="#cb15-13" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb15-14"><a href="#cb15-14" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"T_train: </span><span class="sc">{</span>T_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-15"><a href="#cb15-15" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"T_test: </span><span class="sc">{</span>T_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-16"><a href="#cb15-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-17"><a href="#cb15-17" aria-hidden="true" tabindex="-1"></a>Y_train <span class="op">=</span> get_outcome_values(train_df_all)</span>
+<span id="cb15-18"><a href="#cb15-18" aria-hidden="true" tabindex="-1"></a>Y_test <span class="op">=</span> get_outcome_values(test_df_all)</span>
+<span id="cb15-19"><a href="#cb15-19" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Y_train: </span><span class="sc">{</span>Y_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-20"><a href="#cb15-20" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"Y_test: </span><span class="sc">{</span>Y_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-21"><a href="#cb15-21" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-22"><a href="#cb15-22" aria-hidden="true" tabindex="-1"></a>X_train <span class="op">=</span> get_covariate_values(train_df_all)</span>
+<span id="cb15-23"><a href="#cb15-23" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"X_train: </span><span class="sc">{</span>X_train<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb15-24"><a href="#cb15-24" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb15-25"><a href="#cb15-25" aria-hidden="true" tabindex="-1"></a>X_test <span class="op">=</span> get_covariate_values(test_df_all)</span>
+<span id="cb15-26"><a href="#cb15-26" aria-hidden="true" tabindex="-1"></a><span class="bu">print</span>(<span class="ss">f"X_test: </span><span class="sc">{</span>X_test<span class="sc">.</span>shape<span class="sc">}</span><span class="ss">"</span>)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="train-metalearner-causal-estimators" class="level3" data-number="5.4.5">
+<h3 data-number="5.4.5" class="anchored" data-anchor-id="train-metalearner-causal-estimators"><span class="header-section-number">5.4.5</span> Train metalearner causal estimators</h3>
+<p>In this section we train the meta-learners that we’ll use to compute CATE. First, we’ll want to import the classes and methods we’ll need.</p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> numpy <span class="im">as</span> np</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> numpy.random <span class="im">import</span> (</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>    binomial,</span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>    multivariate_normal,</span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>    normal,</span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>    uniform,</span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a><span class="im">from</span> sklearn.ensemble <span class="im">import</span> (</span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>    RandomForestClassifier,</span>
+<span id="cb16-10"><a href="#cb16-10" aria-hidden="true" tabindex="-1"></a>    GradientBoostingRegressor,</span>
+<span id="cb16-11"><a href="#cb16-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb16-12"><a href="#cb16-12" aria-hidden="true" tabindex="-1"></a><span class="im">import</span> matplotlib.pyplot <span class="im">as</span> plt</span>
+<span id="cb16-13"><a href="#cb16-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb16-14"><a href="#cb16-14" aria-hidden="true" tabindex="-1"></a>min_samples_leaf <span class="op">=</span> <span class="bu">len</span>(T_train) <span class="op">//</span> <span class="dv">100</span></span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<section id="t-learner" class="level4" data-number="5.4.5.1">
+<h4 data-number="5.4.5.1" class="anchored" data-anchor-id="t-learner"><span class="header-section-number">5.4.5.1</span> T-learner</h4>
+<div class="sourceCode" id="cb17"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> GradientBoostingRegressor(</span>
+<span id="cb17-2"><a href="#cb17-2" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb17-3"><a href="#cb17-3" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb17-4"><a href="#cb17-4" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span>min_samples_leaf</span>
+<span id="cb17-5"><a href="#cb17-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb17-6"><a href="#cb17-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-7"><a href="#cb17-7" aria-hidden="true" tabindex="-1"></a>T_learner <span class="op">=</span> TLearner(models<span class="op">=</span>models)</span>
+<span id="cb17-8"><a href="#cb17-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-9"><a href="#cb17-9" aria-hidden="true" tabindex="-1"></a>T_learner.fit(Y_train, T_train, X<span class="op">=</span>X_train)</span>
+<span id="cb17-10"><a href="#cb17-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb17-11"><a href="#cb17-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate treatment effects on test data</span></span>
+<span id="cb17-12"><a href="#cb17-12" aria-hidden="true" tabindex="-1"></a>T_te <span class="op">=</span> T_learner.effect(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="s-learner" class="level4" data-number="5.4.5.2">
+<h4 data-number="5.4.5.2" class="anchored" data-anchor-id="s-learner"><span class="header-section-number">5.4.5.2</span> S-learner</h4>
+<div class="sourceCode" id="cb18"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a>overall_model <span class="op">=</span> GradientBoostingRegressor(</span>
+<span id="cb18-2"><a href="#cb18-2" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb18-3"><a href="#cb18-3" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb18-4"><a href="#cb18-4" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span>min_samples_leaf</span>
+<span id="cb18-5"><a href="#cb18-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb18-6"><a href="#cb18-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-7"><a href="#cb18-7" aria-hidden="true" tabindex="-1"></a>S_learner <span class="op">=</span> SLearner(overall_model<span class="op">=</span>overall_model)</span>
+<span id="cb18-8"><a href="#cb18-8" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-9"><a href="#cb18-9" aria-hidden="true" tabindex="-1"></a>S_learner.fit(Y_train, T_train, X<span class="op">=</span>X_train)</span>
+<span id="cb18-10"><a href="#cb18-10" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb18-11"><a href="#cb18-11" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate treatment effects on test data</span></span>
+<span id="cb18-12"><a href="#cb18-12" aria-hidden="true" tabindex="-1"></a>S_te <span class="op">=</span> S_learner.effect(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+<section id="x-learner" class="level4" data-number="5.4.5.3">
+<h4 data-number="5.4.5.3" class="anchored" data-anchor-id="x-learner"><span class="header-section-number">5.4.5.3</span> X-learner</h4>
+<div class="sourceCode" id="cb19"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>models <span class="op">=</span> GradientBoostingRegressor(</span>
+<span id="cb19-2"><a href="#cb19-2" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb19-3"><a href="#cb19-3" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb19-4"><a href="#cb19-4" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span>min_samples_leaf</span>
+<span id="cb19-5"><a href="#cb19-5" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-6"><a href="#cb19-6" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-7"><a href="#cb19-7" aria-hidden="true" tabindex="-1"></a>propensity_model <span class="op">=</span> RandomForestClassifier(</span>
+<span id="cb19-8"><a href="#cb19-8" aria-hidden="true" tabindex="-1"></a>    n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb19-9"><a href="#cb19-9" aria-hidden="true" tabindex="-1"></a>    max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb19-10"><a href="#cb19-10" aria-hidden="true" tabindex="-1"></a>    min_samples_leaf<span class="op">=</span>min_samples_leaf</span>
+<span id="cb19-11"><a href="#cb19-11" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-12"><a href="#cb19-12" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-13"><a href="#cb19-13" aria-hidden="true" tabindex="-1"></a>X_learner <span class="op">=</span> XLearner(</span>
+<span id="cb19-14"><a href="#cb19-14" aria-hidden="true" tabindex="-1"></a>    models<span class="op">=</span>models,</span>
+<span id="cb19-15"><a href="#cb19-15" aria-hidden="true" tabindex="-1"></a>    propensity_model<span class="op">=</span>propensity_model</span>
+<span id="cb19-16"><a href="#cb19-16" aria-hidden="true" tabindex="-1"></a>)</span>
+<span id="cb19-17"><a href="#cb19-17" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-18"><a href="#cb19-18" aria-hidden="true" tabindex="-1"></a>X_learner.fit(Y_train, T_train, X<span class="op">=</span>X_train)</span>
+<span id="cb19-19"><a href="#cb19-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb19-20"><a href="#cb19-20" aria-hidden="true" tabindex="-1"></a><span class="co"># Estimate treatment effects on test data</span></span>
+<span id="cb19-21"><a href="#cb19-21" aria-hidden="true" tabindex="-1"></a>X_te <span class="op">=</span> X_learner.effect(X_test)</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+</section>
+</section>
+<section id="comparing-treatment-effects" class="level3" data-number="5.4.6">
+<h3 data-number="5.4.6" class="anchored" data-anchor-id="comparing-treatment-effects"><span class="header-section-number">5.4.6</span> Comparing treatment effects</h3>
+<p>Here we compare the treatment effect estimates for topic 27 (Star Wars) computed in the previous section. We plot each effect estimate against the test set index in <a href="#fig-topicscate">Figure&nbsp;<span>5.5</span></a>.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-topicscate" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/cate_comparison.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.5: CATE for Topic 27 (Star Wars)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>In <a href="#fig-catesw">Figure&nbsp;<span>5.6</span></a> we view this same information in histogram form, where we can see the number of movie reviews with the Star Wars topic that have CATE values in a given range.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-catesw" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/cate_hist_starwars.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.6: CATE Histogram for Topic 27 (Star Wars)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<p>These results show that, according to the S-Learner, the Star Wars topic has a negligible positive effect on the sentiment of a movie review. However, the T-Learner and X-Learner both show a that this topic has a positive effect on the outcome for some reviews and a negative effect on the outcome for other reviews. Let’s look at the CATE histograms of a few more topics.</p>
+<div class="sourceCode" id="cb20"><pre class="sourceCode python code-with-copy"><code class="sourceCode python"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a><span class="kw">def</span> run_analysis(topic_id, topic_threshold<span class="op">=</span><span class="fl">0.1</span>):</span>
+<span id="cb20-2"><a href="#cb20-2" aria-hidden="true" tabindex="-1"></a>    <span class="co"># topic_id is treatment</span></span>
+<span id="cb20-3"><a href="#cb20-3" aria-hidden="true" tabindex="-1"></a>    T_train <span class="op">=</span> get_treatment_values(</span>
+<span id="cb20-4"><a href="#cb20-4" aria-hidden="true" tabindex="-1"></a>        train_df_all,</span>
+<span id="cb20-5"><a href="#cb20-5" aria-hidden="true" tabindex="-1"></a>        topic_id,</span>
+<span id="cb20-6"><a href="#cb20-6" aria-hidden="true" tabindex="-1"></a>        threshold<span class="op">=</span>topic_threshold,</span>
+<span id="cb20-7"><a href="#cb20-7" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-8"><a href="#cb20-8" aria-hidden="true" tabindex="-1"></a>    T_test <span class="op">=</span> get_treatment_values(</span>
+<span id="cb20-9"><a href="#cb20-9" aria-hidden="true" tabindex="-1"></a>        test_df_all,</span>
+<span id="cb20-10"><a href="#cb20-10" aria-hidden="true" tabindex="-1"></a>        topic_id,</span>
+<span id="cb20-11"><a href="#cb20-11" aria-hidden="true" tabindex="-1"></a>        threshold<span class="op">=</span>topic_threshold,</span>
+<span id="cb20-12"><a href="#cb20-12" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-13"><a href="#cb20-13" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-14"><a href="#cb20-14" aria-hidden="true" tabindex="-1"></a>    treated_indices <span class="op">=</span> np.where(T_test <span class="op">==</span> <span class="dv">1</span>)[<span class="dv">0</span>]</span>
+<span id="cb20-15"><a href="#cb20-15" aria-hidden="true" tabindex="-1"></a>    untreated_indices <span class="op">=</span> np.where(T_test <span class="op">==</span> <span class="dv">0</span>)[<span class="dv">0</span>]</span>
+<span id="cb20-16"><a href="#cb20-16" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-17"><a href="#cb20-17" aria-hidden="true" tabindex="-1"></a>    Y_train <span class="op">=</span> get_outcome_values(train_df_all)</span>
+<span id="cb20-18"><a href="#cb20-18" aria-hidden="true" tabindex="-1"></a>    Y_test <span class="op">=</span> get_outcome_values(test_df_all)</span>
+<span id="cb20-19"><a href="#cb20-19" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-20"><a href="#cb20-20" aria-hidden="true" tabindex="-1"></a>    X_train <span class="op">=</span> get_covariate_values(train_df_all)</span>
+<span id="cb20-21"><a href="#cb20-21" aria-hidden="true" tabindex="-1"></a>    X_test <span class="op">=</span> get_covariate_values(test_df_all)</span>
+<span id="cb20-22"><a href="#cb20-22" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-23"><a href="#cb20-23" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Building T-Learner..."</span>)</span>
+<span id="cb20-24"><a href="#cb20-24" aria-hidden="true" tabindex="-1"></a>    models <span class="op">=</span> GradientBoostingRegressor(</span>
+<span id="cb20-25"><a href="#cb20-25" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb20-26"><a href="#cb20-26" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb20-27"><a href="#cb20-27" aria-hidden="true" tabindex="-1"></a>        min_samples_leaf<span class="op">=</span>min_samples_leaf,</span>
+<span id="cb20-28"><a href="#cb20-28" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-29"><a href="#cb20-29" aria-hidden="true" tabindex="-1"></a>    T_learner <span class="op">=</span> TLearner(models<span class="op">=</span>models)</span>
+<span id="cb20-30"><a href="#cb20-30" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-31"><a href="#cb20-31" aria-hidden="true" tabindex="-1"></a>    T_learner.fit(Y_train, T_train, X<span class="op">=</span>X_train)</span>
+<span id="cb20-32"><a href="#cb20-32" aria-hidden="true" tabindex="-1"></a>    T_te <span class="op">=</span> T_learner.effect(X_test)</span>
+<span id="cb20-33"><a href="#cb20-33" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-34"><a href="#cb20-34" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Building S-Learner..."</span>)</span>
+<span id="cb20-35"><a href="#cb20-35" aria-hidden="true" tabindex="-1"></a>    overall_model <span class="op">=</span> GradientBoostingRegressor(</span>
+<span id="cb20-36"><a href="#cb20-36" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb20-37"><a href="#cb20-37" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb20-38"><a href="#cb20-38" aria-hidden="true" tabindex="-1"></a>        min_samples_leaf<span class="op">=</span>min_samples_leaf,</span>
+<span id="cb20-39"><a href="#cb20-39" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-40"><a href="#cb20-40" aria-hidden="true" tabindex="-1"></a>    S_learner <span class="op">=</span> SLearner(overall_model<span class="op">=</span>overall_model)</span>
+<span id="cb20-41"><a href="#cb20-41" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-42"><a href="#cb20-42" aria-hidden="true" tabindex="-1"></a>    S_learner.fit(Y_train, T_train, X<span class="op">=</span>X_train)</span>
+<span id="cb20-43"><a href="#cb20-43" aria-hidden="true" tabindex="-1"></a>    S_te <span class="op">=</span> S_learner.effect(X_test)</span>
+<span id="cb20-44"><a href="#cb20-44" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-45"><a href="#cb20-45" aria-hidden="true" tabindex="-1"></a>    <span class="bu">print</span>(<span class="st">"Building X-Learner..."</span>)</span>
+<span id="cb20-46"><a href="#cb20-46" aria-hidden="true" tabindex="-1"></a>    models <span class="op">=</span> GradientBoostingRegressor(</span>
+<span id="cb20-47"><a href="#cb20-47" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb20-48"><a href="#cb20-48" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb20-49"><a href="#cb20-49" aria-hidden="true" tabindex="-1"></a>        min_samples_leaf<span class="op">=</span>min_samples_leaf,</span>
+<span id="cb20-50"><a href="#cb20-50" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-51"><a href="#cb20-51" aria-hidden="true" tabindex="-1"></a>    propensity_model <span class="op">=</span> RandomForestClassifier(</span>
+<span id="cb20-52"><a href="#cb20-52" aria-hidden="true" tabindex="-1"></a>        n_estimators<span class="op">=</span><span class="dv">100</span>,</span>
+<span id="cb20-53"><a href="#cb20-53" aria-hidden="true" tabindex="-1"></a>        max_depth<span class="op">=</span><span class="dv">6</span>,</span>
+<span id="cb20-54"><a href="#cb20-54" aria-hidden="true" tabindex="-1"></a>        min_samples_leaf<span class="op">=</span>min_samples_leaf</span>
+<span id="cb20-55"><a href="#cb20-55" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-56"><a href="#cb20-56" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-57"><a href="#cb20-57" aria-hidden="true" tabindex="-1"></a>    X_learner <span class="op">=</span> XLearner(</span>
+<span id="cb20-58"><a href="#cb20-58" aria-hidden="true" tabindex="-1"></a>        models<span class="op">=</span>models,</span>
+<span id="cb20-59"><a href="#cb20-59" aria-hidden="true" tabindex="-1"></a>        propensity_model<span class="op">=</span>propensity_model,</span>
+<span id="cb20-60"><a href="#cb20-60" aria-hidden="true" tabindex="-1"></a>    )</span>
+<span id="cb20-61"><a href="#cb20-61" aria-hidden="true" tabindex="-1"></a>    X_learner.fit(Y_train, T_train, X<span class="op">=</span>X_train)</span>
+<span id="cb20-62"><a href="#cb20-62" aria-hidden="true" tabindex="-1"></a>    X_te <span class="op">=</span> X_learner.effect(X_test)</span>
+<span id="cb20-63"><a href="#cb20-63" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-64"><a href="#cb20-64" aria-hidden="true" tabindex="-1"></a>    plt.figure(figsize<span class="op">=</span>(<span class="dv">7</span>, <span class="dv">5</span>))</span>
+<span id="cb20-65"><a href="#cb20-65" aria-hidden="true" tabindex="-1"></a>    x_axis <span class="op">=</span> np.arange(<span class="bu">len</span>(X_test))</span>
+<span id="cb20-66"><a href="#cb20-66" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-67"><a href="#cb20-67" aria-hidden="true" tabindex="-1"></a>    plt.hist(T_te, label<span class="op">=</span><span class="st">"T-learner"</span>, bins<span class="op">=</span><span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-68"><a href="#cb20-68" aria-hidden="true" tabindex="-1"></a>    plt.hist(S_te, label<span class="op">=</span><span class="st">"S-learner"</span>, bins<span class="op">=</span><span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-69"><a href="#cb20-69" aria-hidden="true" tabindex="-1"></a>    plt.hist(X_te, label<span class="op">=</span><span class="st">"X-learner"</span>, bins<span class="op">=</span><span class="dv">10</span>, alpha<span class="op">=</span><span class="fl">0.5</span>)</span>
+<span id="cb20-70"><a href="#cb20-70" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-71"><a href="#cb20-71" aria-hidden="true" tabindex="-1"></a>    plt.xlabel(<span class="st">'Treatment Effect'</span>)</span>
+<span id="cb20-72"><a href="#cb20-72" aria-hidden="true" tabindex="-1"></a>    plt.ylabel(<span class="st">'Frequency'</span>)</span>
+<span id="cb20-73"><a href="#cb20-73" aria-hidden="true" tabindex="-1"></a>    plt.title(<span class="ss">f"Treatment Topic: </span><span class="sc">{</span>id2topic[topic_id]<span class="sc">}</span><span class="ss">"</span>)</span>
+<span id="cb20-74"><a href="#cb20-74" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb20-75"><a href="#cb20-75" aria-hidden="true" tabindex="-1"></a>    plt.legend()</span>
+<span id="cb20-76"><a href="#cb20-76" aria-hidden="true" tabindex="-1"></a>    plt.show()</span></code><button title="Copy to Clipboard" class="code-copy-button"><i class="bi"></i></button></pre></div>
+<p>We can use the `run_analysis function to generate several histograms:</p>
+<p><a href="#fig-catedisney">Figure&nbsp;<span>5.7</span></a>, <a href="#fig-catebatman">Figure&nbsp;<span>5.8</span></a>, <a href="#fig-cateholiday">Figure&nbsp;<span>5.9</span></a>, and <a href="#fig-catedanbrown">Figure&nbsp;<span>5.10</span></a> show the result CATE histogram for the Disney, Batman, holiday movie, and Dan Brown topics, respectively. Each histogram was generated by calling <code>run_analysis</code> with the appropriate topic id.</p>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-catedisney" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/cate_hist_disney.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.7: CATE Histogram for Topic 1 (Disney)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-catebatman" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/cate_hist_batman.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.8: CATE Histogram for Topic 15 (Batman, etc.)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-cateholiday" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/cate_hist_xmas.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.9: CATE Histogram for Topic 9 (Holiday)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<div class="cell" data-layout-align="center">
+<div class="cell-output-display">
+<div id="fig-catedanbrown" class="quarto-figure quarto-figure-center anchored">
+<figure class="figure">
+<p><img src="img/cate_hist_danbrown.png" class="img-fluid figure-img" style="width:100.0%"></p>
+<figcaption class="figure-caption">Figure&nbsp;5.10: CATE Histogram for Topic 23 (Dan Brown)</figcaption>
+</figure>
+</div>
+</div>
+</div>
+<section id="analysis" class="level4" data-number="5.4.6.1">
+<h4 data-number="5.4.6.1" class="anchored" data-anchor-id="analysis"><span class="header-section-number">5.4.6.1</span> Analysis</h4>
+<p>So, what does the distribution of CATE scores tell us?</p>
+<p>Generally speaking, when the outcome variable is binary-valued (as it is for our movie review data), a negative CATE value means that the treatment has a negative/detrimental effect on the outcome variable. For the IMDB data, that means that when the topic is present in the movie review, said review is more likely to be negative than similar reviews without the topic. Similarly, a positive CATE value suggests that the topic tends to make the review more positive.</p>
+<section id="s-learner-cate-scores" class="level5" data-number="5.4.6.1.1">
+<h5 data-number="5.4.6.1.1" class="anchored" data-anchor-id="s-learner-cate-scores"><span class="header-section-number">5.4.6.1.1</span> S-Learner CATE scores</h5>
+<p>A few of the histogram plots have a large peak for the S-Learner that is near zero. The S-Learner scores are then suggesting that each topic has a negligible effect of the sentiment of movie reviews.</p>
+<p>However, the S-Learner assumes that the treatment effect is homogeneous across the population. If that assumption is not correct (and we have no reason to think it should be), then treatment effect is not homogeneous across the population, then the CATE scores calculated using an S-Learner may not accurately reflect the true treatment effect.</p>
+</section>
+<section id="t-learner-and-x-learner-cate-scores" class="level5" data-number="5.4.6.1.2">
+<h5 data-number="5.4.6.1.2" class="anchored" data-anchor-id="t-learner-and-x-learner-cate-scores"><span class="header-section-number">5.4.6.1.2</span> T-Learner and X-Learner CATE scores</h5>
+<p>The histograms for the T-Learner and X-Learner suggest that the effect a given topic has on the movie review sentiment is sometimes positive and sometimes negative. <a href="#fig-topicscate">Figure&nbsp;<span>5.5</span></a> shows that we can actually see which specific movie reviews have positive and negative scores.</p>
+<p>We can also note that the some topics appear to have a large effect on sentiment. An example of this is topic 23, the Dan Brown topic, as shown in <a href="#fig-catedanbrown">Figure&nbsp;<span>5.10</span></a>.</p>
+
+
+<div id="refs" class="references csl-bib-body hanging-indent" role="list">
+<div id="ref-Athey2015MachineLF" class="csl-entry" role="listitem">
+Athey, Susan, and Guido Imbens. 2015. <span>“Machine Learning for Estimating Heterogeneous Causal Effects.”</span> In.
+</div>
+<div id="ref-Choudhury2017TheLO" class="csl-entry" role="listitem">
+Choudhury, Munmun De, and Emre Kıcıman. 2017. <span>“The Language of Social Support in Social Media and Its Effect on Suicidal Ideation Risk.”</span> <em>Proceedings of the ... International AAAI Conference on Weblogs and Social Media. International AAAI Conference on Weblogs and Social Media</em> 2017: 32–41.
+</div>
+<div id="ref-Choudhury2016DiscoveringST" class="csl-entry" role="listitem">
+Choudhury, Munmun De, Emre Kıcıman, Mark Dredze, Glen A. Coppersmith, and Mrinal Kumar. 2016. <span>“Discovering Shifts to Suicidal Ideation from Mental Health Content in Social Media.”</span> <em>Proceedings of the 2016 CHI Conference on Human Factors in Computing Systems</em>.
+</div>
+<div id="ref-DAmour2017OverlapIO" class="csl-entry" role="listitem">
+D’Amour, Alexander, Peng Ding, Avi Feller, Lihua Lei, and Jasjeet S. Sekhon. 2017. <span>“Overlap in Observational Studies with High-Dimensional Covariates.”</span> <em>Journal of Econometrics</em>.
+</div>
+<div id="ref-Egami2022HowTM" class="csl-entry" role="listitem">
+Egami, Naoki, Christian Fong, Justin Grimmer, Margaret E. Roberts, and Brandon M Stewart. 2022. <span>“How to Make Causal Inferences Using Texts.”</span> <em>Science Advances</em> 8 42: eabg2652.
+</div>
+<div id="ref-grootendorst2022bertopic" class="csl-entry" role="listitem">
+Grootendorst, Maarten. 2022. <span>“BERTopic: Neural Topic Modeling with a Class-Based TF-IDF Procedure.”</span> <em>arXiv Preprint arXiv:2203.05794</em>.
+</div>
+<div id="ref-econml" class="csl-entry" role="listitem">
+Keith Battocchi, Maggie Hei, Eleanor Dillon. 2019. <span>“<span>EconML</span>: <span class="nocase">A Python Package for ML-Based Heterogeneous Treatment Effects Estimation</span>.”</span> https://github.com/py-why/EconML.
+</div>
+<div id="ref-Keith2020TextAC" class="csl-entry" role="listitem">
+Keith, Katherine A., David D. Jensen, and Brendan T. O’Connor. 2020. <span>“Text and Causal Inference: A Review of Using Text to Remove Confounding from Causal Estimates.”</span> <em>ArXiv</em> abs/2005.00649.
+</div>
+<div id="ref-Kudo2018SentencePieceAS" class="csl-entry" role="listitem">
+Kudo, Taku, and John Richardson. 2018. <span>“SentencePiece: A Simple and Language Independent Subword Tokenizer and Detokenizer for Neural Text Processing.”</span> <em>ArXiv</em> abs/1808.06226.
+</div>
+<div id="ref-kunzel2019metalearners" class="csl-entry" role="listitem">
+Künzel, Sören R, Jasjeet S Sekhon, Peter J Bickel, and Bin Yu. 2019. <span>“Metalearners for Estimating Heterogeneous Treatment Effects Using Machine Learning.”</span> <em>Proceedings of the National Academy of Sciences</em> 116 (10): 4156–65.
+</div>
+<div id="ref-Maas2011LearningWV" class="csl-entry" role="listitem">
+Maas, Andrew L., Raymond E. Daly, Peter T. Pham, Dan Huang, A. Ng, and Christopher Potts. 2011. <span>“Learning Word Vectors for Sentiment Analysis.”</span> In <em>Annual Meeting of the Association for Computational Linguistics</em>.
+</div>
+<div id="ref-Maiya2021CausalNLPAP" class="csl-entry" role="listitem">
+Maiya, Arun S. 2021. <span>“CausalNLP: A Practical Toolkit for Causal Inference with Text.”</span> <em>ArXiv</em> abs/2106.08043.
+</div>
+<div id="ref-Nie2017QuasioracleEO" class="csl-entry" role="listitem">
+Nie, Xinkun, and Stefan Wager. 2017. <span>“Quasi-Oracle Estimation of Heterogeneous Treatment Effects.”</span> <em>arXiv: Machine Learning</em>.
+</div>
+<div id="ref-reimers-2019-sentence-bert" class="csl-entry" role="listitem">
+Reimers, Nils, and Iryna Gurevych. 2019. <span>“Sentence-BERT: Sentence Embeddings Using Siamese BERT-Networks.”</span> In <em>Proceedings of the 2019 Conference on Empirical Methods in Natural Language Processing</em>. Association for Computational Linguistics. <a href="http://arxiv.org/abs/1908.10084">http://arxiv.org/abs/1908.10084</a>.
+</div>
+<div id="ref-Sennrich2015NeuralMT" class="csl-entry" role="listitem">
+Sennrich, Rico, Barry Haddow, and Alexandra Birch. 2015. <span>“Neural Machine Translation of Rare Words with Subword Units.”</span> <em>ArXiv</em> abs/1508.07909.
+</div>
+<div id="ref-Weld2022AdjustingFC" class="csl-entry" role="listitem">
+Weld, Galen Cassebeer, Peter West, Maria Glenski, David T. Arbour, Ryan A. Rossi, and Tim Althoff. 2022. <span>“Adjusting for Confounders with Text: Challenges and an Empirical Evaluation Framework for Causal Inference.”</span> <em>ArXiv</em> abs/2009.09961.
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+<section id="footnotes" class="footnotes footnotes-end-of-document" role="doc-endnotes">
+<hr>
+<ol>
+<li id="fn1"><p>Text data is inherently high-dimensional because when we tokenize a dataset the vocabulary is often large. This is one of the reasons why sub-word tokenization methods like Byte-Pair Encoding (BPE) <span class="citation" data-cites="Sennrich2015NeuralMT">(<a href="#ref-Sennrich2015NeuralMT" role="doc-biblioref">Sennrich, Haddow, and Birch 2015</a>)</span> and SentencePiece <span class="citation" data-cites="Kudo2018SentencePieceAS">(<a href="#ref-Kudo2018SentencePieceAS" role="doc-biblioref">Kudo and Richardson 2018</a>)</span> were introduced and continue to be used in language models.<a href="#fnref1" class="footnote-back" role="doc-backlink">↩︎</a></p></li>
+</ol>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+      <a href="./05-part-2-break.html" class="pagination-link">
+        <i class="bi bi-arrow-left-short"></i> <span class="nav-page-text">Part 2: Causality in ML Domains</span>
+      </a>          
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./07-computer-vision.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

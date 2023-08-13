@@ -1,0 +1,591 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en"><head>
+
+<meta charset="utf-8">
+<meta name="generator" content="quarto-1.3.433">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+
+<meta name="author" content="Uday Kamath, Kenneth Graham, Mitchell Naylor">
+<meta name="dcterms.date" content="2023-08-12">
+<meta name="description" content="This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.">
+
+<title>Applied Causal Inference</title>
+<style>
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+div.columns{display: flex; gap: min(4vw, 1.5em);}
+div.column{flex: auto; overflow-x: auto;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+ul.task-list li input[type="checkbox"] {
+  width: 0.8em;
+  margin: 0 0.8em 0.2em -1em; /* quarto-specific, see https://github.com/quarto-dev/quarto-cli/issues/4556 */ 
+  vertical-align: middle;
+}
+</style>
+
+
+<script src="site_libs/quarto-nav/quarto-nav.js"></script>
+<script src="site_libs/quarto-nav/headroom.min.js"></script>
+<script src="site_libs/clipboard/clipboard.min.js"></script>
+<script src="site_libs/quarto-search/autocomplete.umd.js"></script>
+<script src="site_libs/quarto-search/fuse.min.js"></script>
+<script src="site_libs/quarto-search/quarto-search.js"></script>
+<meta name="quarto:offset" content="./">
+<link href="./01-intro-to-causality.html" rel="next">
+<script src="site_libs/quarto-html/quarto.js"></script>
+<script src="site_libs/quarto-html/popper.min.js"></script>
+<script src="site_libs/quarto-html/tippy.umd.min.js"></script>
+<script src="site_libs/quarto-html/anchor.min.js"></script>
+<link href="site_libs/quarto-html/tippy.css" rel="stylesheet">
+<link href="site_libs/quarto-html/quarto-syntax-highlighting.css" rel="stylesheet" id="quarto-text-highlighting-styles">
+<script src="site_libs/bootstrap/bootstrap.min.js"></script>
+<link href="site_libs/bootstrap/bootstrap-icons.css" rel="stylesheet">
+<link href="site_libs/bootstrap/bootstrap.min.css" rel="stylesheet" id="quarto-bootstrap" data-mode="light">
+<script id="quarto-search-options" type="application/json">{
+  "location": "sidebar",
+  "copy-button": false,
+  "collapse-after": 3,
+  "panel-placement": "start",
+  "type": "textbox",
+  "limit": 20,
+  "language": {
+    "search-no-results-text": "No results",
+    "search-matching-documents-text": "matching documents",
+    "search-copy-link-title": "Copy link to search",
+    "search-hide-matches-text": "Hide additional matches",
+    "search-more-match-text": "more match in this document",
+    "search-more-matches-text": "more matches in this document",
+    "search-clear-button-title": "Clear",
+    "search-detached-cancel-button-title": "Cancel",
+    "search-submit-button-title": "Submit",
+    "search-label": "Search"
+  }
+}</script>
+
+
+</head>
+
+<body class="nav-sidebar floating">
+
+<div id="quarto-search-results"></div>
+  <header id="quarto-header" class="headroom fixed-top">
+  <nav class="quarto-secondary-nav">
+    <div class="container-fluid d-flex">
+      <button type="button" class="quarto-btn-toggle btn" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">
+        <i class="bi bi-layout-text-sidebar-reverse"></i>
+      </button>
+      <nav class="quarto-page-breadcrumbs" aria-label="breadcrumb"><ol class="breadcrumb"><li class="breadcrumb-item"><a href="./index.html">Preface</a></li></ol></nav>
+      <a class="flex-grow-1" role="button" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass" aria-controls="quarto-sidebar" aria-expanded="false" aria-label="Toggle sidebar navigation" onclick="if (window.quartoToggleHeadroom) { window.quartoToggleHeadroom(); }">      
+      </a>
+      <button type="button" class="btn quarto-search-button" aria-label="" onclick="window.quartoOpenSearch();">
+        <i class="bi bi-search"></i>
+      </button>
+    </div>
+  </nav>
+</header>
+<!-- content -->
+<div id="quarto-content" class="quarto-container page-columns page-rows-contents page-layout-article">
+<!-- sidebar -->
+  <nav id="quarto-sidebar" class="sidebar collapse collapse-horizontal sidebar-navigation floating overflow-auto">
+    <div class="pt-lg-2 mt-2 text-left sidebar-header">
+    <div class="sidebar-title mb-0 py-0">
+      <a href="./">Applied Causal Inference</a> 
+    </div>
+      </div>
+        <div class="mt-2 flex-shrink-0 align-items-center">
+        <div class="sidebar-search">
+        <div id="quarto-search" class="" title="Search"></div>
+        </div>
+        </div>
+    <div class="sidebar-menu-container"> 
+    <ul class="list-unstyled mt-1">
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./index.html" class="sidebar-item-text sidebar-link active">
+ <span class="menu-text">Preface</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./01-intro-to-causality.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./02-potential-outcomes-framework.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">2</span>&nbsp; <span class="chapter-title">Causal Inference: Theory and Basic Concepts</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./03-causal-estimation-process.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">3</span>&nbsp; <span class="chapter-title">Causal Inference: A Practical Approach</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./04-causal-discovery.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">4</span>&nbsp; <span class="chapter-title">Causal Discovery</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./05-part-2-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 2: Causality in ML Domains</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./06-nlp.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">5</span>&nbsp; <span class="chapter-title">NLP</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./07-computer-vision.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">6</span>&nbsp; <span class="chapter-title">Computer Vision</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./08-time-dependent-causal-inference.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">7</span>&nbsp; <span class="chapter-title">Time-dependent Causal Inference</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./09-part-3-break.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">Part 3: Advanced Topics in Causality</span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./10-fairness.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">8</span>&nbsp; <span class="chapter-title">Model Fairness</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./11-reinforcement-learning.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text"><span class="chapter-number">9</span>&nbsp; <span class="chapter-title">Reinforcement Learning</span></span></a>
+  </div>
+</li>
+        <li class="sidebar-item">
+  <div class="sidebar-item-container"> 
+  <a href="./12-references.html" class="sidebar-item-text sidebar-link">
+ <span class="menu-text">References</span></a>
+  </div>
+</li>
+    </ul>
+    </div>
+</nav>
+<div id="quarto-sidebar-glass" data-bs-toggle="collapse" data-bs-target="#quarto-sidebar,#quarto-sidebar-glass"></div>
+<!-- margin-sidebar -->
+    <div id="quarto-margin-sidebar" class="sidebar margin-sidebar">
+        <nav id="TOC" role="doc-toc" class="toc-active">
+    <h2 id="toc-title">Table of contents</h2>
+   
+  <ul>
+  <li><a href="#preface" id="toc-preface" class="nav-link active" data-scroll-target="#preface">Preface</a>
+  <ul class="collapse">
+  <li><a href="#who-this-book-is-for" id="toc-who-this-book-is-for" class="nav-link" data-scroll-target="#who-this-book-is-for">Who This Book is For</a></li>
+  <li><a href="#why-this-book" id="toc-why-this-book" class="nav-link" data-scroll-target="#why-this-book">Why This Book?</a></li>
+  <li><a href="#what-this-book-contains" id="toc-what-this-book-contains" class="nav-link" data-scroll-target="#what-this-book-contains">What This Book Contains</a>
+  <ul class="collapse">
+  <li><a href="#contents-by-chapter" id="toc-contents-by-chapter" class="nav-link" data-scroll-target="#contents-by-chapter">Contents by Chapter</a></li>
+  </ul></li>
+  <li><a href="#about-the-authors" id="toc-about-the-authors" class="nav-link" data-scroll-target="#about-the-authors">About the Authors</a></li>
+  <li><a href="#acknowledgments" id="toc-acknowledgments" class="nav-link" data-scroll-target="#acknowledgments">Acknowledgments</a></li>
+  </ul></li>
+  </ul>
+</nav>
+    </div>
+<!-- main -->
+<main class="content" id="quarto-document-content">
+
+<header id="title-block-header" class="quarto-title-block default">
+<div class="quarto-title">
+<h1 class="title">Applied Causal Inference</h1>
+</div>
+
+<div>
+  <div class="description">
+    <p>This is a book which covers applications of causality, ranging from a practical overview of causal inference to cutting-edge applications of causality in machine learning domains.</p>
+  </div>
+</div>
+
+
+<div class="quarto-title-meta">
+
+    <div>
+    <div class="quarto-title-meta-heading">Author</div>
+    <div class="quarto-title-meta-contents">
+             <p>Uday Kamath, Kenneth Graham, Mitchell Naylor </p>
+          </div>
+  </div>
+    
+    <div>
+    <div class="quarto-title-meta-heading">Published</div>
+    <div class="quarto-title-meta-contents">
+      <p class="date">August 12, 2023</p>
+    </div>
+  </div>
+  
+    
+  </div>
+  
+
+</header>
+
+
+<section id="preface" class="level1 unnumbered">
+<h1 class="unnumbered">Preface</h1><p><img src="img/Book_Cover.png" title="Applied Causal Inference" class="quarto-cover-image img-fluid"></p>
+<p>Welcome to the Applied Causal Inference book! We are excited you’re here.</p>
+<p>We intend to offer the web version of this book entirely free of charge. However, there are other ways to purchase other versions of the book or otherwise support the authors:</p>
+<ul>
+<li>E-book versions are available <a href="https://leanpub.com/appliedcausalinference">on LeanPub</a>
+<ul>
+<li>Additionally, if you found the web version helpful and would like to support the authors, you can use the LeanPub price slider to do so</li>
+</ul></li>
+<li>Hard copies are available on Amazon (<strong>add link</strong>)</li>
+</ul>
+<section id="who-this-book-is-for" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="who-this-book-is-for">Who This Book is For</h2>
+<p>This book is designed to help anyone along the spectrum of experience with causal inference – nearly everyone from absolute beginners to experienced users of causality will be able to learn something about the world of causal inference and how it can be applied. If you use data to answer questions, then it’s likely that you can benefit from the techniques described in this book. Whether you’re in industry or academia, the causal inference toolkit will be valuable to have in your repertoire.</p>
+<p>We wrote this book to make it easy to leverage these tools within the standard data science workflow. We assume no prior exposure to causal methods, but there are a couple of small prerequisites to help you get the most out of this book:</p>
+<ul>
+<li>Understanding of standard statistical and machine learning methods: correlation, linear regression, generalized linear models, tree-based models</li>
+<li>Familiarity with Python for case studies, illustrations, and implementations; experience using the standard PyData stack (Pandas, NumPy) will be useful</li>
+</ul>
+<p>This book builds from these basic foundations to provide a practical understanding of how causal inference works and how to use it in applied settings.</p>
+</section>
+<section id="why-this-book" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="why-this-book">Why This Book?</h2>
+<p>Recent advancements in causal inference have made it possible to gain profound insight about our world and the complex systems which operate in it. While industry professionals and academics in every domain ask questions of their data, traditional statistical methods often fall short of providing conclusive answers. This is where causality can help.</p>
+<p>If you’re here, it’s likely that you are interested in learning about causal inference. You may have read some of the existing literature on causal inference and found it difficult to apply to the problems you face at work or in the lab. We’ve been there, and we wrote this book to serve as a resource bridging the gap between the theory and application of causal techniques. We are not aware of another book which goes from the foundations of causality to hands-on examples using common data science tooling. Specifically, this book contains:</p>
+<ul>
+<li>A comprehensive resource that builds up from elementary principles of causality to the more advanced techniques in causal inference</li>
+<li>An in-depth guide and explanation of causal estimation procedures and methods, coupled with an explanation of the process of causal discovery, illustrating how to discern the underlying causal structure from observational data</li>
+<li>An overview of how causal inference can be applied in various domains such as natural language processing, computer vision, and time series analysis</li>
+<li>A compendium filled with successful causal models, along with their fundamental mathematical theory, explained in a manner that’s easy to comprehend</li>
+<li>A focus on important areas like fairness, explainability, and reinforcement learning within the scope of causality</li>
+<li>A practical approach that employs Python libraries like <a href="https://github.com/py-why/dowhy">DoWhy</a> and <a href="https://github.com/uber/causalml">CausalML</a>, demonstrating their use in real-world applications; the Python code is made available in Google Colab notebooks</li>
+</ul>
+<p>We designed this book to be a resource for any researcher, analyst, or data scientist to go from basic understanding of causal inference to hands-on, applied usage. Simply put, we wrote this book because we wished a similar resource existed when we first began learning about causal inference. Causality is an exciting domain, and we hope you find this book helpful in your journey to incorporate causal tools into your day-to-day work.</p>
+</section>
+<section id="what-this-book-contains" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="what-this-book-contains">What This Book Contains</h2>
+<p>This book is divided into chapters which build upon each other within 3 broad parts. The content of the chapters include necessary theoretical foundations, details for application and, where possible, practical case studies to illustrate the end-to-end process. We recommend readers begin with Part 1, which is the ground-up introduction to applied causal inference. Parts 2 and 3 build upon the information introduced in Part 1, and can be explored according to the reader’s preference.</p>
+<p>Throughout the book, we use a green callout like the one below to denote, rephrase, or generally call attention to particularly important concepts.</p>
+<div class="callout callout-style-default callout-tip callout-titled">
+<div class="callout-header d-flex align-content-center">
+<div class="callout-icon-container">
+<i class="callout-icon"></i>
+</div>
+<div class="callout-title-container flex-fill">
+Tip
+</div>
+</div>
+<div class="callout-body-container callout-body">
+<p>Blocks like this one highlight especially helpful or foundational concepts referenced throughout the book and in causal inference literature more broadly!</p>
+</div>
+</div>
+<section id="contents-by-chapter" class="level3 unnumbered">
+<h3 class="unnumbered anchored" data-anchor-id="contents-by-chapter">Contents by Chapter</h3>
+<p>Part 1 begins by motivating why causality is a promising resource and laying the foundation of the necessary concepts from causal inference, culminating in an understanding of the potential outcomes framework. After this, we explore the full causal estimation process, providing the tools necessary to go from an initial question and a dataset to the creation and evaluation of causal estimates. We then provide an overview of causal discovery, which allows us to learn causal structures from observational data. The contents of Part 1 are as follows:</p>
+<ul>
+<li><p><strong>Chapter 1</strong> first seeks to motivate the reader by answering the question “why should I use causality?” It does this by providing illustrative examples of Simpson’s paradox and spurious correlation, and introducing how causal methods address these problems. The chapter then describes the paradigm shift between the traditional statistical or machine learning workflow to that of a causal inference setting. The chapter closes by giving a brief history of causal inference – from Judea Pearl’s early work to modern applications in industry – and providing a list of existing resources for those wishing to learn more.</p></li>
+<li><p><strong>Chapter 2</strong> introduces the potential outcome framework to explain concepts and theoretical foundations of causal effects. By exploring the key ideas and theories, this chapter aims to deepen readers’ understanding of cause-and-effect relationships. A comprehensive case study is presented, utilizing a well-known causal study conducted with an educational television program. This practical example aims to give readers a firsthand understanding of the discussed concepts. The chapter concludes by addressing various challenges from the Gelman and Hill book, enabling readers to develop the necessary skills to contemplate, model, and apply the theory discussed throughout the chapter.</p></li>
+<li><p><strong>Chapter 3</strong> delves further into the world of causal modeling, building upon the foundational knowledge established with the potential outcome framework and fundamental causal concepts. This chapter explores causal graphs as a practical approach for inferring causal relationships. We introduce causal graphs, discuss the high-level process of causal inference, examine various methods and techniques, and present a comprehensive case study with the Lalonde dataset for comparative analysis.</p></li>
+<li><p><strong>Chapter 4</strong> probes into the challenges of constructing causal models in practice and highlights the emergence of causal discovery techniques based on observational data as an alternative. It introduces a range of techniques developed for this purpose and presents an array of causal discovery algorithms, explaining their relative strengths and limitations. The chapter concludes with a real-world case study, showcasing the practical utility of these algorithms in uncovering causal relationships.</p></li>
+</ul>
+<p>We shift gears in Part 2 to discuss how causal inference is currently being used within other sub-domains of machine learning, including computer vision, natural language processing, and in time-dependent settings. These are the chapters in Part 2:</p>
+<ul>
+<li><strong>Chapter 5</strong> focuses on how to apply methods of causal inference natural language processing, specifically for data that includes text. We consider how to compute causal effect sizes when the treatment and/or outcome is text, with or without the presence of confounding text. We include a case study analyzing film revenue data.</li>
+<li><strong>Chapter 6</strong> details the intersection of causality and computer vision. It introduces the ever-present issues of spurious correlation and confounding in image data – problems well-suited for applications of causal methods. The chapter showcases research efforts to apply causal inference techniques in specific areas of computer vision, including image classification and visual question-answering. The chapter concludes with a case study of causal methods designed to improve robustness, using an adversarial transfer dataset.</li>
+<li><strong>Chapter 7</strong> explores a recent method for time-dependent causal inference that is able to not only determine causation, but the temporal delay between the cause and effect variables. At present, this chapter does not describe time-dependent causal inference in the presence of confounding associations. We include a case study using an open-source bike sharing dataset.</li>
+</ul>
+<p>In Part 3, we discuss some advanced topics within the field of causality:</p>
+<ul>
+<li><strong>Chapter 8</strong> explores a special case of causal inference: assessing model fairness. The chapter provides a high-level introduction to the issues of algorithmic bias, describes existing non-causal approaches of measuring unfair bias, and presents an argument in favor of using causal model fairness techniques. It details causal approaches and additional considerations for the confounders that may exist in fairness settings. The chapter closes with a case study comparing causal and non-causal methods on the infamous COMPAS dataset.</li>
+<li><strong>Chapter 9</strong> contains an overview of cutting-edge applications of causality in reinforcement learning, including techniques to improve world models in model-based RL, merge online and offline data, improve sample efficiency, and explain agent incentives. This chapter closes with a discussion of the challenges preventing large-scale adoption of causal RL technique.</li>
+</ul>
+</section>
+</section>
+<section id="about-the-authors" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="about-the-authors">About the Authors</h2>
+<p><strong>Uday Kamath</strong> has over two decades of experience developing analytical products and has expertise in statistics, optimization, machine learning, deep learning, natural language processing, and evolutionary computing. With a Ph.D.&nbsp;in scalable machine learning, Uday has made significant contributions that have extended across numerous journals, conferences, books, and patents. Notable works by Uday include <em>Explainable Artificial Intelligence: An Introduction to Interpretable Machine Learning</em>, <em>Transformers for Machine Learning: A Deep Dive</em>, <em>Deep Learning for NLP and Speech Recognition</em>, <em>Mastering Java Machine Learning</em>, and <em>Machine Learning: End-to-End Guide for Java Developers</em>. He has held significant leadership positions throughout his career, including Chief Analytics Officer for Digital Reasoning, Advisor for Falkonry, and Chief Data Scientist for BAE Systems Applied Intelligence. Currently serving as the Chief Analytics Officer for Smarsh, his role encompasses spearheading data science and research in AI.</p>
+<p><strong>Kenneth Graham</strong> has two decades solving quantitative problems in multiple domains, including Monte Carlo simulation, NLP, anomaly detection, cyber security, and behavioral profiling. For the past ten years, he has focused on building scalable solutions in NLP for government and industry, including entity coreference resolution, text classification, active learning, automatic speech recognition, and temporal normalization. He currently works at AppFolio as a senior machine learning engineer and is a co-author of <em>Transformers for Machine Learning: A Deep Dive</em>. Dr.&nbsp;Graham has five patents for his work in natural language processing, seven research publications, and a Ph.D.&nbsp;in condensed matter physics.</p>
+<p><strong>Mitchell Naylor</strong> is an applied machine learning professional with seven years of experience, including roles within healthcare, technology, and insurance. He currently works as a lead data scientist at Azra AI, where he works primarily within clinical natural language processing, with applications in deep learning, transfer learning, robustness, fairness, and explainability. He has two research publications and contributions to two textbooks, and he holds a MS in Analytics from Georgia Institute of Technology.</p>
+</section>
+<section id="acknowledgments" class="level2 unnumbered">
+<h2 class="unnumbered anchored" data-anchor-id="acknowledgments">Acknowledgments</h2>
+<p>The authors especially want to thank Grant Burroughs for producing the cover design. Additionally, the authors extend their heartfelt appreciation to the reviewers (in alphabetical order): Zack Burch, Krishna Choppella, Dr.&nbsp;John Liu, Dr.&nbsp;Joe Porter, Dr.&nbsp;Sangeeta Shukla, and Vedant Vajre. Their valuable feedback and insightful suggestions have played an instrumental role in enhancing the quality of this work.</p>
+<blockquote class="blockquote">
+<p>I would like to express my heartfelt gratitude to my wife, Pratibha, our nanny, Evelyn, our children, Brandy and Aaroh, as well as our friends and family, for their unwavering support and encouragement throughout this endeavor.</p>
+<p>– <cite>Uday Kamath</cite></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>I would like to express my deepest gratitude to my wife, Alyson, for her understanding and patient support throughout the entire process of writing this book. I also want to thank my friends and family for their enthusiastic support. Lastly, I want to thank my colleagues and co-authors for valuable discussions and inspiration.</p>
+<p>– <cite>Kenneth Graham</cite></p>
+</blockquote>
+<blockquote class="blockquote">
+<p>I am incredibly grateful to all of my family, friends, and colleagues for their gracious support during this process. I especially want to thank my wife, Abby, for her constant encouragement and love – this would not have been possible without you.</p>
+<p>– <cite>Mitchell Naylor</cite></p>
+</blockquote>
+
+
+</section>
+</section>
+
+</main> <!-- /main -->
+<script id="quarto-html-after-body" type="application/javascript">
+window.document.addEventListener("DOMContentLoaded", function (event) {
+  const toggleBodyColorMode = (bsSheetEl) => {
+    const mode = bsSheetEl.getAttribute("data-mode");
+    const bodyEl = window.document.querySelector("body");
+    if (mode === "dark") {
+      bodyEl.classList.add("quarto-dark");
+      bodyEl.classList.remove("quarto-light");
+    } else {
+      bodyEl.classList.add("quarto-light");
+      bodyEl.classList.remove("quarto-dark");
+    }
+  }
+  const toggleBodyColorPrimary = () => {
+    const bsSheetEl = window.document.querySelector("link#quarto-bootstrap");
+    if (bsSheetEl) {
+      toggleBodyColorMode(bsSheetEl);
+    }
+  }
+  toggleBodyColorPrimary();  
+  const icon = "";
+  const anchorJS = new window.AnchorJS();
+  anchorJS.options = {
+    placement: 'right',
+    icon: icon
+  };
+  anchorJS.add('.anchored');
+  const isCodeAnnotation = (el) => {
+    for (const clz of el.classList) {
+      if (clz.startsWith('code-annotation-')) {                     
+        return true;
+      }
+    }
+    return false;
+  }
+  const clipboard = new window.ClipboardJS('.code-copy-button', {
+    text: function(trigger) {
+      const codeEl = trigger.previousElementSibling.cloneNode(true);
+      for (const childEl of codeEl.children) {
+        if (isCodeAnnotation(childEl)) {
+          childEl.remove();
+        }
+      }
+      return codeEl.innerText;
+    }
+  });
+  clipboard.on('success', function(e) {
+    // button target
+    const button = e.trigger;
+    // don't keep focus
+    button.blur();
+    // flash "checked"
+    button.classList.add('code-copy-button-checked');
+    var currentTitle = button.getAttribute("title");
+    button.setAttribute("title", "Copied!");
+    let tooltip;
+    if (window.bootstrap) {
+      button.setAttribute("data-bs-toggle", "tooltip");
+      button.setAttribute("data-bs-placement", "left");
+      button.setAttribute("data-bs-title", "Copied!");
+      tooltip = new bootstrap.Tooltip(button, 
+        { trigger: "manual", 
+          customClass: "code-copy-button-tooltip",
+          offset: [0, -8]});
+      tooltip.show();    
+    }
+    setTimeout(function() {
+      if (tooltip) {
+        tooltip.hide();
+        button.removeAttribute("data-bs-title");
+        button.removeAttribute("data-bs-toggle");
+        button.removeAttribute("data-bs-placement");
+      }
+      button.setAttribute("title", currentTitle);
+      button.classList.remove('code-copy-button-checked');
+    }, 1000);
+    // clear code selection
+    e.clearSelection();
+  });
+  function tippyHover(el, contentFn) {
+    const config = {
+      allowHTML: true,
+      content: contentFn,
+      maxWidth: 500,
+      delay: 100,
+      arrow: false,
+      appendTo: function(el) {
+          return el.parentElement;
+      },
+      interactive: true,
+      interactiveBorder: 10,
+      theme: 'quarto',
+      placement: 'bottom-start'
+    };
+    window.tippy(el, config); 
+  }
+  const noterefs = window.document.querySelectorAll('a[role="doc-noteref"]');
+  for (var i=0; i<noterefs.length; i++) {
+    const ref = noterefs[i];
+    tippyHover(ref, function() {
+      // use id or data attribute instead here
+      let href = ref.getAttribute('data-footnote-href') || ref.getAttribute('href');
+      try { href = new URL(href).hash; } catch {}
+      const id = href.replace(/^#\/?/, "");
+      const note = window.document.getElementById(id);
+      return note.innerHTML;
+    });
+  }
+      let selectedAnnoteEl;
+      const selectorForAnnotation = ( cell, annotation) => {
+        let cellAttr = 'data-code-cell="' + cell + '"';
+        let lineAttr = 'data-code-annotation="' +  annotation + '"';
+        const selector = 'span[' + cellAttr + '][' + lineAttr + ']';
+        return selector;
+      }
+      const selectCodeLines = (annoteEl) => {
+        const doc = window.document;
+        const targetCell = annoteEl.getAttribute("data-target-cell");
+        const targetAnnotation = annoteEl.getAttribute("data-target-annotation");
+        const annoteSpan = window.document.querySelector(selectorForAnnotation(targetCell, targetAnnotation));
+        const lines = annoteSpan.getAttribute("data-code-lines").split(",");
+        const lineIds = lines.map((line) => {
+          return targetCell + "-" + line;
+        })
+        let top = null;
+        let height = null;
+        let parent = null;
+        if (lineIds.length > 0) {
+            //compute the position of the single el (top and bottom and make a div)
+            const el = window.document.getElementById(lineIds[0]);
+            top = el.offsetTop;
+            height = el.offsetHeight;
+            parent = el.parentElement.parentElement;
+          if (lineIds.length > 1) {
+            const lastEl = window.document.getElementById(lineIds[lineIds.length - 1]);
+            const bottom = lastEl.offsetTop + lastEl.offsetHeight;
+            height = bottom - top;
+          }
+          if (top !== null && height !== null && parent !== null) {
+            // cook up a div (if necessary) and position it 
+            let div = window.document.getElementById("code-annotation-line-highlight");
+            if (div === null) {
+              div = window.document.createElement("div");
+              div.setAttribute("id", "code-annotation-line-highlight");
+              div.style.position = 'absolute';
+              parent.appendChild(div);
+            }
+            div.style.top = top - 2 + "px";
+            div.style.height = height + 4 + "px";
+            let gutterDiv = window.document.getElementById("code-annotation-line-highlight-gutter");
+            if (gutterDiv === null) {
+              gutterDiv = window.document.createElement("div");
+              gutterDiv.setAttribute("id", "code-annotation-line-highlight-gutter");
+              gutterDiv.style.position = 'absolute';
+              const codeCell = window.document.getElementById(targetCell);
+              const gutter = codeCell.querySelector('.code-annotation-gutter');
+              gutter.appendChild(gutterDiv);
+            }
+            gutterDiv.style.top = top - 2 + "px";
+            gutterDiv.style.height = height + 4 + "px";
+          }
+          selectedAnnoteEl = annoteEl;
+        }
+      };
+      const unselectCodeLines = () => {
+        const elementsIds = ["code-annotation-line-highlight", "code-annotation-line-highlight-gutter"];
+        elementsIds.forEach((elId) => {
+          const div = window.document.getElementById(elId);
+          if (div) {
+            div.remove();
+          }
+        });
+        selectedAnnoteEl = undefined;
+      };
+      // Attach click handler to the DT
+      const annoteDls = window.document.querySelectorAll('dt[data-target-cell]');
+      for (const annoteDlNode of annoteDls) {
+        annoteDlNode.addEventListener('click', (event) => {
+          const clickedEl = event.target;
+          if (clickedEl !== selectedAnnoteEl) {
+            unselectCodeLines();
+            const activeEl = window.document.querySelector('dt[data-target-cell].code-annotation-active');
+            if (activeEl) {
+              activeEl.classList.remove('code-annotation-active');
+            }
+            selectCodeLines(clickedEl);
+            clickedEl.classList.add('code-annotation-active');
+          } else {
+            // Unselect the line
+            unselectCodeLines();
+            clickedEl.classList.remove('code-annotation-active');
+          }
+        });
+      }
+  const findCites = (el) => {
+    const parentEl = el.parentElement;
+    if (parentEl) {
+      const cites = parentEl.dataset.cites;
+      if (cites) {
+        return {
+          el,
+          cites: cites.split(' ')
+        };
+      } else {
+        return findCites(el.parentElement)
+      }
+    } else {
+      return undefined;
+    }
+  };
+  var bibliorefs = window.document.querySelectorAll('a[role="doc-biblioref"]');
+  for (var i=0; i<bibliorefs.length; i++) {
+    const ref = bibliorefs[i];
+    const citeInfo = findCites(ref);
+    if (citeInfo) {
+      tippyHover(citeInfo.el, function() {
+        var popup = window.document.createElement('div');
+        citeInfo.cites.forEach(function(cite) {
+          var citeDiv = window.document.createElement('div');
+          citeDiv.classList.add('hanging-indent');
+          citeDiv.classList.add('csl-entry');
+          var biblioDiv = window.document.getElementById('ref-' + cite);
+          if (biblioDiv) {
+            citeDiv.innerHTML = biblioDiv.innerHTML;
+          }
+          popup.appendChild(citeDiv);
+        });
+        return popup.innerHTML;
+      });
+    }
+  }
+});
+</script>
+<nav class="page-navigation">
+  <div class="nav-page nav-page-previous">
+  </div>
+  <div class="nav-page nav-page-next">
+      <a href="./01-intro-to-causality.html" class="pagination-link">
+        <span class="nav-page-text"><span class="chapter-number">1</span>&nbsp; <span class="chapter-title">Introduction to Causality</span></span> <i class="bi bi-arrow-right-short"></i>
+      </a>
+  </div>
+</nav>
+</div> <!-- /content -->
+
+
+
+</body></html>

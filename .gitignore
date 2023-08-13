@@ -5,5 +5,4 @@
 .Ruserdata
 
 # quarto
-quarto/_book
 quarto/quarto.Rproj
