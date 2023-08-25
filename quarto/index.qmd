@@ -66,6 +66,24 @@ In Part 3, we discuss some advanced topics within the field of causality:
 * **Chapter 8** explores a special case of causal inference: assessing model fairness. The chapter provides a high-level introduction to the issues of algorithmic bias, describes existing non-causal approaches of measuring unfair bias, and presents an argument in favor of using causal model fairness techniques. It details causal approaches and additional considerations for the confounders that may exist in fairness settings. The chapter closes with a case study comparing causal and non-causal methods on the infamous COMPAS dataset.
 * **Chapter 9** contains an overview of cutting-edge applications of causality in reinforcement learning, including techniques to improve world models in model-based RL, merge online and offline data, improve sample efficiency, and explain agent incentives. This chapter closes with a discussion of the challenges preventing large-scale adoption of causal RL technique.
 
+\newpage
+
+## Reviews {-}
+
+>This is a fabulous book that lucidly explains how we can deal with digital data and draw causal inferences in any domain. A rare find, combining theory with hands-on applications for beginners and experienced practitioners.
+>
+>-- <cite>Raj Pai, Senior Research Fellow, Aerospace</cite>
+
+>This comprehensive book unlocks the potential of causal machine learning, providing a roadmap to comprehend and implement causal inference techniques. Data scientists and researchers seeking to construct models that transcend mere correlations will find this book an invaluable resource.
+>
+> -- <cite>John Chih Liu, PhD., Researcher and Founder, Intelluron<cite>
+
+>I'm very impressed with this treatment of causal machine learning. Causality is a complex and broad subject, but the authors handle the topic elegantly. The book is clear and easy to follow without sacrificing completeness or depth. This is a great place to start for beginners, with plenty for the more experienced. Highly recommended!
+
+>-- <cite>Joseph Porter, PhD., Research Engineer and Machine Learning Lead, Falkonry, Inc.<cite>
+
+\newpage
+
 ## About the Authors {-}
 
 **Uday Kamath** has over two decades of experience developing analytical products and has expertise in statistics, optimization, machine learning, deep learning, natural language processing, and evolutionary computing. With a Ph.D. in scalable machine learning, Uday has made significant contributions that have extended across numerous journals, conferences, books, and patents. Notable works by Uday include _Explainable Artificial Intelligence: An Introduction to Interpretable Machine Learning_, _Transformers for Machine Learning: A Deep Dive_, _Deep Learning for NLP and Speech Recognition_, _Mastering Java Machine Learning_, and _Machine Learning: End-to-End Guide for Java Developers_. He has held significant leadership positions throughout his career, including Chief Analytics Officer for Digital Reasoning, Advisor for Falkonry, and Chief Data Scientist for BAE Systems Applied Intelligence. Currently serving as the Chief Analytics Officer for Smarsh, his role encompasses spearheading data science and research in AI.
