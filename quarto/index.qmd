@@ -6,7 +6,7 @@ We intend to offer the web version of this book entirely free of charge. However
 
 * E-book versions are available [on LeanPub](https://leanpub.com/appliedcausalinference)
   * Additionally, if you found the web version helpful and would like to support the authors, you can use the LeanPub price slider to do so
-* Hard copies are available on Amazon (**add link**)
+* Hard copies will be available on Amazon later in 2023
 
 ## Who This Book is For {-}
 
