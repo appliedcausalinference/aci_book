@@ -1,28 +1,322 @@
 # Time-dependent Causal Inference
 
-The methods discussed in this book thus far don’t explicitly include the window of time between events with a causal relationship when computing things like average treatment effects. That makes it difficult to apply such methods to time-series data, where the time it takes for a cause to produce its effect can be important and the time interval between cause and effect can impact the probability of the effect’s occurrence. This chapter focuses on methods that accounts for these temporal relationships and also describes a method of automated reasoning that represents causal relationships as propositions of formulas in probabilistic temporal logic.
+Studying temporal data, focusing on causal inference, is a highly interdisciplinary endeavor that draws from statistics, machine learning, econometrics, and domain-specific fields like finance, medicine, and the social sciences. Many methods have been developed for this purpose. This chapter can help you get started.
 
-## Probabilistic Computation Tree Logic {#sec-PCTL}
+<!-- Consider discussing non-causal methods like seasonal decomposition, ARIMA/SARIMA, and Holt-Winters before moving onto the causal methods. -->
 
-### Temporal Logic
+We'll delve into time-series data and explore the broader realm of temporal data, such as that found in biological networks. It's essential to address both forms of time-dependence because there are temporal processes of interest where the process cannot be decomposed into a sequence of discrete observations.
+
+## Time-series Data {#sec-timeseries}
+
+A time-series is a collection of observations obtained sequentially over time. It's characterized by its temporal order, meaning the order in which the data is collected matters. In other words, a time series $\mathbf{X}$ is a sequence of data points $(\mathbf{x}_1, \mathbf{x}_2, \ldots, \mathbf{x}_T)$, where the time indices $t_1, t_2, \ldots, T$ are such that $t_1 < t_2 < \ldots < T$, and $\mathbf{x}_t=(x_{t}^1, x_{t}^2, \dots, x_{t}^d)$ is a $d$-dimensional feature vector of observations at time $t$. The single-variable case can be recovered by setting the number of features, $d$, to $1$.
+
+In many cases, time series data points are collected at uniformly spaced intervals (e.g., hourly, daily, or monthly). However, this is not a strict requirement; some time series data may be irregularly spaced. Also, the value of a time-series at a given time point might depend on previous values in the series. Time series data can often be decomposed into components that describe how the data varies. Two such components are trends and seasonality, for example. A trend is the direction in which the data is moving over a long period of time. Seasonality is a regular fluctuation that repeats over a fixed period (e.g., hourly).
+
+Some common examples of time series include stock prices, daily temperature measurements, hourly counts of unique visitors to a website. In each of these examples, observations are made sequentially over time, and the order of the observations affects any analysis or modeling that might be done. So, how is causality typically defined for time-series data?
+
+### Causality in Time-Series
+
+The debate surrounding the nature of causality, its connection to time, and its definition concerning time-series or other time-dependent data has a rich history. [@hoover2001causality, @kleinberg_2012, @Eichler2013CausalIW] provide comprehensive insights into both the philosophical and empirical facets of this conversation. Drawing from these resources, we highlight the following core concepts:
+
+- **Temporal precendence**: A cause precedes effect in time
+- **Physical influence**: Changes in the cause lead to changes in the effect
+- **Probability raising**: A cause increases the likelihood of an effect's occurrence
+
+## Granger Causality {#sec-granger}
+
+Granger causality is a statistical hypothesis test used to test if one time series can predict another time series [@Granger1969]. This technique says that $X$ is a "Granger-cause" of $Y$ if past values of $X$ reduce the variance in the prediction of $Y$ [@Granger1980, @Shojaie2021GrangerCA], that is if
+
+$$Var\left[Y_t - P(Y_t \vert \mathit{H}_{< t})\right] < Var\left[Y_t - P(Y_t \vert \mathit{H}_{< t}\setminus X_{< t})\right],$$
+
+where $\mathit{H}_{< t}$ is the history of all relevant variables before time $t$ and $\mathit{H}_{< t}\setminus X_{< t}$ is the history before time $t$, minus all values of $X$ before time $t$ [@Shojaie2021GrangerCA]. In practice, $\mathit{H}_{< t}$ includes the values of all known and relevant variables in the problem up to time $t-1$.
+
+While Granger causality assumes that the ability to predict correctly means that there must be an underlying causal effect [@Shojaie2021GrangerCA], [@hoover2001causality] asserts that it does not establish the existence of causal relationships. The Granger causality test can only tell us that by including past values of $X$ in the predictor for $Y$, we obtain a better prediction for $Y$ than we would without $X$. It does not place any conditions on how well $X$ must predict $Y$ compared to other possible predictors for $Y$ in order to be a Granger-cause of $Y$ [@kleinberg_2012].  Despite this, Granger causes can be considered *prima facie*, or potential, causes [@Eichler2013CausalIW] that can be investigated further. As such, Granger causality can be considered as a causal discovery method [@Gong2023CausalDF].
+
+In practice, the Granger test is most commonly performed by fitting the data using a vector autoregressive model (VAR) [@Kilian2006NEWIT] of the form
+
+$$\mathbf{A}^0 \mathbf{x}_t = \sum_{k=1}^m \mathbf{A}^k \mathbf{x}_{t-k} + \mathbf{e}_t,$$
+
+where each $\mathbf{A}^k$ is a $d$-dimensional square matrix describing the relationship between the $d$ features  at lags $k=0, 1, \ldots, m$, where the lag is just the number of time units the data is shifted by. For example, the $3rd$ term in the sum describes the contribution that data from time $t-3$ makes to the data at time $t$. $\mathbf{e}_t$ is a $d$-dimensional error term [@Shojaie2021GrangerCA].
+
+### Assumptions required to use a VAR model {#sec-granger-assumptions}
+
+In order to use a VAR model of the form shown above, several assumptions need to be made about the data [@Shojaie2021GrangerCA]:
+
+- **Continuous values**: The time-series data cannot have discrete or categorical features, only real numbers. Many real-world datasets, especially those of interest in machine learning (including one used as a case-study in this chapter), have categorical and discrete features.
+- **Linear data**: Granger causality assumes linear relationships. If the relationship between the time series is not approximatelylinear, then the results of the standard Granger test might not be valid. There are extensions of the Granger causality test to deal with nonlinear relationships, but the standard test assumes linearity.
+- **Consistent sampling rate**: sampling frequency must be constant and match the real-world time lag of any underlying causal process we hope to detect. If the sampling rate is mismatched with the time-scale of any underlying causal relationship, the Granger causality test is likely to produce misleading results.
+- **Known lags**: Granger causality tests for whether past values of one time series ($X$) predicts future values of another series ($Y$) and depends on the number of past observations (the lag) of $X$ that are used to predict the future values of $Y$. Poorly chosen lags can lead to inaccurate or misleading results.
+- **Stationarity**: A stationary time-series' statistical properties are time-invariant. The underlying process need not be static in time. For example, it can oscillate, have trends, or cyclical patterns; they just have to be consistent over time.
+- **No measurement errors or unknown variables**: Measurement errors and unknown variables can lead to endogeneity in the model, which is when a variable that affects the dependent variable and is correlated with the independent variable(s) is omitted from the model (e.g. an unobserved confounder).
+
+If any of the above assumptions do not hold for a time-series, then using a VAR model in a Granger causality test will not be able to identify Granger causality [@Shojaie2021GrangerCA]. However, if the assumptions do hold, then Granger causality can be tested for using the following procedure:
+
+1. **Null Hypothesis**: The null hypothesis for a Granger causality test is that past values of $X$ do not reduce the variance in predicting $Y$.
+2. **Model Fitting to test null hypothesis**: Two models are fitted
+    - One using only the past values of $Y$ to predict future values of $Y$
+    - The other uses the past values of both $Y$ and $X$ to predict future values of $Y$.
+3. **Statistical Test**: An F-test is usually conducted to compare the two models. If the model trained on past values of both $Y$ and $X$ is better at predicting $Y$ than the model trained with just past $Y$ values, then we reject the null hypothesis and conclude that $X$ Granger-causes $Y$.
+
+### An example calculation {#sec-granger-example}
+
+We will create a synthetic bike-sharing dataset to use for demonstrating calculations in this chapter. The dataset will use a temperature feature and the number of bike rentals will be the target variable. We set a random seed so that the dataset that is generated will be fixed. The dataset will be 1000 points with a mean temperature of 70 degrees (with a std deviation of 10).
+
+We then perform a Granger causality test using the [**statsmodels**](https://www.statsmodels.org/stable/index.html) Python library.
+
+
+```python
+import numpy as np
+import pandas as pd
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+# Number of data points
+n = 1000
+temperature = np.random.normal(70, 10, n)
+error = np.random.normal(0, 5, n)  # Some random error
+
+# Assume that bike rentals depend on temperature with a lag
+lagged_temperature = np.roll(temperature, shift=1)
+lagged_temperature[0] = temperature[0]  # Handle the first value
+
+bike_rentals = 10 + 0.5*temperature + 0.3*lagged_temperature + error
+
+df = pd.DataFrame({
+    'Temperature': temperature,
+    'Bike_Rentals': bike_rentals
+})
+```
+
+The Temperature column represents daily temperatures, and the Bike Rentals column represents the number of bike rentals for the day. Let's plot the data.
+
+```python
+import matplotlib.pyplot as plt
+
+# Plotting the dataset
+plt.figure(figsize=(14, 6))
+
+plt.plot(df['Temperature'], label='Temperature', color='blue', alpha=0.7)
+plt.plot(df['Bike_Rentals'], label='Bike Rentals', color='red', alpha=0.7)
+plt.title('Temperature and Bike Rentals over Time')
+plt.xlabel('Time')
+plt.ylabel('Value')
+plt.legend()
+
+plt.tight_layout()
+plt.grid(True)
+plt.show()
+```
+
+```{r fig-granger, fig.cap="Temperature (blue) and Bike Rentals (red) over Time", fig.align='center', echo=FALSE, out.width='75%'}
+knitr::include_graphics("img/granger.png")
+```
+
+@fig-granger visualizes the relationship between Temperature (in blue) and Bike Rentals (in red) over time. You can observe the relationship and fluctuations between the two variables. Given the synthetic data generation process, the bike rentals generally trend alongside the temperature, with some noise added to the rentals.
+
+Ordinarily, before running a Granger causality test we should check if, for the dataset being studied, the assumptions in @sec-granger-assumptions are true. Since we have constructed a synthetic dataset, we know that it meets all the criteria and the stationarity test can be omitted. When you do need to test for stationarity, two commonly used statistical tests are the Augmented Dickey-Fuller (ADF) test [@said1984testing] and the Kwiatkowski–Phillips–Schmidt–Shin (KPSS) test [@kwiatkowski1992testing].
+
+To perform the Granger causality test, we need to ensure the dataset is in a format suitable for time series analysis with lags.
+
+```python
+import statsmodels.api as sm
+from statsmodels.tsa.stattools import grangercausalitytests
+
+# Define data in the format for Granger test
+data_for_test = df[['Bike_Rentals', 'Temperature']]
+
+max_lag = 5
+gc_test = grangercausalitytests(data_for_test, max_lag, verbose=True)
+```
+
+The output is:
+```
+Granger Causality
+number of lags (no zero) 1
+ssr based F test:         F=123.8638, p=0.0000  , df_denom=996, df_num=1
+ssr based chi2 test:   chi2=124.2369, p=0.0000  , df=1
+likelihood ratio test: chi2=117.0979, p=0.0000  , df=1
+parameter F test:         F=123.8638, p=0.0000  , df_denom=996, df_num=1
+
+Granger Causality
+number of lags (no zero) 2
+ssr based F test:         F=60.4864 , p=0.0000  , df_denom=993, df_num=2
+ssr based chi2 test:   chi2=121.5820, p=0.0000  , df=2
+likelihood ratio test: chi2=114.7275, p=0.0000  , df=2
+parameter F test:         F=60.4864 , p=0.0000  , df_denom=993, df_num=2
+
+Granger Causality
+number of lags (no zero) 3
+ssr based F test:         F=39.8454 , p=0.0000  , df_denom=990, df_num=3
+ssr based chi2 test:   chi2=120.3814, p=0.0000  , df=3
+likelihood ratio test: chi2=113.6504, p=0.0000  , df=3
+parameter F test:         F=39.8454 , p=0.0000  , df_denom=990, df_num=3
+
+Granger Causality
+number of lags (no zero) 4
+ssr based F test:         F=29.5971 , p=0.0000  , df_denom=987, df_num=4
+ssr based chi2 test:   chi2=119.4681, p=0.0000  , df=4
+likelihood ratio test: chi2=112.8290, p=0.0000  , df=4
+parameter F test:         F=29.5971 , p=0.0000  , df_denom=987, df_num=4
+
+Granger Causality
+number of lags (no zero) 5
+ssr based F test:         F=24.6424 , p=0.0000  , df_denom=984, df_num=5
+ssr based chi2 test:   chi2=124.5895, p=0.0000  , df=5
+likelihood ratio test: chi2=117.3848, p=0.0000  , df=5
+parameter F test:         F=24.6424 , p=0.0000  , df_denom=984, df_num=5
+The Granger causality test for the new
+```
+
+For all lags in the calculation (1 to 5), the p-values are essentially 0. This indicates strong evidence against the null hypothesis, which means that temperature Granger-causes (AKA has a predictive effect on) bike rentals for all tested lags. This is consistent with the synthetic data generation process, where bike rentals were influenced by both the current temperature and the temperature from the previous day (lag 1).
+
+### Violating an assumption {#sec-violating-granger}
+
+Now we will synthesize another bike rental dataset that violates the no endogeneity assumption discussed in @sec-granger-assumptions to illustrate the importance of the assumptions. We introduce a weather variable, `WeatherEffect`, that explicitly confounds the relationship between temperature and bike rentals. `WeatherEffect` will be omitted from the Granger test.
+
+```python
+import numpy as np
+import pandas as pd
+
+# Set random seed for reproducibility
+np.random.seed(42)
+
+n = 1000
+temperature = np.random.normal(70, 10, n)
+error = np.random.normal(0, 5, n)
+
+# Generate WeatherEffect variable
+weather_effect = np.random.normal(0, 5, n)
+
+# Modify Temperature and Bike Rentals generation to account for WeatherEffect
+temperature_with_effect = temperature + 0.2 * weather_effect
+bike_rentals_with_effect = 10 + 0.5 * temperature_with_effect + 0.3 * np.roll(temperature_with_effect, shift=1) + error + 0.5 * weather_effect
+
+# Create dataframe without WeatherEffect for Granger test
+df_effect = pd.DataFrame({
+    'Temperature': temperature_with_effect,
+    'Bike_Rentals': bike_rentals_with_effect
+})
+```
+
+```python
+import matplotlib.pyplot as plt
+
+# Plotting the confounded dataset
+plt.figure(figsize=(14, 6))
+
+plt.plot(df_effect['Temperature'], label='Temperature (with WeatherEffect)', color='blue', alpha=0.7)
+plt.plot(df_effect['Bike_Rentals'], label='Bike Rentals (with WeatherEffect)', color='red', alpha=0.7)
+plt.title('Temperature and Bike Rentals with Confounding WeatherEffect')
+plt.xlabel('Time')
+plt.ylabel('Value')
+plt.legend()
+
+plt.tight_layout()
+plt.grid(True)
+plt.show()
+```
+
+```{r fig-granger-confounded, fig.cap="Temperature (blue) and Bike Rentals (red) over Time", fig.align='center', echo=FALSE, out.width='75%'}
+knitr::include_graphics("img/granger_confounder.png")
+```
+
+@fig-granger-confounded visualizes the relationship between temperature (influenced by the `WeatherEffect`, shown in blue) and bike rentals (also influenced by the `WeatherEffect`, shown in red) over time.
+
+The confounding WeatherEffect is not directly shown in the plot, but its influence is visible in the synchronized movements of temperature and bike rentals. This is a good visual representation of how omitting a relevant variable can lead to spurious relationships between other variables.
+
+Now we run the Granger causality test on this confounded data.
+
+```python
+import statsmodels.api as sm
+from statsmodels.tsa.stattools import grangercausalitytests
+
+# Define data in the format for Granger test
+data_for_test = df_effect[['Bike_Rentals', 'Temperature']]
+
+max_lag = 5
+gc_test = grangercausalitytests(data_for_test, max_lag, verbose=True)
+```
+
+Output of the Granger test is similar to the unconfounded result from @sec-granger-example:
+```
+Granger Causality
+number of lags (no zero) 1
+ssr based F test:         F=67.3699 , p=0.0000  , df_denom=996, df_num=1
+ssr based chi2 test:   chi2=67.5729 , p=0.0000  , df=1
+likelihood ratio test: chi2=65.3856 , p=0.0000  , df=1
+parameter F test:         F=67.3699 , p=0.0000  , df_denom=996, df_num=1
+
+Granger Causality
+number of lags (no zero) 2
+ssr based F test:         F=28.1724 , p=0.0000  , df_denom=993, df_num=2
+ssr based chi2 test:   chi2=56.6286 , p=0.0000  , df=2
+likelihood ratio test: chi2=55.0803 , p=0.0000  , df=2
+parameter F test:         F=28.1724 , p=0.0000  , df_denom=993, df_num=2
+
+Granger Causality
+number of lags (no zero) 3
+ssr based F test:         F=18.1634 , p=0.0000  , df_denom=990, df_num=3
+ssr based chi2 test:   chi2=54.8755 , p=0.0000  , df=3
+likelihood ratio test: chi2=53.4186 , p=0.0000  , df=3
+parameter F test:         F=18.1634 , p=0.0000  , df_denom=990, df_num=3
+
+Granger Causality
+number of lags (no zero) 4
+ssr based F test:         F=13.8168 , p=0.0000  , df_denom=987, df_num=4
+ssr based chi2 test:   chi2=55.7713 , p=0.0000  , df=4
+likelihood ratio test: chi2=54.2658 , p=0.0000  , df=4
+parameter F test:         F=13.8168 , p=0.0000  , df_denom=987, df_num=4
+
+Granger Causality
+number of lags (no zero) 5
+ssr based F test:         F=11.1134 , p=0.0000  , df_denom=984, df_num=5
+ssr based chi2 test:   chi2=56.1880 , p=0.0000  , df=5
+likelihood ratio test: chi2=54.6588 , p=0.0000  , df=5
+parameter F test:         F=11.1134 , p=0.0000  , df_denom=984, df_num=5
+```
+
+Again, the p-values are essentially 0 for all lags in the calculation (1 to 5). Again, this indicates strong evidence that temperature Granger-causes bike rentals for all tested lags. However, since the temperature and bike rentals are being influenced by the omitted confounding `WeatherEffect` variable, we have an endogeneity problem and cannot trust the results of the Granger causality test. This example shows that one must be careful to check that the dataset to which the Granger test is being applied does not violate the necessary assumptions because the test itself cannot distinguish between data that does or does not violate the underlying assumptions.
+
+### Extensions to Granger causality {#sec-general-granger}
+
+To address the limitations posed by many of the assumptions discussed in @sec-granger-assumptions, many extensions of Granger causality have been devised. [@Shojaie2021GrangerCA] contains a detailed discussion of the extensions and we would encourage you to look there for details on any of these methods. This section simply provides an *incomplete* list of the extensions from [@Shojaie2021GrangerCA].
+
+- **network Granger causality**: Used to identify Granger-causes and represent them as a graph when there are many variables, such as in a gene regulation network [@Basu2013RegularizedEI, @Bernanke2003WhatET, @Fujita2007ModelingGE, @Lozano2009GroupedGG, @Nicholson2015VARXLSR]. Generally speaking, in these methods, Granger causal relationships appear as nonzero entries in the lag matrices $\mathbf{A}^k$ and instantaneous causal effects appear as nonzero entries in the inverse covariance matrix of the error term $\mathbf{e}_t$ [@Shojaie2021GrangerCA].
+- **Lag selection VAR models**: Estimate the optimal lag from the data. This helps with the known lag assumption [@Shojaie2010DiscoveringGG, @Shojaie2012AdaptiveTF, @Nicholson2015VARXLSR].
+- **Non-stationary VAR models**: Models to circumvent the stationarity assumption of Granger causality [@Fox2010BayesianNI, @Nakajima2013BayesianAO, @Safikhani2017JointSB, @Bai2020MultipleCP].
+- **Discrete-valued time-series**: Applications to data with values that are not continuous, e.g. categorical data [@Tank2017GrangerCN, @Hall2016InferenceOH, @Wei2018AnIT]
+- **Mismatched sampling rates**: Addresses the sampling rate not matching the timescale of underlying causal relationships [@Eichler2016GraphicalMF, @Zhou2013LearningSI]
+- **Nonlinear time-series**: Methods to go beyond the requirement of linear relationships between variables  [@Tank2018NeuralGC, @Vicente2010TransferEM, @Amblard2010OnDI]
+
+
+## Logic-based Methods {#sec-zk}
+
+This section introduces logic-based methods of studying time series data. Logic-based methods were introduced in [@Kleinberg2009TheTL], which represented causal relationships as propositions of formulas in probabilistic temporal logic. Logic-based methods are a combination of causal discovery *and* causal inference in time-series data [@Gong2023CausalDF]. In what follows, we introduce the concepts needed to understand logic-based methods, before working through a detailed example of an advancement that was introduced in [@Zheng2017AMF].
+
+### Probabilistic Computation Tree Logic (PCTL) {#sec-PCTL}
+
+The methods discussed in this book thus far don’t explicitly include the window of time between events with a causal relationship when computing things like average treatment effects. That makes it difficult to apply such methods to time-series problems where the time it takes for a cause to produce its effect is important and the time interval between cause and effect can impact the probability of the effect’s occurrence. This chapter focuses on methods that accounts for these temporal relationships and also describes a method of automated reasoning that represents causal relationships as propositions of formulas in probabilistic temporal logic.
+
+#### Temporal Logic
 
 Temporal logic is a formal system for expressing and reasoning about propositions that hold at different points in time. It provides a set of operators and symbols for specifying temporal relationships that lets us represent causal relationships as temporal logic formulas. These formulas can then be manipulated and evaluated to analyze patterns in temporal data, such as the timing and sequence of events, and infer causal relationships between those events. However, this does not allow for probabilistic relationships.
 
 If we want an automated way of capturing the temporal and probabilistic relationships between events, then we need to describe temporal relationships between variables, in the presence of uncertainty. This is provided by probabilistic temporal logic (PTL).
 
-### Probabilistic temporal logic {#sec-PTL}
+#### Probabilistic temporal logic {#sec-PTL}
 
 Probabilistic temporal logic (PTL) extends traditional temporal logic by incorporating probability. In PTL, propositions are assigned probabilities rather than being considered purely true or false. This allows for more nuanced reasoning about the temporal relationships between events. For example, if event A *typically* happens before event B but not always, we can express this uncertainty using probabilities. However, PTL alone does not allow us to study how the system evolves in time, since a probabilistic system can have many possible futures.
 
 By combining probabilistic temporal logic with computation tree logic (CTL)  [@Clarke1996ModelC], we get probabilistic computation tree logic (PCTL) [@Hansson1990ALF], which is a probabilistic extension of CTL that is used to reason about the behavior of probabilistic systems that evolve in time. PCTL can be used to specify and verify various properties of probabilistic systems, such as the probability of reaching a certain state, the expected time to reach a certain state, and the long-term behavior of the system. PCTL can also specify temporal constraints on the behavior of a probabilistic system, answer questions about possible futures, and compute the likelihood of a possible future event happening in a specific time window.
 
-### Probabilistic Kripke Structures {#sec-PKS}
+#### Probabilistic Kripke Structures {#sec-PKS}
 
 Probabilistic Computation Tree Logic describes a system's possible transitions with a probabilistic Kripke structure (PKS), which is a directed graph where each node represents a possible state of the system, and each edge (1) represents a probabilistic transition between states and (2) is labeled with a proposition that describes the conditions under which the transition can occur.
 
 By modeling the behavior of a probabilistic system, the PKS allows us to define the truth of temporal statements with respect to the structure. For example, a temporal statement such as *"eventually, property $P$ holds with probability at least 0.9"* is true in a state of the structure if there is a path from that state to a future state where property $P$ is true with probability at least 0.9. PKSs are also used in the formal verification of probabilistic systems, where they provide a way to model system and verify that it satisfies a given specification.
 
-#### Describing the System
+##### Describing the System
 
 A system in PCTL is described using two components: a set of atomic propositions and a probabilistic Kripke structure. In PCTL, what we know about a variable that might appear in a typical causal graph, is written as a logical proposition that can also have a probability and temporal aspects.
 
@@ -35,8 +329,10 @@ The set of atomic propositions is commonly written as $A$ and the PKS is written
 
 $K$ defines which transitions are possible and the probability of each transition and $L(s)$ is the label(s) of state $s$. Note that, in practice, we will not define or infer $K$.
 
+PCTL has also been extended to support the case where discrete and continuous values are present in the same dataset [@Kleinberg2011ALF].
 
-#### Example: The Monty Hall Problem
+
+##### Example: The Monty Hall Problem
 
 This section presents a detailed example of how you would describe a system with a probabilistic Kripke structure (PKS). Our example is the famous Monty Hall problem. The Monty Hall problem is a probability puzzle based on a game show called "Let's Make a Deal," which was hosted by Monty Hall. The problem is named after him and became popular after a reader's question appeared in Marilyn vos Savant's "Ask Marilyn" column in Parade magazine in 1990 [@WikipediaMontyHallProblem].
 
@@ -132,7 +428,7 @@ Car is behind door 2. Player chooses door 3, host opens door 1, player chooses t
 
 The initial state is that all doors are closed. In the next time step, $t_1$, the player chooses a door, making one of the propositions `PlayerChoosesDoor<n>` true $(n=1,2,3)$. Next, the host opens one of the other two doors that is hiding a goat, thereby setting one of the `HostOpensDoor<m>` propositions to true $(m=1,2,3)$ and one of the `CarBehindDoor<k>` propositions to false $(k=1,2,3)$. Finally, the player can switch to the remaining closed door, which will set `PlayerSwitches` to true, or they can keep their initial selection. The final state is either `PlayerWins` or `PlayerLoses`. Lastly, note that the position of the car is unknown to the player at the start of the game. If we rewrite the three example games above from the perspective of the player, then we would have to mark the `CarBehindDoor<n>` propositions as unknown. Note that we could also add propositions for the positions of the two goats, but those are complements for the position of the car. We mention this to note that the atomic propositions used for a problem are not necessarily etched in stone, but depend on how you wish to describe the problem and the states of the system at each time step.
 
-#### Properties of State and Path Formulas
+###### Properties of State and Path Formulas
 
 Computation tree logic has formulas that state what must be true for a certain state (state formulas) and formulas that define what must be true for an entire sequence of states (path formulas). For example, stating that one of the atomic proposition in $A$ must be true in a given state can be specified as a state formula. To make it more concrete, consider the Monty Hall problem.
 
@@ -153,11 +449,11 @@ Property (4) tell us that we can construct state formulas out of the *until* and
 
 Before moving on to considering how we can identify causes, we need to introduce one more temporal operator, $\leadsto$, "leads to". $f_1 \leadsto^{\leq  t}_{\geq p} f_2 \equiv AG[f_1 \to F^{\leq  t}_{\geq p} f_2]$, means that for every path from the current state, states where $f_1$ is true leads to states where $f_2$ is true, and that the transitions between those states occur within $t$ time step, with probability $p$. Given this definition, consider two formulas, $a$ and $b$, that occur at times $t_1$ and $t_2$, respectively. This relationship can be described by the time interval between them, $|t_1 - t_2|$. If we want $a$ to simply occur at any time before $b$, then $|t_1 - t_2|$ can be replaced with $\infty$ [@Kleinberg2010TheTL].
 
-## Logical Conditions for Causality
+### Logical Conditions for Causality
 
 The logical framework we have been discussing, PCTL, lets us describe probabilistic relationships between events in time as formulas in temporal logic. This reframes the problem in the language of model checking [@Clarke1996ModelC], allowing us to verify which formulas are true in relation to the model. Note that the "model" is the collection of information described in @sec-PKS. Section 3.3.1 of [@kleinberg_2012] discusses the algorithm for checking the set of propositions against a model. We will not cover model checking in this chapter, since, in practice, we will not have a model that tells us things like the set of possible states, labels, and transition probabilities. Instead these are found from the data itself. We can start with identifying potential causes, we can then identify which potential causes are likely to be true causes.
 
-### Identifying Potential Causes {#sec-potentialCauses}
+#### Identifying Potential Causes {#sec-potentialCauses}
 
 This section describes how to find things that _might_ be causes. The literature calls these _prima facie_ causes. _Prima facie_ is Latin for "at first sight" or "on the face of it." In the legal world, the term refers to a case that, based on the evidence presented, _appears_ to be valid. Consider two PCTL formulas, $c$ and $e$. $c$ is a potential cause of $e$ if there is a probability $p$ such that _all_ of the following conditions hold:
 
@@ -171,25 +467,21 @@ Condition (1) means that there is at least one state where $c$ will eventually b
 
 In @sec-populationMeasures, we learned about the average treatment effect as a way of quantifying the relationship between a treatment (which is a potential cause) and and outcome (an observed effect). [@Kleinberg2010TheTL] introduces a quantity called the average causal significance (ACS), $\epsilon_{avg}$, that quantifies the causal significance of a potential cause $c$ to an effect $e$, where $c \leadsto {}^{\geq r, \leq s}_{\geq p} e$; i.e. after $c$ becomes true, $e$ occurs in a time window $[r, s]$, with probability $p$:
 
-\begin{equation}
-\epsilon_{avg}(c_{r-s}, e) = \displaystyle\frac{\sum_{x\in X\setminus c } P(e\vert c \land x) - P(e\vert \neg{c} \land x) }{\vert X \setminus{c} \vert},
-\end{equation}
+$$\epsilon_{avg}(c_{r-s}, e) = \displaystyle\frac{\sum_{x\in X\setminus c } P(e\vert c \land x) - P(e\vert \neg{c} \land x) }{\vert X \setminus{c} \vert},$$
 
 where $X$ is the set of potential causes, $c$ is the potential cause in $X$ that is under consideration, $e$ is the effect. Note that $X \setminus c$ means $c$ is being excluded from the set. The numerator in the ACS is the difference in the probability of the effect with and without the potential cause, and is conceptually similar to the average treatment effect. More formally, the numerator is the difference between the probability of the system moving to a state where $e$ is true from one where $c$ and $x$ are true and the probability of the system moving to a state where $e$ is true from one where $x$ is true but $c$ is not true.
 
-## Identifying Token Causes
+### Identifying Token Causes
 
-### Types of Causes
+#### Types of Causes
 
 There are two types of causal relationships: token-level and type-level [@kleinberg_2012]. Type-level relationships describe general relationships between variables, indicating a causal relationship that holds across multiple events. In contrast, token-level relationships are specific to individual events and refer to the causal relationship between a particular cause and effect pair. In this chapter, we have focused on type-level relationships.
 
-### Defining Token-level Causal Significance
+#### Defining Token-level Causal Significance
 
 [@Zheng2017AMF] shows that the ACS can be used to compute the significance of a token-level cause. The significance of $c$ at time $t^{\prime}$ of $e$ at time $t$, where $c_{t^{\prime}}$ is a specific instance of cause type $c$, is given by
 
-\begin{equation}
-S(c_{t^{\prime}}, e_t) = \epsilon_{avg}(c_{r-s}, e) \times P(c_{t^{\prime}}\vert \mathcal{V}) \times \mathcal{f}(c_{t^{\prime}}, e_t, r, s)
-\end{equation}
+$$S(c_{t^{\prime}}, e_t) = \epsilon_{avg}(c_{r-s}, e) \times P(c_{t^{\prime}}\vert \mathcal{V}) \times \mathcal{f}(c_{t^{\prime}}, e_t, r, s)$$
 
 where $\mathcal{V}$ is the sequence of time series data, $\epsilon_{avg}$ is the average causal significance of type-level cause $c$ on effect $e$, $P(c\vert\mathcal{V})$ is the probability of the token cause $c_{t^{\prime}}$ given the sequence of observations, and $\mathcal{f}$ is a weighting function that captures how closely the time gap between $c_{t^{\prime}}$ and $e_t$, $t-t^{\prime}$, fits into the type-level window $[r, s]$. There are two constraints on $\mathcal{f}$:
 
@@ -198,11 +490,11 @@ where $\mathcal{V}$ is the sequence of time series data, $\epsilon_{avg}$ is the
 3. $\mathcal{f}(c_{t^{\prime}} , e_t) \in [0, 1]$
 
 
-### Computing Significance of Token Causes
+#### Computing Significance of Token Causes
 
 To compute the significance of a token cause, we need to know $\mathcal{f}$ and the average causal significance of the corresponding type-level cause. [@Zheng2017AMF] describes an algorithm for computing $\mathcal{f}$ and an algorithm for finding token-level causes. They rest upon the assumption that token causes are observed in the data. Computing token significance gives us the token-level causes. The algorithm for finding token-level causes limits itself to token causes with a single variable.
 
-#### Computing $\mathcal{f}$ from data
+##### Computing $\mathcal{f}$ from data
 
 This section describes the algorithm from [@Zheng2017AMF] for estimating $\mathcal{f}$ from a time-series dataset.
 
@@ -237,7 +529,7 @@ Two explanatory notes:
 
 Algorithm 1 gives us $\mathcal{f}$ and $\epsilon_{avg}$, which are two of the three things we need to compute the token significance, $S(c_{t^{\prime}}, e_t)$. The remaining quantity is $P(c\vert\mathcal{V})$, the probability of token cause $c_{t^{\prime}}$, given $\mathcal{V}$. That can be counted from the dataset.
 
-### Finding Token-level Causal Explanations
+#### Finding Token-level Causal Explanations
 
 This section describes a method for identifying and removing known causes from the set of events to be explained. Then, the remaining events are tested to see if any variables can explain them. The set of events that cannot be explained by the known causes is the residual set, and the causes of these events are to be found without removing any potential causes of other events. Variables that are not in their initial state or have recently changed state are considered as possible causes.
 
@@ -273,6 +565,8 @@ __Procedure:__
 2. return $E'$
 
 The output is a list of token causes, the events they explain, and their conditional probability.
+
+<!---## General Temporal Data {#sec-temporal}--->
 
 ## Case Study
 
@@ -840,4 +1134,6 @@ for c in scored_causes[:10]:
 ### Discussion
 
 The result of the previous command shows which type-level causes contributed the most to high bike rentals, and in which time window.
+
+
 
