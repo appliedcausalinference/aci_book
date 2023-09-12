@@ -12,6 +12,7 @@ book:
     in machine learning domains.
   chapters:
     - index.qmd
+    - 00-foreword.qmd
     - 01-intro-to-causality.qmd
     - 02-potential-outcomes-framework.qmd
     - 03-causal-estimation-process.qmd
