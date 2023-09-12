@@ -76,10 +76,10 @@ In Part 3, we discuss some advanced topics within the field of causality:
 
 >This comprehensive book unlocks the potential of causal machine learning, providing a roadmap to comprehend and implement causal inference techniques. Data scientists and researchers seeking to construct models that transcend mere correlations will find this book an invaluable resource.
 >
-> -- <cite>John Chih Liu, PhD., Researcher and Founder, Intelluron<cite>
+>-- <cite>John Chih Liu, PhD., Researcher and Founder, Intelluron<cite>
 
 >I'm very impressed with this treatment of causal machine learning. Causality is a complex and broad subject, but the authors handle the topic elegantly. The book is clear and easy to follow without sacrificing completeness or depth. This is a great place to start for beginners, with plenty for the more experienced. Highly recommended!
-
+>
 >-- <cite>Joseph Porter, PhD., Research Engineer and Machine Learning Lead, Falkonry, Inc.<cite>
 
 \newpage
