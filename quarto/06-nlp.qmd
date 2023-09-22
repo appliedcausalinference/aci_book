@@ -312,7 +312,10 @@ test_docs = list(clean_ds["test"]["text"])
 topics, probs = topic_model.fit_transform(train_docs, train_embeddings)
 
 # fine-tune topic representation
-vectorizer_model_1 = CountVectorizer(stop_words="english", ngram_range=(1, 3), min_df=10)
+vectorizer_model_1 = CountVectorizer(stop_words="english", 
+                                     ngram_range=(1, 3), 
+                                     min_df=10)
+                                     
 topic_model.update_topics(train_docs, vectorizer_model=vectorizer_model_1)
 ```
 

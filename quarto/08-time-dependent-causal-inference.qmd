@@ -190,7 +190,9 @@ weather_effect = np.random.normal(0, 5, n)
 
 # Modify Temperature and Bike Rentals generation to account for WeatherEffect
 temperature_with_effect = temperature + 0.2 * weather_effect
-bike_rentals_with_effect = 10 + 0.5 * temperature_with_effect + 0.3 * np.roll(temperature_with_effect, shift=1) + error + 0.5 * weather_effect
+bike_rentals_with_effect = 10 + 0.5 * temperature_with_effect +\
+    0.3 * np.roll(temperature_with_effect, shift=1) +\
+    error + 0.5 * weather_effect
 
 # Create dataframe without WeatherEffect for Granger test
 df_effect = pd.DataFrame({
@@ -205,8 +207,10 @@ import matplotlib.pyplot as plt
 # Plotting the confounded dataset
 plt.figure(figsize=(14, 6))
 
-plt.plot(df_effect['Temperature'], label='Temperature (with WeatherEffect)', color='blue', alpha=0.7)
-plt.plot(df_effect['Bike_Rentals'], label='Bike Rentals (with WeatherEffect)', color='red', alpha=0.7)
+plt.plot(df_effect['Temperature'], label='Temperature (with WeatherEffect)', 
+         color='blue', alpha=0.7)
+plt.plot(df_effect['Bike_Rentals'], label='Bike Rentals (with WeatherEffect)', 
+         color='red', alpha=0.7)
 plt.title('Temperature and Bike Rentals with Confounding WeatherEffect')
 plt.xlabel('Time')
 plt.ylabel('Value')
