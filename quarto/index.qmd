@@ -2,12 +2,6 @@
 
 Welcome to the Applied Causal Inference book! We are excited you're here.
 
-We intend to offer the web version of this book entirely free of charge. However, there are other ways to purchase other versions of the book or otherwise support the authors:
-
-* E-book versions are available [on LeanPub](https://leanpub.com/appliedcausalinference)
-  * Additionally, if you found the web version helpful and would like to support the authors, you can use the LeanPub price slider to do so
-* Hard copies will be available on Amazon later in 2023
-
 ## Who This Book is For {-}
 
 This book is designed to help anyone along the spectrum of experience with causal inference -- nearly everyone from absolute beginners to experienced users of causality will be able to learn something about the world of causal inference and how it can be applied. If you use data to answer questions, then it's likely that you can benefit from the techniques described in this book. Whether you're in industry or academia, the causal inference toolkit will be valuable to have in your repertoire.
